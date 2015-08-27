@@ -3,12 +3,6 @@ import os, sys, shutil
 from common import runLocalCommand, verifyPassword
 import pexpect, getpass
 
-if os.geteuid(): # check if already root
-  while True:
-    PASSWORD = getpass.getpass('[sudo] password for %s: ' % getpass.getuser())
-    if verifyPassword(PASSWORD): break
-    print 'Sorry, try again.'
-
 def runSysConfigCommand(command):
   print "RUNNING COMMAND: "  + command
   p = pexpect.spawn(command,timeout=7200)
@@ -29,6 +23,6 @@ def runSysConfigCommand(command):
 
 NAO_HOME = os.environ['NAO_HOME'] = '/home/' + os.environ['USER'] + '/nao/trunk'
 os.chdir(NAO_HOME + '/install')
-runSysConfigCommand('./install_fft')
+os.system('./install_fft')
 os.system('echo export NAO_HOME=~/nao/trunk >> ~/.bashrc')
 os.system('echo source \$NAO_HOME/install/bashrc_addenda >> ~/.bashrc')
