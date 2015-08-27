@@ -1,0 +1,362 @@
+#!/usr/bin/env python
+
+import sys, subprocess, os
+
+#baseIP = '192.168.23.%s'
+baseIP = '192.168.1.%s'
+#baseIP = '10.0.1.%s'
+#baseIP = '11.0.1.%s'
+#baseIP = '139.140.192.%s'
+validInterfaces = ['nao','motion','vision','python', 'memory_test','scripts','color_table','motion_file','config_file','autoload','simple_config','wireless','time']
+allInterfaces = list(validInterfaces)
+allInterfaces.remove('memory_test')
+allInterfaces.remove('scripts')
+allInterfaces.remove('color_table')
+#allInterfaces.remove('motion_file')
+allInterfaces.remove('autoload')
+allInterfaces.remove('simple_config')
+allInterfaces.remove('wireless')
+allInterfaces.remove('time')
+everyInterface = list(validInterfaces)
+everyInterface.remove('simple_config')
+everyInterface.remove('wireless')
+everyInterface.remove('time')
+
+NAO_HOME = os.getenv('NAO_HOME')
+basePath = os.path.join(NAO_HOME,'build')
+
+options = None
+
+def verifyChecksums(ip, sourcePath, destPath, oldVerify=False):
+  # use old version if flag is set (default False)
+  if oldVerify:
+    print 'Using old version of verifyChecksums()...'
+    return verifyChecksumsOld(ip, sourcePath, destPath)
+
+###############################################################
+  sourceSplit = sourcePath.rpartition('/');
+  newDestPath = destPath + sourceSplit[2];
+  dest_md5_file = destPath.replace('/','_') + '.dest.md5sum'
+  source_md5_file = destPath.replace('/','_') + '.src.md5sum'
+
+  # run md5 on the current files (local and nao) and copy the nao's over
+  # > md5sum ../core/python/core.py > python_.src.md5sum &&
+  # > ssh nao@192.168.1.5 md5sum python/core.py > python_.dest.md5sum &&
+  # > scp nao@192.168.1.5:python_.dest.md5sum > /dev/null
+  cmd = \
+    'md5sum %s > %s && ssh nao@%s "md5sum %s > %s" && scp nao@%s:%s %s > /dev/null' \
+    % (sourcePath, source_md5_file, ip, newDestPath, dest_md5_file, \
+       ip, dest_md5_file, dest_md5_file)
+  p = subprocess.Popen(cmd, shell=True)
+  retcode = p.wait()
+
+  # make sure process executed correctly
+  if retcode != 0:
+    print 'Unable to copy/generate md5 files: %s' % cmd
+    playSound()
+    if retcode <= 127:
+      sys.exit(retcode)
+    else:
+      sys.exit(2)
+  
+  # open the files and read them
+  src_md5 = open(source_md5_file, 'r')
+  dest_md5 = open(dest_md5_file, 'r')
+  source_checksums = src_md5.readlines()
+  dest_checksums = dest_md5.readlines()
+  src_md5.close()
+  dest_md5.close()
+
+  # splits the strings into a list of lists: [[checksum#, path/to/file], ... ]
+  # then removes the path and goes back to strings: ['checksum# file', ...]
+  # note: the lambda operator is awesome
+  source_checksums = map(lambda x: x.split('/'), source_checksums)
+  source_checksums = map(lambda x: x[0].split()[0] + ' ' + x[-1], source_checksums)
+  dest_checksums = map(lambda x: x.split('/'), dest_checksums)
+  dest_checksums = map(lambda x: x[0].split()[0] + ' ' + x[-1], dest_checksums)
+
+  # compare the data
+  okay = True
+  for line in source_checksums:
+    if line.strip() and line not in dest_checksums:
+      print "File did not match: %s" % line.split(' ')[1].rstrip()
+      okay = False
+    
+  if not okay:
+    sys.stderr.write('  FILES ARE NOT SAME!!! PLEASE RE-COPY THIS INTERFACE\n')
+  else:
+    print '  Files are ok'
+
+  # clean up the temp files
+  cmd = 'ssh nao@%s "rm %s" && rm %s %s' \
+    % (ip, dest_md5_file, dest_md5_file, source_md5_file)
+  p = subprocess.Popen(cmd,shell=True)
+  retcode = p.wait()
+  
+  if retcode != 0:
+    print 'Removing md5 files failed: %s' % cmd
+
+
+def verifyChecksumsOld(ip, sourcePath, destPath):
+  """ Old verify scripts (doesn't work with Python and Lua) """
+  sourceSplit = sourcePath.rpartition('/');
+  newDestPath = destPath + sourceSplit[2];
+  dest_md5_file = destPath.replace('/','_') + '.dest.md5sum'
+  source_md5_file = destPath.replace('/','_') + '.src.md5sum'
+
+  cmd = 'md5sum %s > %s && ssh nao@%s "md5sum %s > %s" && scp nao@%s:%s %s > /dev/null' % (sourcePath,source_md5_file,ip,newDestPath,dest_md5_file,ip,dest_md5_file,dest_md5_file)
+  p = subprocess.Popen(cmd,shell=True)
+  retcode = p.wait()
+
+  if retcode != 0:
+    print 'Unable to copy/generate md5 files: %s' % cmd
+    playSound()
+    if retcode <= 127:
+      sys.exit(retcode)
+    else:
+      sys.exit(2)
+  
+  cmd = 'awk \'{print $1;}\' %s > %s.awk && awk \'{print $1;}\' %s > %s.awk && diff %s.awk %s.awk' % (source_md5_file,source_md5_file,dest_md5_file,dest_md5_file,source_md5_file,dest_md5_file)
+  p = subprocess.Popen(cmd,shell=True)
+  retcode = p.wait()
+
+  if retcode != 0:
+    sys.stderr.write('  FILES ARE NOT SAME!!! PLEASE RE-COPY THIS INTERFACE\n')
+  else:
+    print '  Files are ok'
+
+  cmd = 'ssh nao@%s "rm %s" && rm %s %s %s.awk %s.awk' % (ip,dest_md5_file,dest_md5_file,source_md5_file,dest_md5_file,source_md5_file)
+  p = subprocess.Popen(cmd,shell=True)
+  retcode = p.wait()
+  
+  if retcode != 0:
+    print 'Removing md5 files failed: %s' % cmd
+
+
+def copyFiles(ip,sourcePath,destPath,extension=None):
+  ext = ''
+  if extension:
+    ext = "--include='*/' --include='*.%s' --exclude='*'" % extension
+  cmd = 'rsync -avz --progress --copy-links --exclude=.svn %s %s nao@%s:%s' % (ext,os.path.join(basePath,sourcePath),ip,destPath)
+  p = subprocess.Popen(cmd,shell=True)
+  retcode = p.wait()
+  
+  if retcode != 0:
+    print 'Copy failed: %s' % cmd
+    if retcode <= 127:
+      sys.exit(retcode)
+    else:
+      sys.exit(2)
+
+def createSimpleConfig(filename, id, team, role):
+  FILE = open(filename,"w")
+  FILE.write(str(id) + '\n');
+  FILE.write(str(team) + '\n');
+  FILE.write(str(role) + '\n');
+  FILE.close();
+
+def removeFile(filename):
+  os.remove(filename)
+
+def doFileOperations(ip,sourcePath,destPath,options,extension=None):
+  if options.verify:
+    if options.verify_old:
+      verifyChecksums(ip,sourcePath,destPath,True) # old verify script
+    else:
+      verifyChecksums(ip,sourcePath,destPath) # new verify script
+  else:
+    copyFiles(ip,sourcePath,destPath,extension=extension)
+
+def makeUnique(seq, idfun=None): 
+  # order preserving
+  if idfun is None:
+    def idfun(x): return x
+  seen = {}
+  result = []
+  for item in seq:
+    marker = idfun(item)
+    # in old Python versions:
+    # if seen.has_key(marker)
+    # but in new ones:
+    if marker in seen: continue
+    seen[marker] = 1
+    result.append(item)
+  return result
+
+def getIP(args):
+  ip = None
+  for ind in range(len(args)):
+    if '.' in args[ind]:
+      ip = args[ind]
+      del args[ind]
+      break
+    try:
+      ip = int(args[ind])
+      ip = str(ip)
+      del args[ind]
+      break
+    except:
+      pass
+  return ip,args
+
+def main(ip,interfaces,options,robotID):
+  base = 'build/%s/%s/build-atom'
+  build = 'debug' if options.debug else 'release'
+  for interface in interfaces:
+    if options.verify_old:
+      options.verify = True
+    if options.verify:
+      print 'Verifying %s' % interface
+    else: 
+      print 'Copying %s' % interface
+    ibase = base % (build,interface)
+    if interface == 'nao':
+      doFileOperations(ip,'%s/sdk/lib/libnaointerface.so' % ibase,'bin/',options)
+    elif interface in ['motion','vision','memory_test']:
+      doFileOperations(ip,'%s/sdk/bin/%s' % (ibase,interface),'bin/',options)
+    elif interface == 'lua':
+      doFileOperations(ip,'../core/lua/*.lua','lua/',options)
+    elif interface == 'python':
+      doFileOperations(ip,'../core/python/','python/',options,extension="py")
+      doFileOperations(ip,'../build/pythonswig/pythonswig_module.py','python/',options)
+      doFileOperations(ip,'../build/pythonswig/lib_pythonswig_module.so','bin/',options)
+      subprocess.check_call('ssh nao@%s "ln -sf ~/bin/lib_pythonswig_module.so ~/bin/_pythonswig_module.so"' % ip,shell=True)
+    elif interface == 'scripts':
+      #print ' Part 1'
+      doFileOperations(ip,'../data/scripts/villa-st*','bin/',options)
+      doFileOperations(ip,'../data/scripts/restart_processes.sh','bin/',options)
+      #print ' Part 2'
+      #doFileOperations(ip,'../data/scripts/wireless-monitor.py','bin/',options)
+    elif interface == 'color_table':
+      doFileOperations(ip,'../data/current/def*.col','data/',options)
+      doFileOperations(ip,'../data/current/coach*.col','data/',options)
+      for suffix in ['top','bottom']:
+        path = '../data/current/%s%s.col' % (robotID,suffix)
+        if os.path.exists(path):
+          doFileOperations(ip,path,'data/',options)
+        else:
+          print '  **No specific %s table for %s' % (suffix,robotID)
+    elif interface == 'motion_file':
+      doFileOperations(ip,'../data/mof/test/*.mof','data/mof/test/',options)
+    elif interface == 'config_file':
+      print ' data/config/rswalk2014/*.cfg'
+      doFileOperations(ip,'../data/config/rswalk2014/*.pos','data/config/rswalk2014/',options)
+      print " data/fft_whistle_model.txt"
+      doFileOperations(ip,'../data/fft_whistle_model.txt','data/',options)
+      print ' data/*.cal'
+      path = '../data/%s_calibration.cal' % (robotID)
+      if os.path.exists(path):
+        doFileOperations(ip,path,'data/',options)
+      else:
+        print '  **No calibration for %s' % (robotID)
+      print ' data/audio_processing_tree.bin'
+      path = '../data/audio_processing_tree.bin'
+      if os.path.exists(path):
+        doFileOperations(ip,path,'data/',options)
+      else:
+        print '  **No audio processing config'
+    elif interface == 'autoload':
+      doFileOperations(ip,'../data/scripts/autoload.ini','data/',options)
+    elif interface == 'simple_config':
+      if options.config_file:
+        doFileOperations(ip,options.config_file,'data/',options)
+      else:
+        sys.stderr.write('You need to set the --team and --role flag to use simple_config\n')
+
+    elif interface == 'wireless':
+      from setup_wireless import main as setupWireless
+      setupWireless(ip,robotID,options.atom,None)
+
+    elif interface == 'time':
+      cmd = 'ssh nao@%s "date +%%s > time.txt"' % (ip)
+      p = subprocess.Popen(cmd,shell=True)
+      p.wait()
+    else:
+      print >>sys.stderr,'Invalid interface: %s' % interface
+
+def playSound():
+  if options.enable_sound:
+    try:
+      p = subprocess.Popen('mpg123 %s/bin/ding.mp3' % NAO_HOME,shell=True,stderr=subprocess.PIPE,stdout=subprocess.PIPE)
+      p.communicate()
+    except: pass
+
+if __name__ == '__main__':
+  buildDir = os.path.join(NAO_HOME,'build')
+  os.chdir(buildDir)
+  from optparse import OptionParser
+  usage  = 'copy_robot [ip] interface [interface]'
+  usage += '\n  Interfaces: %s' % (' '.join(validInterfaces))
+  usage += '\n  all: %s' % (' '.join(allInterfaces))
+  usage += '\n  everything: copies every interface'
+  parser = OptionParser(usage)
+  parser.add_option('--geode',dest='atom',action='store_false',default=True,help='Copy for geode (old robots)')
+  parser.add_option('--atom',dest='atom',action='store_true',default=True,help='Copy for atom (new robots)')
+  parser.add_option('--debug',dest='debug',action='store_true',default=False,help='Copy debug version')
+  parser.add_option('--fast',dest='configure',action='store_false',default=True,help='NOT USED')
+  parser.add_option('--id',dest='robotID',action='store',type='int',default=None,help='robot id to use')
+  parser.add_option('--verify',dest='verify',action='store_true',default=False,help='verify checksums, do not copy')
+  parser.add_option('--verify_old',dest='verify_old',action='store_true',default=False,help='verify checksums (old version), do not copy')
+  parser.add_option('--copy-verify',dest='copy_verify',action='store_true',default=False,help='copy and then verify checksums')
+  parser.add_option('--team',dest='robot_team',action='store',type='int',default=23,help='robot team id when copying simple config')
+  parser.add_option('--config_file',dest='config_file',action='store',type='string',default=None,help='config file when copying config')
+  parser.add_option('-s',dest='enable_sound',action='store_true',default=False,help='Makes a sound when finished compiling')
+  options,args = parser.parse_args()
+  if len(args) < 1:
+    parser.parse_args(['--help'])
+    playSound()
+    sys.exit(1)
+  
+  # defaults to atom now
+  #if options.atom is None:
+    #print 'ERROR: You must specify either --geode or --atom'
+    #print 'This will be defaulted to atom later, but for now you must specify'
+    #sys.exit(1)
+
+  
+  ip,args = getIP(args)
+  if ip is None:
+    ip = os.getenv('CURRENT_ROBOT')
+    if ip is None:
+      print >>sys.stderr,'Could not figure out what robot you wanted'
+      print >>sys.stderr,'Either specify the ip on the command line or set $CURRENT_ROBOT'
+      sys.exit(1)
+    print 'Using robot from $CURRENT_ROBOT: %s' % ip
+  if '.' not in ip:
+    ip = baseIP % ip
+  print 'Using robot IP: %s ' % ip
+  ipSplit = ip.rpartition('.')
+  robot_id = ipSplit[2]
+  interfaces = []
+  # get interfaces
+  for arg in args:
+    arg = arg.lower()
+    if arg == 'all':
+      interfaces.extend(allInterfaces)
+    elif arg == 'everything':
+      interfaces.extend(everyInterface)
+    elif arg == "pythonswig":
+      interfaces.append("python")
+    else:
+      interfaces.append(arg)
+  # make interfaces unique
+  interfaces = makeUnique(interfaces)
+  if len(interfaces) == 0:
+    print >>sys.stderr,'No interfaces specified'
+    print >>sys.stderr,'validInterfaces: %s' % (' '.join(validInterfaces))
+    sys.exit(1)
+  # check interfaces
+  for interface in interfaces:
+    if interface not in validInterfaces:
+      print >>sys.stderr,'Interface not in list of validInterfaces: %s' % interface
+      print >>sys.stderr,'validInterfaces: %s' % (' '.join(validInterfaces))
+      sys.exit(1)
+  robotID = options.robotID
+  if robotID is None:
+    robotID = ip.split('.')[-1]
+  if options.copy_verify:
+    options.verify = False
+    main(ip,interfaces,options,robotID)
+    options.verify = True
+  main(ip,interfaces,options,robotID)
+  playSound()

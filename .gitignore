@@ -1,0 +1,17 @@
+naoqi
+oldnaoqi
+naoqi2
+naoqi-*
+core.txt
+*.swp
+tags
+*.*~
+build/*.md5sum
+documentation/html
+documentation/latex
+documentation/dox/todo.dox
+bin/sshlog
+*.grepignore
+*.tar.gz
+logs*
+*.orig

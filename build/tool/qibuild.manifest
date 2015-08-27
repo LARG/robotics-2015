@@ -1,0 +1,3 @@
+[project tool]
+# Add your project dependencies here:
+depends = luaswig pythonswig bhwalk2011 bhwalk2013 rswalk2014 core

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+cd $NAO_HOME/install
+
+echo Installing QT executables...
+wget -N -r -l1 -nH --cut-dirs=2 --no-parent -e robots=off --accept="*-qt4" http://www.cs.utexas.edu/~jmenashe/libs/qmake32/
+sudo cp qmake32/qmake-qt4 $NAO_HOME/bin/
+sudo cp qmake32/moc-qt4 $NAO_HOME/bin/
+sudo cp qmake32/uic-qt4 $NAO_HOME/bin/
+sudo chmod +x $NAO_HOME/bin/qmake-qt4
+sudo chmod +x $NAO_HOME/bin/moc-qt4
+sudo chmod +x $NAO_HOME/bin/uic-qt4

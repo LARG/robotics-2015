@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UTLogWindow</class>
+ <widget class="QMainWindow" name="UTLogWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1139</width>
+    <height>598</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="3" column="0">
+     <widget class="QSpinBox" name="logLevelLowBox"/>
+    </item>
+    <item row="3" column="1">
+     <widget class="QSpinBox" name="logLevelHighBox"/>
+    </item>
+    <item row="3" column="2">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Viewing Level (Displays logs between these levels)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QLineEdit" name="searchString"/>
+    </item>
+    <item row="3" column="4">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Search String</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="5">
+     <widget class="QComboBox" name="moduleBox"/>
+    </item>
+    <item row="2" column="0" colspan="5">
+     <widget class="QTextBrowser" name="textBrowser">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>1</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="5">
+     <widget class="QTextBrowser" name="memoryBlocks">
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

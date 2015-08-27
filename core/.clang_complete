@@ -1,0 +1,8 @@
+-I /home/sam/Nao/trunk/core
+-I /home/sam/Nao/trunk/lib/lua/src
+-I /home/sam/Nao/trunk/core/motion/bhwalk
+-I /usr/include/eigen3
+-I /home/sam/Nao/trunk/lib/yaml-cpp/include
+-I /home/sam/Nao/trunk/naoqi/include
+-I /usr/include/qt4
+-I /usr/include/qt4/QtGui/

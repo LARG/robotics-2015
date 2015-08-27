@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+
+import os, platform
+from common import runCommand, onLabMachine
+#import subprocess
+
+if __name__ == '__main__':
+  path = os.getenv('NAO_HOME') + '/build2/behaviorSim/behaviorSim'
+  if platform.architecture()[0] == '64bit':
+    ldAdditional = ':/usr/lib32:/usr/lib32/i386-linux-gnu'
+    if onLabMachine():
+      ldAdditional += ':/u/sbarrett/apps/usr/local/qwt-6.1.0-rc3/lib/'
+    gtkPath = '/usr/lib32/i386-linux-gnu/gtk-2.0'
+  else:
+    ldAdditional = ''
+    gtkPath = ''
+  runCommand(path,ldAdditional=ldAdditional,gtkPath=gtkPath)
+  #try:
+    #subprocess.call('%s LD_LIBRARY_PATH=$LD_LIBRARY_PATH%s %s' % ('GTK_PATH=%s' % gtkPath,ldAdditional,path),shell=True)
+  #except KeyboardInterrupt:
+    #pass
+  #finally:
+    #print '\nBye'

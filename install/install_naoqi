@@ -1,0 +1,135 @@
+#!/usr/bin/python
+
+import os, sys
+
+if 'NAO_HOME' not in os.environ:
+  print "NAO_HOME not set, exiting"
+  sys.exit(1)
+
+VERSION = '2.1.3.3'
+
+FULL_VERSION = '%s' % VERSION
+CROSS_SUFFIX = ''
+BASE_URL = 'http://www.cs.utexas.edu/~jmenashe/libs/'
+SDK = 'naoqi-sdk-%s-linux64.tar.gz' % VERSION
+ATOM_CROSS = 'linux64-nao-atom-cross-toolchain-%s.tar.gz' % FULL_VERSION
+LINK_LIBS = 'naoqi-link-libs-14.04.tar.gz'
+INCLUDES = 'includes.tar.gz'
+VIM = 'vim.tar.gz'
+
+CROSS_PATH = os.path.join(os.environ['NAO_HOME'],'naoqi','crosstoolchain')
+ATOM_CROSS_PATH  = os.path.join(CROSS_PATH,'atom')
+
+def createDir(path):
+  try:
+    os.mkdir(path)
+  except:
+    pass 
+
+def sysCall(cmd,exitOnError=True):
+  ret = os.system(cmd)
+  if ret != 0:
+    print '--------------------'
+    print 'Call: %s' % cmd
+    print 'Failed with ret: %i' % ret
+    if ret > 127:
+      ret = 1
+    if exitOnError:
+      sys.exit(ret)
+    else:
+      return False
+  return True
+
+def downloadSDK():
+  print 'Downloading naoqi-sdk'
+  sysCall('wget -N %s%s' % (BASE_URL,SDK))
+
+def downloadCross():
+  print 'Downloading atom cross compiler'
+  sysCall('wget -N %s%s' % (BASE_URL,ATOM_CROSS))
+
+def downloadLinkLibs():
+  print "Downloading libs for linking"
+  sysCall('wget -N %s%s' % (BASE_URL,LINK_LIBS))
+
+def downloadIncludes():
+  print "Downloading headers for building"
+  sysCall('wget -N %s%s' % (BASE_URL,INCLUDES))
+
+def downloadAll():
+  downloadSDK()
+  downloadCross()
+  downloadLinkLibs()
+  downloadIncludes()
+  sysCall('wget -N %s%s' %(BASE_URL,VIM))
+
+def removeExts(filename,num=2):
+  for i in range(num):
+    filename,ext = os.path.splitext(filename)
+  return filename
+  
+def installSDK():
+  print 'Untar and mv naoqi-sdk'
+  sysCall('tar xzvf %s' % SDK)
+  sysCall('mv %s $NAO_HOME/naoqi' % (removeExts(SDK)))
+
+def installCross():
+  createDir(CROSS_PATH)
+  print 'Untar and copy nao atom toolchain'
+  sysCall('tar xzvf %s' % ATOM_CROSS)
+  extractedDir = '%s%s' % (removeExts(ATOM_CROSS),CROSS_SUFFIX)
+  sysCall('mv %s %s' % (extractedDir,ATOM_CROSS_PATH))
+
+def installQiBuild():
+  print 'install qibuild, will run through sudo'
+  sysCall('sudo pip install qibuild==3.8.2 --upgrade')
+  
+  # now the toolchains
+  print 'Adding atom tool chain'
+  toolchainSuccess = sysCall('qitoolchain create atom %s/toolchain.xml' % ATOM_CROSS_PATH,exitOnError=False)
+  if not toolchainSuccess:
+    print "Error creating atom toolchain"
+    sys.exit()
+  configureSuccess = sysCall('qibuild add-config atom -t atom')
+  if not configureSuccess:
+    print "Error creating atom config"
+    sys.exit()
+  #sysCall('qitoolchain update')
+
+def installLinkLibs():
+  print "install link libs"
+  sysCall('mkdir -p $NAO_HOME/naoqi/link_libs')
+  sysCall('tar xzvf %s' % LINK_LIBS)
+  extractedDir = removeExts(LINK_LIBS)
+  sysCall('mv %s/* $NAO_HOME/naoqi/link_libs/' % extractedDir)
+
+def installIncludes():
+  #TODO: come up with a better name for this, easy to confuse with the
+  # naoqi/include directory
+  print "install link libs"
+  sysCall('mkdir -p $NAO_HOME/naoqi/includes')
+  sysCall('tar xzvf %s' % INCLUDES)
+  extractedDir = removeExts(INCLUDES)
+  sysCall('mv %s/* $NAO_HOME/naoqi/includes/' % extractedDir)
+
+def installAll():
+  installSDK()
+  installCross()
+  installQiBuild()
+  installLinkLibs()
+  installIncludes()
+
+def main():
+  path = os.path.join(os.environ['NAO_HOME'],'naoqi')
+  if os.path.exists(path):
+    sysCall('sudo rm -rf $NAO_HOME/naoqi')
+
+  # download and install all
+  downloadAll()
+  installAll()
+  
+  sysCall('mkdir -p $NAO_HOME/naoqi/crosstoolchain/atom/sysroot/usr/include')
+  sysCall('mkdir -p $NAO_HOME/naoqi/crosstoolchain/atom/sysroot/usr/lib')
+
+if __name__ == '__main__':
+  main()

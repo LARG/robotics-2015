@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rm $NAO_HOME/build/build/build-atom-release/core/CMakeFiles/core.dir/depend.*

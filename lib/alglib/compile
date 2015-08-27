@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+cd $NAO_HOME/lib/alglib
+g++ -m32 -c *.cpp -I$NAO_HOME/naoqi/includes/c++/4.8.1 -I$NAO_HOME/naoqi/includes/x86_64-linux-gnu/c++/4.8/32 -I$NAO_HOME/naoqi/includes --sysroot=$NAO_HOME/naoqi/crosstoolchain/atom/sysroot
+ar rvs alglib.a *.o
+rm *.o

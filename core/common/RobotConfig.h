@@ -1,0 +1,21 @@
+#ifndef ROBOT_CONFIG_H
+#define ROBOT_CONFIG_H
+
+#include <common/YamlConfig.h>
+#include <common/InterfaceInfo.h>
+
+class RobotConfig : public YamlConfig {
+  public:
+    RobotConfig();
+    void deserialize(const YAML::Node& node);
+    void serialize(YAML::Emitter& emitter) const;
+
+    int robot_id, team, self, role;
+    float posX, posY, posZ;
+    float orientation;
+    std::string team_broadcast_ip;
+    int team_udp;
+    std::string walk_type;
+    bool audio_enabled;
+};
+#endif

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export LD_LIBRARY_PATH=$NAO_HOME/build/pythonswig:$NAO_HOME/naoqi/link_libs
+export GTK_PATH=$NAO_HOME/naoqi/link_libs/gtk-2.0
+alias meld='GTK_PATH=/usr/lib/x86_64-linux-gnu/gtk-2.0 meld'

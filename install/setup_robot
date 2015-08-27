@@ -1,0 +1,176 @@
+#!/usr/bin/env python
+
+from time import sleep
+import os, getopt, re
+from common import *
+
+NAO_HOME = os.environ["NAO_HOME"]
+USER_HOME = "/home/%s" % os.environ["USER"]
+
+class Options:
+  def __init__(self):
+    self.wireless_only = False
+    self.include_wireless = False
+    self.include_date = False
+    self.include_compile = True
+    self.include_ssh = True
+    self.include_all = True
+    self.hostname = None
+    self.ip = None
+    self.id = None
+
+options = Options()
+
+def setDatetime(ip):
+  runRemoteCommand(ip, "ln -sf /usr/share/zoneinfo/US/Central /etc/localtime", root=True, output=False)
+  date = runLocalCommand("date",output=False)
+  runRemoteCommand(ip, 'date --set="%s"' % date, root=True, output=False)
+
+def setHostname(ip,hostname):
+  runRemoteCommand(ip, 'echo %s > /etc/hostname' % hostname, root=True)
+
+def checkPasswordlessSSH(ip):
+  try:
+    output = runLocalCommand('ssh -t nao@%s "echo test"' % ip, output=False)
+    if re.search('WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED', output):
+      return False
+  except Exception, e:
+    return False
+  return True
+
+def setupPasswordlessSSH(ip):
+  if checkPasswordlessSSH(ip): return
+  print "setting up passwordless ssh"
+  runLocalCommand('ssh-keygen -f "%s/.ssh/known_hosts" -R %s' % (USER_HOME,ip), output=False)
+  runLocalCommand('ssh-copy-id nao@%s' % ip, password='nao', output=False)
+
+def filloutID(name,robotID,d):
+  with open('../data/scripts/%s' % name,'r') as f:
+    contents = f.read()
+  contents = contents.replace('${ID}',robotID)
+  with open(os.path.join(d,name + ".tmp"),'w') as f:
+    f.write(contents)
+      
+def setupNetworking(ip,robotID,wireless_only):
+  tempdir = makeTempDir()
+  try:
+    scriptpath = '%s/install/script_wireless.sh' % NAO_HOME
+    if (not wireless_only):
+      filloutID('utwired',robotID,tempdir)
+    filloutID('utwireless',robotID,tempdir)
+    copyFiles(ip,os.path.join(tempdir,'utwire*'))
+    copyFiles(ip,'../data/scripts/wpa_supplicant.conf','~/wpa_supplicant.conf.tmp')
+    runLocalScriptRemotely(ip, scriptpath,output=True)
+  finally:
+    removeTempDir(tempdir)
+
+def compile(geode=False):
+  origDir = os.getcwd()
+  os.chdir('%s/build/' % NAO_HOME)
+  cmd = './compile robot memory_test'
+  if geode:
+    cmd += ' --geode'
+  runLocalCommand(cmd)
+  os.chdir(origDir)
+
+def copyRobot(ip,robotID,geode=False):
+  os.chdir('%s/build/' % NAO_HOME)
+  origDir = os.getcwd()
+  cmd = './copy_robot %s everything --id %s' % (ip,robotID)
+  if geode:
+    cmd += ' --geode'
+  runLocalCommand(cmd)
+  os.chdir(origDir)
+
+def setupVim(ip):
+  copyFiles(ip,'%s/install/vim.tar.gz' % NAO_HOME)
+  runRemoteCommand(ip, 'rm -rf vim && tar zxvf vim.tar.gz')
+  runRemoteCommand(ip, '/home/nao/vim/install', root=True)
+  runRemoteCommand(ip, 'rm vim.tar.gz')
+  runRemoteCommand(ip, "echo \"alias vim='LD_LIBRARY_PATH=/home/nao/vim/lib vim'\" >> /root/.bashrc",root=True)
+
+def setupPython(ip):
+  runRemoteCommand(ip, "echo export LD_LIBRARY_PATH=/home/nao/bin >> /etc/profile",root=True)
+  runRemoteCommand(ip, 'echo export PYTHONPATH=/lib/python2.7:/usr/lib/python2.7 >> /etc/profile',root=True)
+  runRemoteCommand(ip, 'echo export PYTHONHOME=/usr >> /etc/profile',root=True)
+  runRemoteCommand(ip, 'echo alias clear=\\\'echo -en \\"\\\\ec\\"\\\' >> /etc/profile',root=True)
+
+def setupGccLibs(ip):
+  runRemoteCommand(ip,'rm -f /usr/lib/libstdc++*',root=True)
+  copyFiles(ip,'%s/naoqi/link_libs/libstdc++.so.6.0.18' % NAO_HOME,'/usr/lib/',root=True)
+  runRemoteCommand(ip, 
+    'cd /usr/lib && '
+    'ln -sf libstdc++.so.6.0.18 libstdc++.so.6',
+    root=True
+  )
+
+def main(options):
+  if options.include_ssh:
+    setupPasswordlessSSH(options.ip)
+  if options.hostname:
+    setHostname(options.ip,options.hostname)
+  if options.include_all or options.include_wireless:
+    print 'setting up networking'
+    setupNetworking(options.ip,options.id,options.wireless_only)
+  if options.include_all or options.include_date:
+    setDatetime(options.ip)
+  if options.include_all:
+    if options.include_compile:
+      print 'compiling lib and bins for robot'
+      compile()
+    runRemoteCommand(options.ip,'mkdir -p lua logs data bin data/mof data/config scripts')
+    copyRobot(options.ip,options.id)
+    setupPython(options.ip)
+    copyFiles(options.ip,'../data/scripts/bootprogress_100','scripts/')
+    copyFiles(options.ip,'../data/scripts/autoload.ini','scripts/')
+    copyFiles(options.ip,'../data/scripts/naoqi','scripts/')
+    setupGccLibs(options.ip)
+    setupVim(options.ip)
+    runLocalScriptRemotely(options.ip, '%s/install/script_setup.sh' % NAO_HOME)
+    print "The robot's server will now reboot to force a cache write."
+  print 'complete'
+
+if __name__ == '__main__':
+  import sys
+  usage = 'setup_robot [--nocompile] [--nossh] [--ip|--robotIP robotIP] [--id|--robotID robotID] [-n|--hostname hostname] [-w|--wireless] [-d|--date] [-h|--help] [--wireless-only]'
+  try:
+    opts, args = getopt.getopt(sys.argv[1:], "n:whd", ["nocompile", "nossh", "date", "ip=", "robotIP=", "id=", "robotID=", "hostname=", "wireless", "help","wireless-only"])
+  except getopt.GetoptError as err:
+    print str(err)
+    print usage
+    sys.exit(2)
+  for o, a in opts:
+    if o in ["--ip", "--robotIP"]:
+      options.ip = a
+    if o in ["--id", "--robotID"]:
+      options.id = a
+    if o in ["-n", "--hostname"]:
+      options.hostname = a
+    if o in ["-w", "--wireless"]:
+      options.include_wireless = True
+      options.include_all = False
+    if o in ["-d", "--date"]:
+      options.include_date = True
+      options.include_all = False
+    if o in ["--nocompile"]:
+      options.include_compile = False
+    if o in  ["--nossh"]:
+      options.include_ssh = False
+    if o in ["--wireless-only"]:
+      options.wireless_only = True
+      options.include_wireless = True
+      options.include_all = False
+    if o in ["-h", "--help"]:
+      print usage
+      sys.exit(0)
+  if not options.ip:
+    if 'CURRENT_ROBOT' in os.environ:
+      options.ip = os.environ['CURRENT_ROBOT']
+      options.id = str(int(options.ip.split('.')[3]))
+    if not options.ip:
+      print "You must specify the robot IP"
+      sys.exit(2)
+  if not options.id and (options.include_all or options.include_wireless or options.wireless_only):
+    print "You must specify the robot ID"
+    sys.exit(2)
+  main(options)

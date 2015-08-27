@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project(rswalk2014)
+find_package(qibuild)
+include(../common.cmake)
+add_subdirectory(${RSWALK2014_DIR} ${CMAKE_CURRENT_BINARY_DIR}/rswalk2014)

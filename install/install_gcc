@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+set -e
+base=$NAO_HOME/naoqi/crosstoolchain/atom
+libs=$NAO_HOME/naoqi/link_libs
+includes=$NAO_HOME/naoqi/includes
+
+echo Installing atom crosstoolchain with gcc 4.8.1
+name=linux64-cross-i686-aldebaran-linux-gnu
+wget -N http://cs.utexas.edu/~jmenashe/libs/${name}.tar.gz
+sudo rm -rf ${name}/
+tar --overwrite -zxf ${name}.tar.gz
+sudo rm -rf $base/cross
+cp -r $name $base/cross
+sudo chmod -R u+w $base/cross
+cp $libs/crti.o $base/cross/lib/gcc/i686-aldebaran-linux-gnu/4.8.1/
+cp $libs/crtn.o $base/cross/lib/gcc/i686-aldebaran-linux-gnu/4.8.1/
+
+echo Updating mathcalls.h
+mkdir -p $base/sysroot/usr/include/bits
+sudo cp $includes/bits/mathcalls.h $base/sysroot/usr/include/bits/mathcalls.h
+
+echo Adding a link for QT resource compilation
+sudo ln -s /usr/bin/rcc $NAO_HOME/naoqi/crosstoolchain/atom/cross/bin/i686-aldebaran-linux-gnu-rcc
+
+echo Complete

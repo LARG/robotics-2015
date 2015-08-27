@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+set -e
+file=GameController2015.zip
+url=http://www.informatik.uni-bremen.de/spl/pub/Website/Downloads/$file
+wget -N $url
+folder=$NAO_HOME/tools/GameController
+rm -rf $folder
+mkdir -p $folder
+unzip $file -d $folder
+cd $folder
+git checkout .

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+cd $NAO_HOME/lib
+wget http://cs.utexas.edu/~jmenashe/libs/libfft.tar.gz
+tar -zxvf libfft.tar.gz
+rm libfft.tar.gz
