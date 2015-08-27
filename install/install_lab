@@ -23,6 +23,7 @@ def runSysConfigCommand(command):
 
 NAO_HOME = os.environ['NAO_HOME'] = '/home/' + os.environ['USER'] + '/nao/trunk'
 os.chdir(NAO_HOME + '/install')
+os.system('./install_qt')
 os.system('./install_fft')
 os.system('echo export NAO_HOME=~/nao/trunk >> ~/.bashrc')
 os.system('echo source \$NAO_HOME/install/bashrc_addenda >> ~/.bashrc')
