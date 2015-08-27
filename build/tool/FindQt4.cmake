@@ -470,16 +470,6 @@ endfunction(_QT4_QUERY_QMAKE)
 SET(QT4_INSTALLED_VERSION_TOO_OLD FALSE)
 
 GET_FILENAME_COMPONENT(qt_install_version "[HKEY_CURRENT_USER\\Software\\trolltech\\Versions;DefaultQtVersion]" NAME)
-# check for qmake
-# Debian uses qmake-qt4
-# macports' Qt uses qmake-mac
-FIND_PROGRAM(QT_QMAKE_EXECUTABLE NAMES qmake qmake4 qmake-qt4 qmake-mac PATHS
-  "[HKEY_CURRENT_USER\\Software\\Trolltech\\Qt3Versions\\4.0.0;InstallDir]/bin"
-  "[HKEY_CURRENT_USER\\Software\\Trolltech\\Versions\\4.0.0;InstallDir]/bin"
-  "[HKEY_CURRENT_USER\\Software\\Trolltech\\Versions\\${qt_install_version};InstallDir]/bin"
-  $ENV{QTDIR}/bin
-  DOC "The qmake executable for the Qt installation to use"
-)
 
 # double check that it was a Qt4 qmake, if not, re-find with different names
 IF (QT_QMAKE_EXECUTABLE)
@@ -938,10 +928,7 @@ IF (QT_QMAKE_EXECUTABLE AND QTVERSION)
 
 
   IF(QT_QMAKE_CHANGED)
-    SET(QT_UIC_EXECUTABLE NOTFOUND)
-    SET(QT_MOC_EXECUTABLE NOTFOUND)
     SET(QT_UIC3_EXECUTABLE NOTFOUND)
-    SET(QT_RCC_EXECUTABLE NOTFOUND)
     SET(QT_DBUSCPP2XML_EXECUTABLE NOTFOUND)
     SET(QT_DBUSXML2CPP_EXECUTABLE NOTFOUND)
     SET(QT_LUPDATE_EXECUTABLE NOTFOUND)
@@ -951,26 +938,8 @@ IF (QT_QMAKE_EXECUTABLE AND QTVERSION)
     SET(QT_LINGUIST_EXECUTABLE NOTFOUND)
   ENDIF(QT_QMAKE_CHANGED)
   
-  FIND_PROGRAM(QT_MOC_EXECUTABLE
-    NAMES moc-qt4 moc
-    PATHS ${QT_BINARY_DIR}
-    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH
-    )
-
-  FIND_PROGRAM(QT_UIC_EXECUTABLE
-    NAMES uic-qt4 uic
-    PATHS ${QT_BINARY_DIR}
-    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH
-    )
-
   FIND_PROGRAM(QT_UIC3_EXECUTABLE
     NAMES uic3
-    PATHS ${QT_BINARY_DIR}
-    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH
-    )
-
-  FIND_PROGRAM(QT_RCC_EXECUTABLE 
-    NAMES rcc
     PATHS ${QT_BINARY_DIR}
     NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH
     )
