@@ -48,7 +48,7 @@ The robots can be accessed over wireless through either the lab machines or your
 
 If you need to update your robot's wireless configuration, connect to it over [ethernet](#ethernet) and run the following command, replacing XX with the robot id:
 ```bash
-~/nao/trunk/install --ip 11.0.1.XX --id XX --wireless-only
+~/nao/trunk/install/setup_robot --ip 11.0.1.XX --id XX --wireless-only
 ```
 
 <a id="ethernet"/>
