@@ -16,22 +16,22 @@ cp /home/jmenashe/lab_setup ~ && ~/lab_setup
 4. Go to the nao build directory at `~/nao/trunk/build` and compile the core libraries and the tool.
 ```bash
     cd ~/nao/trunk/build
-    ./compile robot tool
+    ./compile everything
 ```
 
 #### Starting up the Robot
 
 1. Get your robot out of its locker, and place it on the ground in a sitting position. Plug it in. Turn it on by pushing its chest button. Lights should come on in the eyes.
-2. Connect to the lab wireless network as described [here](#wireless).
-3. In a new terminal, ping your robot by typing `ping 10.202.16.XX`, where XX is the robot number. This is taped on the back of the robot's head near the ear.
+2. Connect to the lab wireless network as described [here](#wireless). Your robot's wireless address will be 10.202.16.XX, and its ethernet address will be 11.0.1.XX, where XX is the robot number. This is taped on the back of the robot's head near the ear. In the following instructions replace <robot ip> with the applicable IP address.
+3. In a new terminal, ping your robot by typing `ping <robot ip>`.
 4. Set up passwordless ssh for your robot:
 ```bash
     ssh-keygen
-    ssh-copy-id nao@10.202.16.XX
+    ssh-copy-id nao@<robot ip>
     nao # Enter this password when prompted
 ```
-5. Now you should ssh into your robot by typing `ssh nao@10.202.16.XX`. Once here, type `nao stop` to stop naoqi.
-6. Using the terminal you used to run the build scripts, copy your code to the robot with `./copy_robot 10.202.16.XX all`
+5. Now you should ssh into your robot by typing `ssh nao@<robot ip>`. Once here, type `nao stop` to stop naoqi.
+6. Using the terminal you used to run the build scripts, copy your code to the robot with `./copy_robot <robot ip> everything`
 7. Now you can go back to the terminal you used to ssh into your robot. Type `nao start`. The robot will eventually say interface and then vision. Once it has said vision, you know it has completely booted.
 8. Run `$NAO_HOME/bin/tool` and open the Files window. Select your robot ip address from the drop-down menu in the upper right corner of the skinny files window. Press the 'Playing' button to have the robot follow a simple routine in which it randomly walks and turns for a short period of time.
 9. When you're done with the robot, turn it off by holding its chest button down for ~10 seconds.
@@ -42,11 +42,14 @@ cp /home/jmenashe/lab_setup ~ && ~/lab_setup
 The robots can be accessed over wireless through either the lab machines or your personal machines. When connecting with your personal machines, you'll need to connect to the robolab wireless network. NAT and DHCP have been disabled due to the lab configuration so you won't be able to hit the outside and you'll need to use a static IP. Your robot's IP address is determined by the number on the back of its ear; for example, robot `45` has IP address `10.202.16.45`. Here is the full wireless connection info:
 
     SSID: robolab-cs393r-3.710a
-    IP: 10.202.16.XX
-    Netmask: 255.255.255.128
-    Gateway: 10.202.16.2
+    IP: 10.202.16.YY
+    Netmask: 255.255.255.0
     psk: [emailed with your account info]
 
+If you need to update your robot's wireless configuration, connect to it over [ethernet](#ethernet) and run the following command, replacing XX with the robot id:
+```bash
+~/nao/trunk/install --ip 11.0.1.XX --id XX --wireless-only
+```
 
 <a id="ethernet"/>
 ### Connecting with Ethernet
