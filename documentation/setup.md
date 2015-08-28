@@ -8,7 +8,7 @@ All assignments for this course will revolve around programming humanoid Nao rob
 You should use these steps to obtain, setup, and run code on the lab machines and robots for the first time. Note that these steps do **not** work on the departmental machines. See the bottom of this page for instructions if you want to try and install the codebase on your personal Linux machine, or if you'd like to have access to a preconfigured virtual machine.
 
 1. Read the [Robot Care](#care) section below.
-2. Copy and run the `lab_setup` script from my home directory to yours: 
+2. Copy and run the `lab_setup` script from my home directory to yours with the following command. This script will **delete your ~/nao directory**.
 ```bash
 cp /home/jmenashe/lab_setup ~ && ~/lab_setup
 ```
