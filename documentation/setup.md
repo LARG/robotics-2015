@@ -22,7 +22,7 @@ cp /home/jmenashe/lab_setup ~ && ~/lab_setup
 #### Starting up the Robot
 
 1. Get your robot out of its locker, and place it on the ground in a sitting position. Plug it in. Turn it on by pushing its chest button. Lights should come on in the eyes.
-2. Connect to the lab wireless network as described [here](#wireless). Your robot's wireless address will be 10.202.16.XX, and its ethernet address will be 11.0.1.XX, where XX is the robot number. This is taped on the back of the robot's head near the ear. In the following instructions replace <robot ip> with the applicable IP address.
+2. Connect to the lab wireless network as described [here](#wireless). Your robot's wireless address will be 10.202.16.XX, and its ethernet address will be 11.0.1.XX, where XX is the robot number. This is taped on the back of the robot's head near the ear. In the following instructions replace &lt;robot ip&gt; with the applicable IP address.
 3. In a new terminal, ping your robot by typing `ping <robot ip>`.
 4. Set up passwordless ssh for your robot:
 ```bash
