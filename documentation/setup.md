@@ -19,6 +19,7 @@ cp /home/jmenashe/lab_setup ~ && ~/lab_setup
     ./compile everything
 ```
 
+<a id="starting_up"/>
 #### Starting up the Robot
 
 1. Get your robot out of its locker, and place it on the ground in a sitting position. Plug it in. Turn it on by pushing its chest button. Lights should come on in the eyes.
@@ -123,23 +124,28 @@ The Nao robots are expensive machines that can break fairly easily from falling 
 To install the codebase on your personal machine, you should be running</a> [Ubuntu 14.04 64-bit](http://releases.ubuntu.com/trusty/ubuntu-14.04.3-desktop-amd64.iso). The code may work on other configurations with some adjustments to the setup procedure, but these aren't officially supported. The setup process will configure your machine for building and running 32-bit software, which can cause conflicts with other applications in Ubuntu. It is **strongly suggested** that you use a fresh Ubuntu install for this. This may be easiest to accomplish using a [virtual machine](https://www.virtualbox.org/wiki/Downloads). You can also [download a preconfigured VM](http://www.cs.utexas.edu/~AustinVilla/preconfigured.tar.gz) with the codebase already installed.
 
 1. Read the [Robot Care](nao.html#care) section above.
-2. Connect to the cs network through one of the ethernet ports in the lab or the cs wireless network.
-3. Create and enter the install folder in your home directory: 
-    ```bash
-    mkdir -p ~/nao/trunk && cd ~/nao/trunk
-    ```
-4. Retrieve the codebase from github:
-    ```bash
-    git clone https://github.com/utaustinvilla/robotics.git .
-    ```
-5. Run the nao install script: 
-    ```bash
-    ~/nao/trunk/install/install
-    ```
-6. This will add environment variable definitions to your `.bashrc` script. To load them, close the current terminal window and open a new one.
-7. Try running the tool to ensure that the build has completed and your libraries are configured: `~/nao/trunk/bin/tool`
-8. Connect to the robolab wireless network using the SSID and password you received.
-9. Follow the steps above under [Starting up the Robot](nao.html#starting_up).
+2. Create and enter the install folder in your home directory: 
+
+```bash
+mkdir -p ~/nao/trunk && cd ~/nao/trunk
+```
+
+3. Retrieve the codebase from github:
+
+```bash
+git clone https://github.com/utaustinvilla/robotics.git .
+```
+
+4. Run the nao install script: 
+
+```bash
+~/nao/trunk/install/install
+```
+
+5. This will add environment variable definitions to your `.bashrc` script. To load them, close the current terminal window and open a new one.
+6. Try running the tool to ensure that the build has completed and your libraries are configured: `~/nao/trunk/bin/tool`
+7. Connect to the robolab wireless network using the SSID and password you received.
+8. Follow the instructions for starting up the robot [above](#starting_up).
 
 ### Using Git
 
