@@ -43,18 +43,24 @@ The robots can be accessed over wireless through either the lab machines or your
     Netmask: 255.255.255.0
     psk: [emailed with your account info]
 
-If you need to update your robot's wireless configuration, connect to it over [ethernet](#ethernet) and run the following command, replacing XX with the robot id:
+If you need to update your robot's wireless configuration, connect to it over ethernet and run the following command, replacing XX with the robot id:
 ```bash
 ~/nao/trunk/install/setup_robot --ip 11.0.1.XX --id XX --wireless-only
 ```
 
 <a id="ethernet"></a>
-### Connecting with Ethernet
+### Connecting with Ethernet from your personal machine
 
 It can sometimes be advantageous to connect to the robot with an ethernet cable rather than over wireless, particularly when transferring logs, or when there are latency issues. To do so you'll need to follow these steps:
 
 1.  Create a manual connection: IP: 11.0.1.75, Subnet Mask: 255.255.255.0, Gateway (if required): 0.0.0.0. If you're running linux on a virtual machine, create this connection on the host operating system.
 2.  Connect your machine with an ethernet cable to the robot. The robot's ethernet port is on the back of its head.
+3.  Use the IP address 11.0.1.XX when accessing the robot, where XX is the robot number taped on the back of the head near the ear.
+
+### Connecting with Ethernet from the lab machines
+
+1. Connect an ethernet cable from the back of the robot's head to the unused secondary ethernet port on the lab machine. This is the port that is attached via a PCI card on the bottom of the back of the machine. **Do not unplug the ethernet cable from the primary ethernet port** which is attached through the motherboard.
+2. Select the ethernet icon from the top right of the Ubuntu desktop and select the Nao ethernet connection.
 3.  Use the IP address 11.0.1.XX when accessing the robot, where XX is the robot number taped on the back of the head near the ear.
 
 ### Logging to the robot
