@@ -9,15 +9,11 @@ You should use these steps to obtain, setup, and run code on the lab machines an
 
 1. Read the [Robot Care](#care) section below.
 2. Copy and run the `lab_setup` script from my home directory to yours with the following command. **This script will delete your ~/nao directory**.
-```bash
-cp /home/jmenashe/lab_setup ~ && ~/lab_setup
-```
+        cp /home/jmenashe/lab_setup ~ && ~/lab_setup
 3. This will add environment variable definitions to your `.bashrc` script. To load them, close the current terminal window and open a new one.
 4. Go to the nao build directory at `~/nao/trunk/build` and compile the core libraries and the tool.
-```bash
-    cd ~/nao/trunk/build
-    ./compile everything
-```
+        cd ~/nao/trunk/build
+        ./compile everything
 
 <a id="starting_up"/>
 #### Starting up the Robot
@@ -26,11 +22,9 @@ cp /home/jmenashe/lab_setup ~ && ~/lab_setup
 2. Connect to the lab wireless network as described [here](#wireless). Your robot's wireless address will be 10.202.16.XX, and its ethernet address will be 11.0.1.XX, where XX is the robot number. This is taped on the back of the robot's head near the ear. In the following instructions replace &lt;robot ip&gt; with the applicable IP address.
 3. In a new terminal, ping your robot by typing `ping <robot ip>`.
 4. Set up passwordless ssh for your robot:
-```bash
-    ssh-keygen
-    ssh-copy-id nao@<robot ip>
-    nao # Enter this password when prompted
-```
+        ssh-keygen
+        ssh-copy-id nao@<robot ip>
+        nao # Enter this password when prompted
 5. Now you should ssh into your robot by typing `ssh nao@<robot ip>`. Once here, type `nao stop` to stop naoqi.
 6. Using the terminal you used to run the build scripts, copy your code to the robot with `./copy_robot <robot ip> everything`
 7. Now you can go back to the terminal you used to ssh into your robot. Type `nao start`. The robot will eventually say interface and then vision. Once it has said vision, you know it has completely booted.
@@ -125,17 +119,11 @@ To install the codebase on your personal machine, you should be running</a> [Ubu
 
 1. Read the [Robot Care](nao.html#care) section above.
 2. Create and enter the install folder in your home directory: 
-```bash
-mkdir -p ~/nao/trunk && cd ~/nao/trunk
-```
+        mkdir -p ~/nao/trunk && cd ~/nao/trunk
 3. Retrieve the codebase from github:
-```bash
-git clone https://github.com/utaustinvilla/robotics.git .
-```
+        git clone https://github.com/utaustinvilla/robotics.git .
 4. Run the nao install script: 
-```bash
-~/nao/trunk/install/install
-```
+        ~/nao/trunk/install/install
 5. This will add environment variable definitions to your `.bashrc` script. To load them, close the current terminal window and open a new one.
 6. Try running the tool to ensure that the build has completed and your libraries are configured: `~/nao/trunk/bin/tool`
 7. Connect to the robolab wireless network using the SSID and password you received.
@@ -147,22 +135,16 @@ Git is a distributed version control system used for managing code repositories.
 
 1. First, you should create an account and a private repository at a git hosting site. [Bitbucket](bitbucket.org) and [GitLab](gitlab.com) are two examples of sites that provide these for free.
 2. Let's assume your username is `student` and your repository is `roborepo`. You should now update your remote URLs so that you can easily push updates to your private repo and pull updates from the class repo. You can do this using these commands:
-```bash
-cd ~/nao/trunk
-git remote set-url origin git@bitbucket.org:student/roborepo.git
-git remote set-url class https://github.com/utaustinvilla/robotics.git
-```
+        cd ~/nao/trunk
+        git remote set-url origin git@bitbucket.org:student/roborepo.git
+        git remote set-url class https://github.com/utaustinvilla/robotics.git
 3. When you have changes to the codebase that you want to push to the git server, use these commands:
-```bash
-cd ~/nao/trunk
-git commmit -am "Adding all of my latest changes: Updated main behaviors for Assignment 1, added comments."
-git push origin master # Push all updates into the master branch at the origin
-```
+        cd ~/nao/trunk
+        git commmit -am "Adding all of my latest changes: Updated main behaviors for Assignment 1, added comments."
+        git push origin master # Push all updates into the master branch at the origin
 4. When updates are posted to the class repository for new assignments, you can pull them into your repository like this:
-```bash
-cd ~/nao/trunk
-git pull class master # Pull all updates from the master branch at the class repository
-```
+        cd ~/nao/trunk
+        git pull class master # Pull all updates from the master branch at the class repository
 5. If you have a merge conflict run `git mergetool`. This will open a window with three versions of your file:
   a. LOCAL (left): This is the file you've been working with.
   b. BASE (middle): This is the most recent common ancestor of the two versions of the file.
