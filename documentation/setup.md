@@ -36,20 +36,18 @@ You should use these steps to obtain, setup, and run code on the lab machines an
 <a id="wireless"></a>
 ### Connecting with Wireless
 
-The robots can be accessed over wireless through either the lab machines or your personal machines. When connecting with your personal machines, you'll need to connect to the robolab wireless network. NAT and DHCP have been disabled due to the lab configuration so you won't be able to hit the outside and you'll need to use a static IP. Your robot's IP address is determined by the number on the back of its ear; for example, robot `45` has IP address `10.202.16.45`. Here is the full wireless connection info:
+The robots can be accessed over wireless through either the lab machines or your personal machines. Your robot's IP address is determined by the number on the back of its ear; for example, robot `45` has IP address `10.202.16.45`. 
 
-    SSID: robolab-cs393r-3.710a
-    IP: 10.202.16.YY
-    Netmask: 255.255.255.0
-    psk: [emailed with your account info]
+When connecting with your personal machines, you'll need to connect to the robolab wireless network. The SSID is `robolab-cs393r-3.710a` and the psk can be found in `~/nao/trunk/data/scripts/wpa_supplicant.conf`. The wireless network does not broadcast its SSID so you will need to configure it as a hidden network.
 
-If you need to update your robot's wireless configuration, connect to it over ethernet and run the following command, replacing XX with the robot id:
+If you need to update your robot's wireless configuration, connect to it over ethernet and run the following commands, replacing XX with the robot id:
 ```bash
-~/nao/trunk/install/setup_robot --ip 11.0.1.XX --id XX --wireless-only
+cd ~/nao/trunk/install
+./setup_robot --ip 11.0.1.XX --id XX --wireless-only
 ```
 
 <a id="ethernet"></a>
-### Connecting with Ethernet from your personal machine
+### Connecting with ethernet from your personal machine
 
 It can sometimes be advantageous to connect to the robot with an ethernet cable rather than over wireless, particularly when transferring logs, or when there are latency issues. To do so you'll need to follow these steps:
 
@@ -57,7 +55,7 @@ It can sometimes be advantageous to connect to the robot with an ethernet cable 
 2.  Connect your machine with an ethernet cable to the robot. The robot's ethernet port is on the back of its head.
 3.  Use the IP address 11.0.1.XX when accessing the robot, where XX is the robot number taped on the back of the head near the ear.
 
-### Connecting with Ethernet from the lab machines
+### Connecting with ethernet from the lab machines
 
 1. Connect an ethernet cable from the back of the robot's head to the unused secondary ethernet port on the lab machine. This is the port that is attached via a PCI card on the bottom of the back of the machine. **Do not unplug the ethernet cable from the primary ethernet port** which is attached through the motherboard.
 2. Select the ethernet icon from the top right of the Ubuntu desktop and select the Nao ethernet connection.
