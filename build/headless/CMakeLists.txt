@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-PROJECT(headless)
+PROJECT(headless NONE)
 INCLUDE(../common.cmake)
 INCLUDE(../core/CMakeLists.txt core)
 ADD_EXECUTABLE(headless ${NAO_HOME}/build/headless/main.cpp)
