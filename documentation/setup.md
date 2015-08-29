@@ -128,15 +128,15 @@ To install the codebase on your personal machine, you should be running</a> [Ubu
 ```bash
 mkdir -p ~/nao/trunk && cd ~/nao/trunk
 ```
-3. Retrieve the codebase from github:
+4. Retrieve the codebase from github:
 ```bash
 git clone https://github.com/utaustinvilla/robotics.git .
 ```
-4. Run the nao install script: `~/nao/trunk/install/install`
-5. This will add environment variable definitions to your `.bashrc` script. To load them, close the current terminal window and open a new one.
-6. Try running the tool to ensure that the build has completed and your libraries are configured: `~/nao/trunk/bin/tool`
-7. Connect to the robolab wireless network using the SSID and password you received.
-8. Follow the steps above under [Starting up the Robot](nao.html#starting_up).
+5. Run the nao install script: `~/nao/trunk/install/install`
+6. This will add environment variable definitions to your `.bashrc` script. To load them, close the current terminal window and open a new one.
+7. Try running the tool to ensure that the build has completed and your libraries are configured: `~/nao/trunk/bin/tool`
+8. Connect to the robolab wireless network using the SSID and password you received.
+9. Follow the steps above under [Starting up the Robot](nao.html#starting_up).
 
 ### Using Git
 
