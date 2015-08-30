@@ -18,7 +18,7 @@ This section will walk you through creating a simple Hello World program on the 
 4. In the fourth window, run the tool: `~/nao/trunk/bin/tool`.
 5. In the fifth window, navigate to `~/nao/trunk/core/python` on your machine.
 6. Open `behaviors/main.py`. This script defines the different states that the robot is in, which are listed in the Files window in the tool. You are going to edit the `Playing` state.
-7. Add a definition for a `run` method that makes two calls: `memory.say('Hello, World!')` and `self.finish()`. The first command will call the text to voice engine. The second command will indicate that this task has been completed.
+7. Add a definition for a `run` method that makes two calls: `memory.speech.say('Hello, World!')` and `self.finish()`. The first command will call the text to voice engine. The second command will indicate that this task has been completed.
 10. Upload your python scripts to the robot by clicking the "Send Python" button on the Files window in the tool. Alternatively, you can run the script `~/nao/trunk/build/copy_robot [Robot IP] python`
 11. Restart python on the robot by clicking the "Restart Python" button in the Files window.
 12. Run the main behavior by choosing "main" in the Files window and clicking "Run behavior"
