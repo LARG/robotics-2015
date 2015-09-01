@@ -95,10 +95,9 @@ Streaming is similar to logging, except that the memory is streamed to your comp
 3. Click the Vision button in the UTNaoTool main window.
 4. Go to the Layers tab and click on one of the segmented images on the top right. Each pair of images is a different layer for the top and bottom cameras. Select the image for the camera that you wish to make a color table for.
 5. Go to the "C Tables" tab and check "Enable Classification".
-6. Open the Bottom/Top Table menu and click "New [Top/Bottom]" to start with a blank color table.
-7. Select a color and click on the large image. All YUV values that are similar to the pixel you've selected will be assigned to the color you selected. You can adjust the size of the ball with the dials in the C Tables tab.
-8. Save your table with the Top/Bottom Table menu.
-9. Transfer your tables to the robot using the "Send ctable" button in the Files window, or by using the `copy_robot` script with the argument `color_table`.
+6. Select a color and left-click on the large image. All YUV values that are similar to the pixel you've selected will be assigned to the color you selected. You can adjust the size of the ball with the dials in the C Tables tab. If you're happy with the pixels that have been reclassified, right-click the image to commit the change to the color table. If you skip the right-click step and left-click again this will undo the changes from the previous left-click.
+7. Save your table with the Top/Bottom Table menu.
+8. Transfer your tables to the robot using the "Send ctable" button in the Files window, or by using the `copy_robot` script with the argument `color_table`.
 
 ### Tutorial
 
