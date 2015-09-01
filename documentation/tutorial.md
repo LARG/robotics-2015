@@ -107,7 +107,7 @@ A behavior script may then check the `seen` variable for the ball object as foll
 
 ```python
 import core
-ball = core.world_objects.getObjPtr(core.WO_BALL)
+ball = memory.world_objects.getObjPtr(core.WO_BALL)
 if ball.seen:
   walkTowardBall()
 ```
