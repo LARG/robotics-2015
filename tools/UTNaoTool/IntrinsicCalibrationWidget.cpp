@@ -130,6 +130,7 @@ void IntrinsicCalibrationWidget::saveLogImages() {
   if(!log_) return;
   QFileDialog dialog;
   dialog.setOptions(QFileDialog::ShowDirsOnly);
+  dialog.setOptions(QFileDialog::DontUseNativeDialog);
   dialog.setFileMode(QFileDialog::Directory);
   QString directory = dialog.getExistingDirectory(this, tr("Save Log Images"), QString(getenv("NAO_HOME")) + "/logs/images");
   cv::Mat mat;

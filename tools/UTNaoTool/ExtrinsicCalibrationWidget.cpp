@@ -233,8 +233,10 @@ void ExtrinsicCalibrationWidget::save(){
 
 void ExtrinsicCalibrationWidget::saveAs(){
   QString file = QFileDialog::getSaveFileName(this, tr("Save Camera Calibration"),
-      QString(getenv("NAO_HOME")) + "/data",
-      tr("Camera Calibration Files (*.cal)"));
+    QString(getenv("NAO_HOME")) + "/data",
+    tr("Camera Calibration Files (*.cal)"),
+    0, QFileDialog::DontUseNativeDialog
+  );
   if (file.isEmpty()) return;
   calibration_file_ = file.toUtf8().constData();
   save();
@@ -242,8 +244,10 @@ void ExtrinsicCalibrationWidget::saveAs(){
 
 void ExtrinsicCalibrationWidget::load(){
   QString file = QFileDialog::getOpenFileName(this, tr("Open Camera Calibration"),
-      QString(getenv("NAO_HOME")) + "/data",
-      tr("Camera Calibration Files (*.cal)"));
+    QString(getenv("NAO_HOME")) + "/data",
+    tr("Camera Calibration Files (*.cal)"),
+    0, QFileDialog::DontUseNativeDialog
+  );
   if (file.isEmpty())
     return;
 
