@@ -64,7 +64,7 @@ bool MemoryBlock::validateHeader(const MemoryBlockHeader& theader) {
     fprintf(stderr, "ERROR reading header: Log Version: %i, Current Version: %i\n", theader.version, header.version);
     return false;
   }
-  if(theader.size != header.size) {
+  if(theader.size != header.size || theader.size == 0 || header.size == 0) {
     fprintf(stderr, "ERROR reading header: Log Size: %i, Current Size: %i\n", theader.size, header.size);
     return false;
   }

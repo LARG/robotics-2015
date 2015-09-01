@@ -2,7 +2,7 @@
 
 #define VERIFY_RESIZE \
   if(n == 0 || n > 10e8) {\
-    fprintf(stderr, "INVALID BUFFER REQUEST!! The log file is most likely broken\n");\
+    fprintf(stderr, "INVALID BUFFER REQUEST: %i!! The log file is most likely broken\n", n);\
     return;\
   }\
 
