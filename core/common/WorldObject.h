@@ -215,6 +215,7 @@ public:
   bool isUnknownL() const;
   bool isHorizontalLine() const;
   bool isVerticalLine() const;
+  bool isBeacon() const;
 
   void reset();
 

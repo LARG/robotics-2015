@@ -1149,3 +1149,29 @@ void GLDrawer::drawAnnotations() {
     basicGL.drawArrow(start, end, color, color, alpha, 50);
   }
 }
+
+void GLDrawer::drawBeacons() {
+  if(gtcache_.world_object == NULL) return;
+  vector<WorldObjectType> btypes = {
+    WO_BEACON_BLUE_YELLOW,
+    WO_BEACON_YELLOW_BLUE,
+    WO_BEACON_BLUE_PINK,
+    WO_BEACON_PINK_BLUE,
+    WO_BEACON_PINK_YELLOW,
+    WO_BEACON_YELLOW_PINK
+  };
+  vector<vector<RGB>> colors = {
+    { Colors::Blue, Colors::Yellow },
+    { Colors::Yellow, Colors::Blue },
+    { Colors::Blue, Colors::Pink },
+    { Colors::Pink, Colors::Blue },
+    { Colors::Pink, Colors::Yellow },
+    { Colors::Yellow, Colors::Pink }
+  };
+  for(int i = 0; i < btypes.size(); i++) {
+    auto type = btypes[i];
+    auto c = colors[i];
+    const auto& object = gtcache_.world_object->objects_[(int)type];
+    objectsGL.drawBeacon(object.loc, c[0], c[1]);
+  }
+}

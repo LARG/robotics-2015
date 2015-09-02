@@ -27,6 +27,7 @@ public:
 
   void drawPenaltyCross(Point2D p, float alpha);
   void drawCenterCircle(Point2D p, float alpha);
+  void drawBeacon(Point2D p, RGB topColor, RGB bottomColor);
 
   BasicGL basicGL;
 };

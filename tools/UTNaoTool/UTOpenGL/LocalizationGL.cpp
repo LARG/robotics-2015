@@ -88,6 +88,18 @@ void LocalizationGL::drawRelativeObjects(WorldObjectBlock* gtObjects, WorldObjec
       } else if (wo->isUnknownIntersection()) {
         drawObservationLine(start,end,Colors::Pink);
         objectsGL.drawIntersection(obsLocFd,0.5);
+      } else if (wo->isBeacon()) {
+        vector<RGB> colors;
+        switch(wo->type) {
+          case WO_BEACON_BLUE_YELLOW: colors = { Colors::Blue, Colors::Yellow }; break;
+          case WO_BEACON_YELLOW_BLUE: colors = { Colors::Yellow, Colors::Blue }; break;
+          case WO_BEACON_BLUE_PINK: colors = { Colors::Blue, Colors::Pink }; break;
+          case WO_BEACON_PINK_BLUE: colors = { Colors::Pink, Colors::Blue }; break;
+          case WO_BEACON_PINK_YELLOW: colors = { Colors::Pink, Colors::Yellow }; break;
+          case WO_BEACON_YELLOW_PINK: colors = { Colors::Yellow, Colors::Pink }; break;
+        }
+        drawObservationLine(start,end,Colors::White);
+        objectsGL.drawBeacon(obsLocFd, colors[0], colors[1]);
       } else if (wo->isIntersection() && !wo->isUnknownIntersection()){
         drawObservationLine(start,end,Colors::White);
         objectsGL.drawIntersection(obsLocFd,0.5);

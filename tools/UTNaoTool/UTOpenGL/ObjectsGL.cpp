@@ -129,4 +129,12 @@ void ObjectsGL::drawGoal(Point2D goalCenter) {
   drawCrossBar(goalCenter);
 }
 
+void ObjectsGL::drawBeacon(Point2D p, RGB topColor, RGB bottomColor) {
+  basicGL.colorRGB(topColor);
+  basicGL.drawCylinder(p.x, p.y, 300, p.x, p.y, 400, 100);
+  basicGL.colorRGB(bottomColor);
+  basicGL.drawCylinder(p.x, p.y, 200, p.x, p.y, 300, 100);
+  basicGL.colorRGB(Colors::White);
+  basicGL.drawCylinder(p.x, p.y, 0, p.x, p.y, 200, 100);
+}
 

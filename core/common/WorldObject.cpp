@@ -151,6 +151,10 @@ bool WorldObject::isVerticalLine() const {
   return type >= WO_TOP_SIDE_LINE && type <= WO_OWN_RIGHT_GOALBAR;
 }
 
+bool WorldObject::isBeacon() const {
+  return type >= WO_BEACON_BLUE_YELLOW && type <= WO_BEACON_YELLOW_PINK;
+}
+
 void WorldObject::reset(){
   seen = false;
   fieldLineIndex = -1;
