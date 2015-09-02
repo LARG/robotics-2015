@@ -46,9 +46,12 @@ void VisionWindow::newTable(Camera::Type camera) {
 }
 
 void VisionWindow::openTable(Camera::Type camera) {
-  QString file = QFileDialog::getOpenFileName(this, tr("Open Color Table"),
-                                              QString(getenv("NAO_HOME")) + "/data/current",
-                                              tr("UT Color Tables (*.col)"));
+  QString file = QFileDialog::getOpenFileName(this, 
+    tr("Open Color Table"),
+    QString(getenv("NAO_HOME")) + "/data/current",
+    tr("UT Color Tables (*.col)"),
+    0, QFileDialog::DontUseNativeDialog
+  );
   if (file.isEmpty())
     return;
 
@@ -96,9 +99,12 @@ void VisionWindow::saveTable(Camera::Type camera) {
 }
 
 void VisionWindow::saveTableAs(Camera::Type camera) {
-  QString file = QFileDialog::getSaveFileName(this, tr("Save Color Table"),
-                                                  QString(getenv("NAO_HOME")) + "/data",
-                                                  tr("UT Color Tables (*.col)"));
+  QString file = QFileDialog::getSaveFileName(this, 
+    tr("Save Color Table"),
+    QString(getenv("NAO_HOME")) + "/data",
+    tr("UT Color Tables (*.col)"),
+    0, QFileDialog::DontUseNativeDialog
+  );
   if (file.isEmpty()) return;
   std::string fileName = file.toStdString();
 

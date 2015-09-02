@@ -527,7 +527,8 @@ bool UTMainWnd::openLog() {
   QString fileName = QFileDialog::getExistingDirectory(
     this, 
     tr("Open Log File"),
-    QString(getenv("NAO_HOME")) + "/logs/"
+    QString(getenv("NAO_HOME")) + "/logs/",
+    QFileDialog::DontUseNativeDialog | QFileDialog::ShowDirsOnly
   );
   if (fileName == NULL)
     return false;
