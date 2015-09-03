@@ -62,10 +62,10 @@ void VisionModule::processFrame() {
     return;
   }
 
-  visionLog((30, "Processing bottom camera"));
+  visionLog(30, "Processing bottom camera");
   bottom_processor_->processFrame();
 
-  visionLog((30, "Processing top camera"));
+  visionLog(30, "Processing top camera");
   top_processor_->processFrame();
 }
 
@@ -99,7 +99,7 @@ void VisionModule::initSpecificModule() {
   if(robot_state_->WO_SELF == WO_TEAM_COACH) {
     top_params_->defaultHorizontalStepScale = 0;
     top_params_->defaultVerticalStepScale = 0;
-    visionLog((30, "Set coach step scales"));
+    visionLog(30, "Set coach step scales");
   }
 }
 

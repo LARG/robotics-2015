@@ -132,10 +132,10 @@ void ObjectsGL::drawGoal(Point2D goalCenter) {
 void ObjectsGL::drawBeacon(Point2D p, RGB topColor, RGB bottomColor, float alpha) {
   p /= FACT;
   basicGL.colorRGBAlpha(topColor, alpha);
-  basicGL.drawCylinder(p.x, p.y, 300 / FACT, p.x, p.y, 400 / FACT, 100 / FACT);
+  basicGL.drawCylinder(p.x, p.y, 300 / FACT, p.x, p.y, 400 / FACT, 110 / FACT);
   basicGL.colorRGBAlpha(bottomColor, alpha);
-  basicGL.drawCylinder(p.x, p.y, 200 / FACT, p.x, p.y, 300 / FACT, 100 / FACT);
+  basicGL.drawCylinder(p.x, p.y, 200 / FACT, p.x, p.y, 300 / FACT, 110 / FACT);
   basicGL.colorRGBAlpha(Colors::White, alpha);
-  basicGL.drawCylinder(p.x, p.y, 0, p.x, p.y, 200 / FACT, 100 / FACT);
+  basicGL.drawCylinder(p.x, p.y, 0, p.x, p.y, 200 / FACT, 110 / FACT);
 }
 

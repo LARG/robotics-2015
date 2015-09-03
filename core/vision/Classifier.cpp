@@ -70,7 +70,7 @@ bool Classifier::classifyImage(unsigned char *colorTable) {
 void Classifier::classifyImage(const FocusArea& area, unsigned char* colorTable){
   bool imageLoaded = vblocks_.image->loaded_;
   if(!imageLoaded) {
-    visionLog((20, "Classifying with no raw image"));
+    visionLog(20, "Classifying with no raw image");
   }
   colorTable_ = colorTable;
   int vstep = 1 << 1;

@@ -99,15 +99,15 @@ void ImageProcessor::setCalibration(RobotCalibration calibration){
 
 void ImageProcessor::processFrame(){
   if(vblocks_.robot_state->WO_SELF == WO_TEAM_COACH && camera_ == Camera::BOTTOM) return;
-  visionLog((30, "Process Frame camera %i", camera_));
+  visionLog(30, "Process Frame camera %i", camera_);
 
   updateTransform();
   
   // Horizon calculation
-  visionLog((30, "Calculating horizon line"));
+  visionLog(30, "Calculating horizon line");
   HorizonLine horizon = HorizonLine::generate(iparams_, cmatrix_, 30000);
   vblocks_.robot_vision->horizon = horizon;
-  visionLog((30, "Classifying Image", camera_));
+  visionLog(30, "Classifying Image", camera_);
   if(!classifier_->classifyImage(color_table_)) return;
   detectBall();
   beacon_detector_->findBeacons();

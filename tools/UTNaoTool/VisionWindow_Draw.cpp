@@ -314,7 +314,7 @@ void VisionWindow::drawBeacons(ImageWidget* image) {
     if(!object.fromTopCamera && _widgetAssignments[image] == IMAGE_TOP) continue;
     QPen tpen(beacon.second[0]), bpen(beacon.second[1]);
 
-    int width = cmatrix.getCameraWidthByDistance(object.visionDistance, 100);
+    int width = cmatrix.getCameraWidthByDistance(object.visionDistance, 110);
     int height = cmatrix.getCameraHeightByDistance(object.visionDistance, 100);
     int x1 = object.imageCenterX - width / 2;
     

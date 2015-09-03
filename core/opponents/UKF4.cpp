@@ -252,7 +252,7 @@ ukf4UpdateResult UKF4::opponentDetection(float obsDistance, float obsBearing, fl
   float innovation2measError = convDble((yBar - y).transp() * Invert22(R_obj_rel) * (yBar - y));
   alpha *= 1 / (1 + innovation2measError);
 
-  locLog((70, "Y: %5.3f, %5.3f, Ybar: %5.3f, %5.3f, yBar-y: %5.3f, %5.3f", y[0][0], y[1][0], yBar[0][0], yBar[1][0], yBar[0][0]-y[0][0], yBar[1][0]-y[1][0]));
+  locLog(70, "Y: %5.3f, %5.3f, Ybar: %5.3f, %5.3f, yBar-y: %5.3f, %5.3f", y[0][0], y[1][0], yBar[0][0], yBar[1][0], yBar[0][0]-y[0][0], yBar[1][0]-y[1][0]);
 
   oppLog((70, "innovation2: %5.3f, outlier thresh: %5.3f", innovation2, ukfParams.outlier_rejection_thresh));
 
