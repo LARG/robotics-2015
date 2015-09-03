@@ -110,6 +110,7 @@ void ImageProcessor::processFrame(){
   visionLog((30, "Classifying Image", camera_));
   if(!classifier_->classifyImage(color_table_)) return;
   detectBall();
+  beacon_detector_->findBeacons();
 }
 
 void ImageProcessor::detectBall() {

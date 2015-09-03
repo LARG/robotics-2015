@@ -1152,26 +1152,16 @@ void GLDrawer::drawAnnotations() {
 
 void GLDrawer::drawBeacons() {
   if(gtcache_.world_object == NULL) return;
-  vector<WorldObjectType> btypes = {
-    WO_BEACON_BLUE_YELLOW,
-    WO_BEACON_YELLOW_BLUE,
-    WO_BEACON_BLUE_PINK,
-    WO_BEACON_PINK_BLUE,
-    WO_BEACON_PINK_YELLOW,
-    WO_BEACON_YELLOW_PINK
+  map<WorldObjectType,vector<RGB>> beacons = {
+    { WO_BEACON_BLUE_YELLOW, { Colors::Blue, Colors::Yellow } },
+    { WO_BEACON_YELLOW_BLUE, { Colors::Yellow, Colors::Blue } },
+    { WO_BEACON_BLUE_PINK, { Colors::Blue, Colors::Pink } },
+    { WO_BEACON_PINK_BLUE, { Colors::Pink, Colors::Blue } },
+    { WO_BEACON_PINK_YELLOW, { Colors::Pink, Colors::Yellow } },
+    { WO_BEACON_YELLOW_PINK, { Colors::Yellow, Colors::Pink } }
   };
-  vector<vector<RGB>> colors = {
-    { Colors::Blue, Colors::Yellow },
-    { Colors::Yellow, Colors::Blue },
-    { Colors::Blue, Colors::Pink },
-    { Colors::Pink, Colors::Blue },
-    { Colors::Pink, Colors::Yellow },
-    { Colors::Yellow, Colors::Pink }
-  };
-  for(int i = 0; i < btypes.size(); i++) {
-    auto type = btypes[i];
-    auto c = colors[i];
-    const auto& object = gtcache_.world_object->objects_[(int)type];
-    objectsGL.drawBeacon(object.loc, c[0], c[1]);
+  for(auto beacon : beacons) {
+    const auto& object = gtcache_.world_object->objects_[beacon.first];
+    objectsGL.drawBeacon(object.loc, beacon.second[0], beacon.second[1]);
   }
 }
