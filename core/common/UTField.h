@@ -13,18 +13,18 @@
 
 const float BALL_RADIUS = 31;
 
-const float FIELD_Y = 6000;
-const float FIELD_X = 8000;
-const float GRASS_Y = 6600;
-const float GRASS_X = 8600;
+const float FIELD_Y = 1500;
+const float FIELD_X = 2000;
+const float GRASS_Y = 2000;
+const float GRASS_X = 3000;
 
 const float HALF_FIELD_Y = FIELD_Y/2.0;
 const float HALF_FIELD_X = FIELD_X/2.0;
 const float HALF_GRASS_Y = GRASS_Y/2.0;
 const float HALF_GRASS_X = GRASS_X/2.0;
 
-const float GOAL_Y = 1500;
-const float GOAL_POST_WIDTH = 110;
+const float GOAL_Y = 500;
+const float GOAL_POST_WIDTH = 70;
 const float GOAL_WIDTH = GOAL_Y + GOAL_POST_WIDTH;
 const float GOAL_X = 500;
 const float HALF_GOAL_Y = GOAL_Y / 2.0;
@@ -34,7 +34,7 @@ const float CIRCLE_DIAMETER = 1500;
 const float CIRCLE_RADIUS = CIRCLE_DIAMETER / 2.0;
 const float LINE_WIDTH = 50;
 
-const float GOAL_HEIGHT =    800;
+const float GOAL_HEIGHT = 325;
 
 const float FIELD_CENTER_X = 0;
 const float FIELD_CENTER_Y = 0;
@@ -63,6 +63,13 @@ const Point2D ownCrossLocation = Point2D(-PENALTY_CROSS_X, 0);
 // Landmark locations
 const Point2D landmarkLocation[] = {
   Point2D(0, 0),  // center circle
+
+  Point2D(HALF_FIELD_X, HALF_FIELD_Y),       //  WO_BEACON_BLUE_YELLOW
+  Point2D(HALF_FIELD_X, -HALF_FIELD_Y),      //  WO_BEACON_YELLOW_BLUE,
+  Point2D(0, HALF_FIELD_Y),                  //  WO_BEACON_BLUE_PINK
+  Point2D(0, -HALF_FIELD_Y),                  //  WO_BEACON_PINK_BLUE
+  Point2D(-HALF_FIELD_X, HALF_FIELD_Y),      //  WO_BEACON_PINK_YELLOW
+  Point2D(-HALF_FIELD_X, -HALF_FIELD_Y),     //  WO_BEACON_YELLOW_PINK,
 
   Point2D( -FIELD_X / 2, 0),                 // WO_OWN_GOAL
   Point2D( FIELD_X / 2, 0 ),                 // WO_OPP_GOAL

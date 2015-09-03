@@ -13,6 +13,8 @@
 #include <vision/structures/BallCandidate.h>
 #include <math/Pose3D.h>
 
+class BeaconDetector;
+
 /// @ingroup vision
 class ImageProcessor {
   public:
@@ -57,6 +59,7 @@ class ImageProcessor {
 
     RobotCalibration* calibration_;
     bool enableCalibration_;
+    BeaconDetector* beacon_detector_;
 };
 
 #endif
