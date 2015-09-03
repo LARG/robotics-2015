@@ -81,10 +81,10 @@ void LocalizationGL::drawRelativeObjects(WorldObjectBlock* gtObjects, WorldObjec
       Vector3<float> end(obsLocFd.x, obsLocFd.y,250);
       if (wo->isGoal() && wo->isGoalPost()) {
         drawObservationLine(start,end,Colors::Yellow);
-        objectsGL.drawYellowPost(obsLocFd,0.25);
+        objectsGL.drawPost(obsLocFd,0.25);
       } else if (wo->isGoal() && !wo->isGoalPost()) {
         drawObservationLine(start,end,Colors::Yellow);
-        objectsGL.drawYellowGoal(obsLocFd,0.25);
+        objectsGL.drawGoal(obsLocFd,0.25);
       } else if (wo->isUnknownIntersection()) {
         drawObservationLine(start,end,Colors::Pink);
         objectsGL.drawIntersection(obsLocFd,0.5);
@@ -99,7 +99,7 @@ void LocalizationGL::drawRelativeObjects(WorldObjectBlock* gtObjects, WorldObjec
           case WO_BEACON_YELLOW_PINK: colors = { Colors::Yellow, Colors::Pink }; break;
         }
         drawObservationLine(start,end,Colors::White);
-        objectsGL.drawBeacon(obsLocFd, colors[0], colors[1]);
+        objectsGL.drawBeacon(obsLocFd, colors[0], colors[1],0.25);
       } else if (wo->isIntersection() && !wo->isUnknownIntersection()){
         drawObservationLine(start,end,Colors::White);
         objectsGL.drawIntersection(obsLocFd,0.5);

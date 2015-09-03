@@ -52,6 +52,7 @@ void GLDrawer::draw(const map<DisplayOption,bool>& displayOptions) {
   if (display_[SHOWODOMETRY]) drawOdometry();
   if (display_[SHOWODOMETRYOVERLAY]) overlayOdometry();
   if (display_[SHOWRELATIVEOBJECTUNCERTS]) localizationGL.drawRelativeObjectUncerts(gtcache_.world_object, bcache_.world_object, gtcache_.robot_state, bcache_.localization_mem);
+  if (display_[SHOWBEACONS]) drawBeacons();
 
   // truth data from sim
   if (display_[SHOWTRUTHROBOT]) drawTruthRobot();
@@ -101,11 +102,13 @@ void GLDrawer::drawField() {
   }
 
   objectsGL.drawGreenCarpet();
+  objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OPP_GOAL].loc,1.0);
+  //objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OWN_GOAL].loc,1.0);
+  return;
   for (int i = LINE_OFFSET; i < LINE_OFFSET + NUM_LINES; i++){
     WorldObject* wo = &(gtcache_.world_object->objects_[i]);
     objectsGL.drawFieldLine(wo->loc, wo->endLoc);
   }
-  objectsGL.drawYellowGoal(gtcache_.world_object->objects_[WO_OPP_GOAL].loc,1.0);
   WorldObject* wo = &(gtcache_.world_object->objects_[WO_OPP_GOAL]);
   glColor3f(1,1,0);
   if (gtcache_.robot_state == NULL){
@@ -116,7 +119,6 @@ void GLDrawer::drawField() {
     parent_->renderText(wo->loc.x/FACT,wo->loc.y/FACT,1000/FACT,"OPP - RED");
   }
 
-  objectsGL.drawYellowGoal(gtcache_.world_object->objects_[WO_OWN_GOAL].loc,1.0);
   wo = &(gtcache_.world_object->objects_[WO_OWN_GOAL]);
   glColor3f(1,1,0);
   if (gtcache_.robot_state == NULL){

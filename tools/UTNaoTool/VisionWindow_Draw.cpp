@@ -73,6 +73,7 @@ void VisionWindow::updateBigImage() {
     if (overlayCheck->isChecked()) {
       drawBall(bigImage);
       drawBallCands(bigImage);
+      drawBeacons(bigImage);
     }
   }
 
@@ -324,6 +325,7 @@ void VisionWindow::drawBeacons(ImageWidget* image) {
     painter.setPen(tpen);
     painter.fillPath(tpath, QBrush(beacon.second[0]));
 
+    // Draw bottom
     int by1 = object.imageCenterY, by2 = object.imageCenterY + height;
     QPainterPath bpath;
     bpath.addRoundedRect(QRect(x1, by1, width, height), 5, 5);
