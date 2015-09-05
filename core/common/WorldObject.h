@@ -34,6 +34,13 @@ ENUM(WorldObjectType,   // Types of objects
   /// center cirlce
   WO_CENTER_CIRCLE,
 
+  WO_BEACON_BLUE_YELLOW,
+  WO_BEACON_YELLOW_BLUE,
+  WO_BEACON_BLUE_PINK,
+  WO_BEACON_PINK_BLUE,
+  WO_BEACON_PINK_YELLOW,
+  WO_BEACON_YELLOW_PINK,
+
   // 2 Landmark goals
   WO_OWN_GOAL,
   WO_OPP_GOAL,
@@ -208,6 +215,7 @@ public:
   bool isUnknownL() const;
   bool isHorizontalLine() const;
   bool isVerticalLine() const;
+  bool isBeacon() const;
 
   void reset();
 

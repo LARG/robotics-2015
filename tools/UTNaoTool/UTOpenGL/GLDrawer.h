@@ -58,7 +58,8 @@ class GLDrawer {
       SHOWSIMROBOTS,
       SHOWALLPACKETS,
       SHOWALLPACKETSOVERLAY,
-      SHOWTRUESIMLOCATION
+      SHOWTRUESIMLOCATION,
+      SHOWBEACONS
     );
 
     GLDrawer(QGLWidget* parent);
@@ -107,6 +108,7 @@ class GLDrawer {
     void drawTeamBallPackets();
     void drawCoachBallPackets();
     void drawAnnotations();
+    void drawBeacons();
    
     void overlayOdometry();
     void overlayObservationText();
@@ -120,7 +122,6 @@ class GLDrawer {
     void overlayKickChoices();
     void overlayAllTeamPackets();
     void overlaySonar();
-
 
     MemoryCache gtcache_, bcache_;
     

@@ -88,13 +88,13 @@ void ObjectsGL::drawBallVelColor(Point2D p, Vector2D vel, float alpha, RGB color
   glPopMatrix();
 }
 
-void ObjectsGL::drawYellowGoal(Point2D p1, float alpha) {
-  basicGL.colorRGBAlpha(Colors::Yellow, alpha);
+void ObjectsGL::drawGoal(Point2D p1, float alpha) {
+  basicGL.colorRGBAlpha(Colors::Blue, alpha);
   drawGoal(p1);
 }
 
-void ObjectsGL::drawYellowPost(Point2D p1, float alpha) {
-  basicGL.colorRGBAlpha(Colors::Yellow, alpha);
+void ObjectsGL::drawPost(Point2D p1, float alpha) {
+  basicGL.colorRGBAlpha(Colors::Blue, alpha);
   drawGoalPost(p1);
 }
 
@@ -129,4 +129,13 @@ void ObjectsGL::drawGoal(Point2D goalCenter) {
   drawCrossBar(goalCenter);
 }
 
+void ObjectsGL::drawBeacon(Point2D p, RGB topColor, RGB bottomColor, float alpha) {
+  p /= FACT;
+  basicGL.colorRGBAlpha(topColor, alpha);
+  basicGL.drawCylinder(p.x, p.y, 300 / FACT, p.x, p.y, 400 / FACT, 110 / FACT);
+  basicGL.colorRGBAlpha(bottomColor, alpha);
+  basicGL.drawCylinder(p.x, p.y, 200 / FACT, p.x, p.y, 300 / FACT, 110 / FACT);
+  basicGL.colorRGBAlpha(Colors::White, alpha);
+  basicGL.drawCylinder(p.x, p.y, 0, p.x, p.y, 200 / FACT, 110 / FACT);
+}
 

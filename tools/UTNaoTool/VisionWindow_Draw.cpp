@@ -73,6 +73,7 @@ void VisionWindow::updateBigImage() {
     if (overlayCheck->isChecked()) {
       drawBall(bigImage);
       drawBallCands(bigImage);
+      drawBeacons(bigImage);
     }
   }
 
@@ -98,9 +99,11 @@ void VisionWindow::redrawImages(ImageWidget* rawImage, ImageWidget* segImage, Im
   if (overlayCheck->isChecked()) {
     drawBall(rawImage);
     drawBallCands(rawImage);
+    drawBeacons(rawImage);
 
     drawBall(segImage);
     drawBallCands(segImage);
+    drawBeacons(segImage);
   }
 
   drawBall(verticalBlobImage);
@@ -287,5 +290,46 @@ void VisionWindow::drawWorldObject(ImageWidget* image, QColor color, int worldOb
     y2 = object->imageCenterY - offset;
 
     painter.drawLine(x1, y1, x2, y2);
+  }
+}
+
+void VisionWindow::drawBeacons(ImageWidget* image) {
+  if(world_object_block_ == NULL) return;
+  map<WorldObjectType,vector<QColor>> beacons = {
+    { WO_BEACON_BLUE_YELLOW, { segCol[c_BLUE], segCol[c_YELLOW] } },
+    { WO_BEACON_YELLOW_BLUE, { segCol[c_YELLOW], segCol[c_BLUE] } },
+    { WO_BEACON_BLUE_PINK, { segCol[c_BLUE], segCol[c_PINK] } },
+    { WO_BEACON_PINK_BLUE, { segCol[c_PINK], segCol[c_BLUE] } },
+    { WO_BEACON_PINK_YELLOW, { segCol[c_PINK], segCol[c_YELLOW] } },
+    { WO_BEACON_YELLOW_PINK, { segCol[c_YELLOW], segCol[c_PINK] } }
+  };
+  auto processor = getImageProcessor(image);
+  const auto& cmatrix = processor->getCameraMatrix();
+  QPainter painter(image->getImage());
+  painter.setRenderHint(QPainter::Antialiasing);
+  for(auto beacon : beacons) {
+    auto& object = world_object_block_->objects_[beacon.first];
+    if(!object.seen) continue;
+    if(object.fromTopCamera && _widgetAssignments[image] == IMAGE_BOTTOM) continue;
+    if(!object.fromTopCamera && _widgetAssignments[image] == IMAGE_TOP) continue;
+    QPen tpen(beacon.second[0]), bpen(beacon.second[1]);
+
+    int width = cmatrix.getCameraWidthByDistance(object.visionDistance, 110);
+    int height = cmatrix.getCameraHeightByDistance(object.visionDistance, 100);
+    int x1 = object.imageCenterX - width / 2;
+    
+    // Draw top
+    int ty1 = object.imageCenterY - height;
+    QPainterPath tpath;
+    tpath.addRoundedRect(QRect(x1, ty1, width, height), 5, 5);
+    painter.setPen(tpen);
+    painter.fillPath(tpath, QBrush(beacon.second[0]));
+
+    // Draw bottom
+    int by1 = object.imageCenterY, by2 = object.imageCenterY + height;
+    QPainterPath bpath;
+    bpath.addRoundedRect(QRect(x1, by1, width, height), 5, 5);
+    painter.setPen(bpen);
+    painter.fillPath(bpath, QBrush(beacon.second[1]));
   }
 }

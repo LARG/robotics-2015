@@ -193,6 +193,18 @@ float CameraMatrix::getWorldDistanceByHeight(float cameraHeight, float worldHeig
   float worldDistance = (worldHeight / 2) / tanf(theta / 2);
   return worldDistance;
 }
+    
+float CameraMatrix::getCameraWidthByDistance(float distance, float worldWidth) const {
+  auto theta = 2.0f * atanf(worldWidth / 2.0f / distance);
+  auto cameraWidth = theta / FOVx * iparams_.width;
+  return cameraWidth;
+}
+ 
+float CameraMatrix::getCameraHeightByDistance(float distance, float worldHeight) const {
+  auto theta = 2.0f * atanf(worldHeight / 2.0f / distance);
+  auto cameraHeight = theta / FOVy * iparams_.height;
+  return cameraHeight;
+}
 
 float CameraMatrix::getWorldHeight(Coordinates top, Coordinates bottom) const {
   Vector4f im;

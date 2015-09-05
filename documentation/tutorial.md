@@ -61,7 +61,7 @@ The basic event types are as follows:
 
 1.  Null Event (`N`) - This event always fires.
 2.  Completion Event (`C`) - This event fires when its node's `complete()` method returns `True`. By default, calling `finish()` on a node will cause the node to be complete.
-3.  Iteration Event (`I`) - This event fires after a set number of iterations.
+3.  Iteration Event (`I(i)`) - This event fires after `i` frames have passed.
 4.  Time Event (`T(t)`) - This event fires after `t` seconds have elapsed.
 5.  Signal Event (`S(s)`) - This event fires after a signal `s` is posted with the `postSignal(s)` method.
 

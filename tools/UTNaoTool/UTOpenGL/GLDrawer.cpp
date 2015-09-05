@@ -52,6 +52,7 @@ void GLDrawer::draw(const map<DisplayOption,bool>& displayOptions) {
   if (display_[SHOWODOMETRY]) drawOdometry();
   if (display_[SHOWODOMETRYOVERLAY]) overlayOdometry();
   if (display_[SHOWRELATIVEOBJECTUNCERTS]) localizationGL.drawRelativeObjectUncerts(gtcache_.world_object, bcache_.world_object, gtcache_.robot_state, bcache_.localization_mem);
+  if (display_[SHOWBEACONS]) drawBeacons();
 
   // truth data from sim
   if (display_[SHOWTRUTHROBOT]) drawTruthRobot();
@@ -101,11 +102,13 @@ void GLDrawer::drawField() {
   }
 
   objectsGL.drawGreenCarpet();
+  objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OPP_GOAL].loc,1.0);
+  //objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OWN_GOAL].loc,1.0);
+  return;
   for (int i = LINE_OFFSET; i < LINE_OFFSET + NUM_LINES; i++){
     WorldObject* wo = &(gtcache_.world_object->objects_[i]);
     objectsGL.drawFieldLine(wo->loc, wo->endLoc);
   }
-  objectsGL.drawYellowGoal(gtcache_.world_object->objects_[WO_OPP_GOAL].loc,1.0);
   WorldObject* wo = &(gtcache_.world_object->objects_[WO_OPP_GOAL]);
   glColor3f(1,1,0);
   if (gtcache_.robot_state == NULL){
@@ -116,7 +119,6 @@ void GLDrawer::drawField() {
     parent_->renderText(wo->loc.x/FACT,wo->loc.y/FACT,1000/FACT,"OPP - RED");
   }
 
-  objectsGL.drawYellowGoal(gtcache_.world_object->objects_[WO_OWN_GOAL].loc,1.0);
   wo = &(gtcache_.world_object->objects_[WO_OWN_GOAL]);
   glColor3f(1,1,0);
   if (gtcache_.robot_state == NULL){
@@ -1147,5 +1149,21 @@ void GLDrawer::drawAnnotations() {
     Point2D offset = Point2D::getPointFromPolar(100, la->pose().rotation);
     Point2D start = center - offset, end = center + offset;
     basicGL.drawArrow(start, end, color, color, alpha, 50);
+  }
+}
+
+void GLDrawer::drawBeacons() {
+  if(gtcache_.world_object == NULL) return;
+  map<WorldObjectType,vector<RGB>> beacons = {
+    { WO_BEACON_BLUE_YELLOW, { Colors::Blue, Colors::Yellow } },
+    { WO_BEACON_YELLOW_BLUE, { Colors::Yellow, Colors::Blue } },
+    { WO_BEACON_BLUE_PINK, { Colors::Blue, Colors::Pink } },
+    { WO_BEACON_PINK_BLUE, { Colors::Pink, Colors::Blue } },
+    { WO_BEACON_PINK_YELLOW, { Colors::Pink, Colors::Yellow } },
+    { WO_BEACON_YELLOW_PINK, { Colors::Yellow, Colors::Pink } }
+  };
+  for(auto beacon : beacons) {
+    const auto& object = gtcache_.world_object->objects_[beacon.first];
+    objectsGL.drawBeacon(object.loc, beacon.second[0], beacon.second[1]);
   }
 }

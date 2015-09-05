@@ -67,6 +67,8 @@ class CameraMatrix {
     float bearing(const Position& p) const;
     float getWorldDistanceByWidth(float cameraWidth, float worldWidth) const;
     float getWorldDistanceByHeight(float cameraHeight, float worldHeight) const;
+    float getCameraWidthByDistance(float distance, float worldWidth) const;
+    float getCameraHeightByDistance(float distance, float worldHeight) const;
     float getWorldHeight(Coordinates top, Coordinates bottom) const;
 
     void setCalibration(const RobotCalibration& cal);

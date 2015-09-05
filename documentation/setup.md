@@ -24,9 +24,11 @@ You should use these steps to obtain, setup, and run code on the lab machines an
 2. Connect to the lab wireless network as described [here](#wireless). Your robot's wireless address will be 10.202.16.XX, and its ethernet address will be 11.0.1.XX, where XX is the robot number. This is taped on the back of the robot's head near the ear. In the following instructions replace &lt;robot ip&gt; with the applicable IP address.
 3. In a new terminal, ping your robot by typing `ping <robot ip>`.
 4. Set up passwordless ssh for your robot:
+
         ssh-keygen
         ssh-copy-id nao@<robot ip>
         nao # Enter this password when prompted
+
 5. Now you should ssh into your robot by typing `ssh nao@<robot ip>`. Once here, type `nao stop` to stop naoqi.
 6. Using the terminal you used to run the build scripts, copy your code to the robot with `./copy_robot <robot ip> everything`
 7. Now you can go back to the terminal you used to ssh into your robot. Type `nao start`. The robot will eventually say interface and then vision. Once it has said vision, you know it has completely booted.

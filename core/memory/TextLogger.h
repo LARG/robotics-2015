@@ -17,14 +17,18 @@
 
 // NOTE: if you add another logging type, add it to build/core/CMakeLists.txt to the variable LOG_DEFINES
 #ifdef ALLOW_DEBUG_LOG
+#define visionLog(level, fstring, ...) textlogger->logFromVision(level, fstring, ##__VA_ARGS__)
+#define locLog(level, fstring, ...) textlogger->logFromLocalization(level, fstring, ##__VA_ARGS__)
+#else
+#define visionLog(...)
+#define locLog(...)
+#endif
+
+#ifdef ALLOW_DEBUG_LOG
 #define debugLog(arglist) textlogger->log arglist
-#define visionLog(arglist) textlogger->logFromVision arglist
-#define locLog(arglist) textlogger->logFromLocalization arglist
 #define oppLog(arglist) textlogger->logFromOpp arglist
 #else
 #define debugLog(arglist)
-#define visionLog(arglist)
-#define locLog(arglist)
 #define oppLog(arglist)
 #endif
 
