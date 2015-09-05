@@ -27,7 +27,6 @@
 
 // walk engine
 #include <motion/WalkModule.h>
-#include <motion/KickModule.h>
 #include <motion/MotionModule.h>
 #include <motion/GetupModule.h>
 
@@ -112,9 +111,6 @@ void MotionSimulation::getLuaParameters() {
   KickParamBlock* kickParams = NULL;
   vision_core_.memory_->getBlockByName(kickParams,"vision_kick_params");
   *kick_params_ = *kickParams;
-  
-  if (use_com_kick_)
-    core_->kick_->initSpecificModule();
 }
 
 void MotionSimulation::updateMemoryBlocks(){
@@ -148,10 +144,6 @@ bool MotionSimulation::processFrame(){
   // call walk engine process frame
   core_->kinematics_->calculatePose();
 
-  if (use_com_kick_)
-    core_->kick_->processFrame();
-  else
-    core_->motion_->processFrame();
   //if (core_->walk_ != NULL)
     //core_->walk_->processFrame();
   //if (core_->htwk_walk_ != NULL)

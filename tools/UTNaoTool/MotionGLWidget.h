@@ -39,10 +39,10 @@
 
 class MotionSimulation;
 
-class MotionWidget : public QGLViewer {
+class MotionGLWidget : public QGLViewer {
 Q_OBJECT        // must include this if you use Qt signals/slots
  public:
-  MotionWidget(QWidget* parent);
+  MotionGLWidget(QWidget* parent);
 
   enum {  // Display modes
     BODYMODELMODE,

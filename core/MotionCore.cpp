@@ -19,7 +19,6 @@
 #include <memory/ProcessedSonarBlock.h>
 
 #include <kinematics/KinematicsModule.h>
-#include <motion/KickModule.h>
 #include <motion/MotionModule.h>
 #include <motion/GetupModule.h>
 #include <motion/rswalk2014/RSWalkModule2014.h>
@@ -46,7 +45,6 @@ MotionCore::MotionCore (CoreType type, bool use_shared_memory,int team_num, int 
   last_frame_processed_(0),
   use_com_kick_(true),
   kinematics_(NULL),
-  kick_(NULL),
   motion_(NULL),
   sensor_(NULL),
   sonar_(NULL),
@@ -76,8 +74,6 @@ MotionCore::~MotionCore() {
   // clean up the modules
   if (kinematics_ != NULL)
     delete kinematics_;
-  if (kick_ != NULL)
-    delete kick_;
   if (motion_ != NULL)
     delete motion_;
   if (sensor_ != NULL)
@@ -183,11 +179,6 @@ void MotionCore::processMotionFrame() {
 
 
   // kicks need to be before walk, so that they can change the walk request
-  if (use_com_kick_)
-    kick_->processFrame();
-  else
-    motion_->processFrame();
-
 
   if (walk_ != NULL)
     walk_->processFrame();
@@ -221,8 +212,6 @@ void MotionCore::initModules() {
   kinematics_ = new KinematicsModule();
   kinematics_->init(&memory_,&textlog_);
 
-  kick_ = new KickModule();
-  kick_->init(&memory_,&textlog_);
 
   motion_ = new MotionModule();
   motion_->init(&memory_,&textlog_);
@@ -244,7 +233,6 @@ void MotionCore::initWalkEngine() {
       printf("Loaded RS2014 walk.\n");
       walk_ = new RSWalkModule2014();
       walk_->init(&memory_,&textlog_);
-      kick_->setStand(walk_->STAND_ANGLES);
       break;
     default:
       printf("No walk loaded\n");

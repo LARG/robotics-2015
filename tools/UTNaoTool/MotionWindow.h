@@ -9,7 +9,7 @@
 #include <memory/Memory.h>
 #include <math/Vector3.h>
 
-#include "MotionWidget.h" 
+#include "MotionGLWidget.h" 
 
 class QWidget;
 class QCheckBox;
@@ -23,7 +23,7 @@ class MotionWindow : public QWidget {
 
   void update(Memory* mem);
 
-  MotionWidget* robot_;
+  MotionGLWidget* robot_;
 
   public slots:
   void updateTitle(QString title);

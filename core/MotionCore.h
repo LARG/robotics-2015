@@ -61,7 +61,6 @@ public:
   bool use_com_kick_;
 
   KinematicsModule *kinematics_;
-  KickModule *kick_;
   MotionModule *motion_;
   SensorModule *sensor_;
   SonarModule *sonar_;

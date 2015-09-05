@@ -7,7 +7,7 @@ using namespace std;
 MotionWindow::MotionWindow() : QWidget() {
   QGridLayout *layout = new QGridLayout;
 
-  robot_=new MotionWidget(this);
+  robot_=new MotionGLWidget(this);
  
   layout->addWidget(robot_, 0, 0, 5, 8);
         
