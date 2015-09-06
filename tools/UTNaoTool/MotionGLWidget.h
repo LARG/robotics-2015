@@ -53,6 +53,7 @@ Q_OBJECT        // must include this if you use Qt signals/slots
     KICKMODE,
     KICKSIMMODE,
     GETUPSIMMODE,
+    KEYFRAMEMODE,
     NUM_MODES
   };
   

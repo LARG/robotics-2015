@@ -52,13 +52,13 @@ void MotionGLWidget::init() {
   //setAxisIsDrawn(true);
   setGridIsDrawn(true);
 
-  qglviewer::Vec c(83.4863,-27.091,28.2291);
+  qglviewer::Vec c(80,-80,30);
   qglviewer::Quaternion q(0.618458, 0.291192, 0.3236, 0.654217);
   camera()->setPosition(c);
   camera()->setOrientation(q);
   setSceneRadius(100.0);
 
-  setMode(WALKMODE);
+  setMode(KEYFRAMEMODE);
 }
 
 void MotionGLWidget::updateMemory(Memory* mem) {
@@ -1186,6 +1186,20 @@ void MotionGLWidget::setMode(int mode){
     displayOptions[SHOWKICKSPLINE] = true;
     //    displayOptions[SHOWABSFEETTARGETS] = true;
     emit modeChanged("Kick Simulation");
+  } else if (currentMode == KEYFRAMEMODE){
+    setAllDisplayOptions(false);
+    displayOptions[SHOWJOINTVALUESMODEL] = true;
+    displayOptions[SHOWJOINTCOMMANDSMODEL] = true;
+    displayOptions[SHOWSTEPS] = true;
+    displayOptions[SHOWZMPREF] = true;
+    displayOptions[SHOWCURRENTZMP] = true;
+    displayOptions[SHOWDESIREDZMP] = true;
+    displayOptions[SHOWSENSEDZMP] = true;
+    displayOptions[SHOWCURRENTPEN] = true;
+    displayOptions[SHOWDESIREDPEN] = true;
+    displayOptions[SHOWSWINGFOOT] = true;
+    displayOptions[SHOWTARGETPT] = true;
+
   } else {
     setAllDisplayOptions(false);
     emit modeChanged("Unknown Mode");

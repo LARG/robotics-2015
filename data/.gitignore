@@ -6,3 +6,4 @@ config.yaml
 *.cal
 audio_processing_tree.*
 *.dat
+keyframe.yaml

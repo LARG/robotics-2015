@@ -22,6 +22,8 @@ class YamlConfig {
   public:
     void saveToFile(std::string file) const;
     bool loadFromFile(std::string file);
+    void save(std::string file) const { return saveToFile(file); }
+    bool load(std::string file) { return loadFromFile(file); }
     std::string toString() const;
 
     friend YAML::Emitter& operator<<(YAML::Emitter& out, const YamlConfig& config) {

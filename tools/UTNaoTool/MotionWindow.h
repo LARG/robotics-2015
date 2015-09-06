@@ -1,33 +1,22 @@
-#ifndef MOTION_WINDOW_H
-#define MOTION_WINDOW_H
+#pragma once
 
-#include <QWidget>
+#include "ui_MotionWindow.h"
+#include <tool/ConfigWindow.h>
+#include <memory/MemoryCache.h>
 
-#include <vector>
+class AnnotationGroup;
 
-//#include <memory/AbstractMemory.h>
-#include <memory/Memory.h>
-#include <math/Vector3.h>
-
-#include "MotionGLWidget.h" 
-
-class QWidget;
-class QCheckBox;
-
-class MotionWindow : public QWidget {
+class MotionWindow : public ConfigWindow, public Ui_MotionWindow {
  Q_OBJECT
 
   public:
-  MotionWindow();
-  ~MotionWindow();
-
-  void update(Memory* mem);
-
-  MotionGLWidget* robot_;
-
-  public slots:
-  void updateTitle(QString title);
-
+    MotionWindow(QMainWindow* pa);
+    void updateMemory(Memory* mem);
+    void loadConfig(const ToolConfig& config) { }
+    void saveConfig(ToolConfig& config) { }
+  signals:
+    void prevSnapshot();
+    void nextSnapshot();
+  private:
+    MemoryCache cache_;
 };
-
-#endif

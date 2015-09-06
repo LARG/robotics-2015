@@ -85,7 +85,7 @@ UTMainWnd::UTMainWnd(const char *directory, bool core):
 
   memory_ = NULL;
   logWnd_ = new LogWindow(this);
-  motionWnd_ = new MotionWindow();
+  motionWnd_ = new MotionWindow(this);
   plotWnd_ = new PlotWindow();
   worldWnd_ = new WorldWindow(this);
   jointsWnd_ = new JointsWindow();
@@ -127,8 +127,8 @@ UTMainWnd::UTMainWnd(const char *directory, bool core):
   connect (cameraButton, SIGNAL(clicked()), this, SLOT(openCameraWnd()) );
   connect (teamButton, SIGNAL(clicked()), this, SLOT(openTeamWnd()) );
 
-  connect (motionWnd_->robot_, SIGNAL(prevSnapshot()), this, SLOT(prevSnapshot()) );
-  connect (motionWnd_->robot_, SIGNAL(nextSnapshot()), this, SLOT(nextSnapshot()) );
+  connect (motionWnd_->motion_, SIGNAL(prevSnapshot()), this, SLOT(prevSnapshot()) );
+  connect (motionWnd_->motion_, SIGNAL(nextSnapshot()), this, SLOT(nextSnapshot()) );
 
   connect (worldWnd_, SIGNAL(prevSnapshot()), this, SLOT(prevSnapshot()) );
   connect (worldWnd_, SIGNAL(nextSnapshot()), this, SLOT(nextSnapshot()) );
@@ -476,7 +476,7 @@ void UTMainWnd::gotoSnapshot(int index) {
   }
 
   if (motionWnd_->isVisible())
-    motionWnd_->update(memory_);
+    motionWnd_->updateMemory(memory_);
   if (plotWnd_->isVisible())
     plotWnd_->update(memory_);
   if (visionWnd_->isVisible())
@@ -590,7 +590,7 @@ void UTMainWnd::openMotionWnd() {
   motionWnd_->show();
   motionWnd_->raise();
   motionWnd_->activateWindow();
-  if (memory_) motionWnd_->update(memory_);
+  if (memory_) motionWnd_->updateMemory(memory_);
 }
 
 void UTMainWnd::openPlotWnd() {
