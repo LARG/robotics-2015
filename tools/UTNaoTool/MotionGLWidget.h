@@ -26,12 +26,14 @@
 #include <memory/KickModuleBlock.h>
 #include <memory/KickParamBlock.h>
 
+
 #include <math/Vector2.h>
 #include <math/Vector3.h>
 #include <math/Spline3D.h>
 #include <common/RobotDimensions.h>
 #include <common/RobotInfo.h>
 #include <common/RingQueue.h>
+#include <common/KeyframeSequence.h>
 
 #include <common/MassCalibration.h>
 
@@ -129,6 +131,7 @@ Q_OBJECT        // must include this if you use Qt signals/slots
   void drawBodyModel(BodyModelBlock* bodyModel, RGB color);
   void drawBodyModelFromJointCommands();
   void drawBodyModelFromJointValues();
+  void drawBodyModelFromKeyframe(Keyframe keyframe);
   BodyModelBlock* getBodyModelFromJoints(vector<float> joints);
   BodyModelBlock* getBodyModelFromJoints(float *joints);
   void drawSteps();
@@ -185,6 +188,8 @@ Q_OBJECT        // must include this if you use Qt signals/slots
 
   void drawWithNames();
   qglviewer::Vec orig, dir, selectedPoint;
+  bool useKeyframes_;
+  Keyframe lastKeyframe_;
 
  protected:
   void keyPressEvent(QKeyEvent *event);
@@ -195,6 +200,8 @@ Q_OBJECT        // must include this if you use Qt signals/slots
   void play();
   void pause();
   void modeChanged(QString);
+public slots:
+  void drawKeyframe(const Keyframe& keyframe);
   
 };
 

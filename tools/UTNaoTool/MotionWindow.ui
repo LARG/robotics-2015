@@ -32,7 +32,7 @@
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Basic</string>
+        <string>Keyframes</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">

@@ -21,7 +21,10 @@ KeyframeWidget::KeyframeWidget(QWidget* parent) : ConfigWidget(parent) {
   connect(btnLoad, SIGNAL(clicked()), this, SLOT(load()));
   connect(btnAdd, SIGNAL(clicked()), this, SLOT(addKeyframe()));
   connect(btnDelete, SIGNAL(clicked()), this, SLOT(deleteKeyframe()));
+  connect(btnPlay, SIGNAL(clicked()), this, SLOT(play()));
   connect(keyframeBox, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(updateItem(QListWidgetItem*)));
+  keyframeTimer_ = new QTimer(this);
+  connect(keyframeTimer_, SIGNAL(timeout()), this, SLOT(playNextKeyframe()));
 }
 
 void KeyframeWidget::updateItem(QListWidgetItem* item) {
@@ -73,4 +76,24 @@ void KeyframeWidget::deleteKeyframe() {
 
 void KeyframeWidget::updateMemory(MemoryCache cache) {
   cache_ = cache;
+}
+
+void KeyframeWidget::play() {
+  currentKeyframe_ = 0;
+  keyframeTimer_->start(500);
+}
+
+void KeyframeWidget::playNextKeyframe() {
+  if(currentKeyframe_ > 0) {
+    auto kfitem = static_cast<KeyframeItem*>(keyframeBox->item(currentKeyframe_ - 1));
+    kfitem->setSelected(false);
+  }
+  if(currentKeyframe_ >= keyframeBox->count()) {
+    keyframeTimer_->stop();
+    return;
+  }
+  auto kfitem = static_cast<KeyframeItem*>(keyframeBox->item(currentKeyframe_));
+  kfitem->setSelected(true);
+  emit playingKeyframe(kfitem->keyframe());
+  currentKeyframe_++;
 }

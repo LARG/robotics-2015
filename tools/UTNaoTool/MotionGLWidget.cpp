@@ -38,6 +38,7 @@ MotionGLWidget::MotionGLWidget(QWidget* pa): QGLViewer(pa)  {
   kick_engine_ = NULL;
   kick_module_ = NULL;
   prev_kick_state_ = KickState::NONE;
+  useKeyframes_ = false;
 }
 
 void MotionGLWidget::init() {
@@ -81,7 +82,7 @@ void MotionGLWidget::updateMemory(Memory* mem) {
   mem->getBlockByName(sensors_,"processed_sensors",false);
   mem->getBlockByName(frame_,"frame_info",false);
   mem->getBlockByName(walk_engine_,"walk_engine",false);
-  mem->getBlockByName(joint_values_,"processed_joint_angles",false);
+  mem->getBlockByName(joint_values_,"vision_joint_angles",false);
   mem->getBlockByName(joint_commands_,"processed_joint_commands",false);
   mem->getBlockByName(walk_request_,"walk_request",false);
   mem->getBlockByName(walk_param_, "walk_param",false);
@@ -94,8 +95,6 @@ void MotionGLWidget::updateMemory(Memory* mem) {
 
   if (body_model_ == NULL)
     mem->getBlockByName(body_model_,"vision_body_model",false);
-  if (joint_values_ == NULL)
-    mem->getBlockByName(joint_values_,"vision_joint_angles",false);
   if (sensors_ == NULL)
     mem->getBlockByName(sensors_,"vision_sensors",false);
 
@@ -109,9 +108,11 @@ void MotionGLWidget::draw() {
   // we'll always want a body model
 
   // various versions of the stick figure based on different data
-  if (displayOptions[SHOWBODYMODEL]) drawBodyModel(body_model_, Colors::LightOrange);
-  if (displayOptions[SHOWJOINTVALUESMODEL]) drawBodyModelFromJointValues();
-  if (displayOptions[SHOWJOINTCOMMANDSMODEL]) drawBodyModelFromJointCommands();
+  //if (displayOptions[SHOWBODYMODEL]) drawBodyModel(body_model_, Colors::LightOrange);
+  //if (displayOptions[SHOWJOINTVALUESMODEL]) drawBodyModelFromJointValues();
+  //if (displayOptions[SHOWJOINTCOMMANDSMODEL]) drawBodyModelFromJointCommands();
+  if (useKeyframes_) drawBodyModelFromKeyframe(lastKeyframe_);
+  else drawBodyModelFromJointValues();
 
   // step placement
   if (displayOptions[SHOWSTEPS]) drawSteps();
@@ -362,6 +363,16 @@ void MotionGLWidget::drawBodyModelFromJointValues(){
 
   // create a new body model to fill in
   BodyModelBlock* new_body_model_ = getBodyModelFromJoints(joint_values_->values_);
+
+  // draw the stick figure
+  drawBodyModel(new_body_model_, Colors::LightOrange);
+
+  delete new_body_model_;
+}
+
+void MotionGLWidget::drawBodyModelFromKeyframe(Keyframe keyframe){
+  // create a new body model to fill in
+  BodyModelBlock* new_body_model_ = getBodyModelFromJoints(keyframe.joints);
 
   // draw the stick figure
   drawBodyModel(new_body_model_, Colors::LightOrange);
@@ -1614,3 +1625,8 @@ Pose3D MotionGLWidget::globalToDrawingFrame(Vector2<float> a){
   return globalToDrawingFrame(b);
 }
 
+void MotionGLWidget::drawKeyframe(const Keyframe& keyframe) {
+  lastKeyframe_ = keyframe;
+  useKeyframes_ = true;
+  update();
+}

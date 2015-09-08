@@ -4,6 +4,7 @@ using namespace std;
 
 MotionWindow::MotionWindow(QMainWindow* pa) : ConfigWindow(pa) {
   setupUi(this);
+  connect(keyframes_, SIGNAL(playingKeyframe(const Keyframe&)), motion_, SLOT(drawKeyframe(const Keyframe&)));
 }
 
 void MotionWindow::updateMemory(Memory* mem) {

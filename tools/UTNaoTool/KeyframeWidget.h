@@ -28,6 +28,9 @@ class KeyframeWidget : public ConfigWidget, public Ui_KeyframeWidget {
     KeyframeWidget(QWidget* parent);
     void updateMemory(MemoryCache cache);
 
+  signals:
+    void playingKeyframe(const Keyframe& keyframe);
+
   protected:
     void loadConfig(const ToolConfig& config) { }
     void saveConfig(ToolConfig& config) { }
@@ -40,8 +43,12 @@ class KeyframeWidget : public ConfigWidget, public Ui_KeyframeWidget {
     void addKeyframe();
     void deleteKeyframe();
     void updateItem(QListWidgetItem* item);
+    void play();
+    void playNextKeyframe();
 
   private:
+    int currentKeyframe_;
     MemoryCache cache_;
+    QTimer* keyframeTimer_;
 };
 
