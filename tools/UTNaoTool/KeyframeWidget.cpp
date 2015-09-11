@@ -5,12 +5,44 @@
 #define DEFAULT_FILE (UTMainWnd::dataDirectory() + "/keyframe.yaml")
   
 void KeyframeItem::updateName() {
-  keyframe_.name = this->text().toStdString();
+  keyframe_.name = txtName->toPlainText().toStdString();
+  lblName->setText(txtName->toPlainText());
+}
+
+void KeyframeItem::updateDelay(int delay) {
+  keyframe_.delay = delay;
+  lblDelay->setText(QString::number(delay) + " ms");
+}
+
+void KeyframeItem::activate() {
+  lblName->setVisible(false);
+  lblDelay->setVisible(false);
+  txtName->setVisible(true);
+  spnDelay->setVisible(true);
+}
+
+void KeyframeItem::deactivate() {
+  lblName->setVisible(true);
+  lblDelay->setVisible(true);
+  txtName->setVisible(false);
+  spnDelay->setVisible(false);
 }
     
-void KeyframeItem::init() {
-  setText(QString::fromStdString(keyframe_.name));
-  setFlags(this->flags() | Qt::ItemIsEditable);
+void KeyframeItem::init(QListWidgetItem* item) {
+  connect(txtName, SIGNAL(textChanged()), this, SLOT(updateName()));
+  connect(spnDelay, SIGNAL(valueChanged(int)), this, SLOT(updateDelay(int)));
+  txtName->setPlainText(QString::fromStdString(keyframe_.name));
+  lblName->setText(txtName->toPlainText());
+  spnDelay->setValue(keyframe_.delay);
+  lblDelay->setText(QString::number(keyframe_.delay) + " ms");
+  
+  item->setSizeHint(QSize(100, 45));
+  item->setFlags(item->flags() | Qt::ItemIsEditable);
+  
+  auto keyframeBox = static_cast<QListWidget*>(parent());
+  keyframeBox->addItem(item);
+  keyframeBox->setItemWidget(item, this);
+  deactivate();
 }
 
 KeyframeWidget::KeyframeWidget(QWidget* parent) : ConfigWidget(parent) {
@@ -23,12 +55,15 @@ KeyframeWidget::KeyframeWidget(QWidget* parent) : ConfigWidget(parent) {
   connect(btnDelete, SIGNAL(clicked()), this, SLOT(deleteKeyframe()));
   connect(btnPlay, SIGNAL(clicked()), this, SLOT(play()));
   connect(keyframeBox, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(updateItem(QListWidgetItem*)));
+  connect(keyframeBox, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(activate(QListWidgetItem*)));
+  connect(keyframeBox, SIGNAL(itemSelectionChanged()), this, SLOT(deactivateCurrent()));
   keyframeTimer_ = new QTimer(this);
   connect(keyframeTimer_, SIGNAL(timeout()), this, SLOT(playNextKeyframe()));
+  activated_ = NULL;
 }
 
 void KeyframeWidget::updateItem(QListWidgetItem* item) {
-  if(auto kitem = dynamic_cast<KeyframeItem*>(item)) {
+  if(auto kitem = dynamic_cast<KeyframeItem*>(keyframeBox->itemWidget(item))) {
     kitem->updateName();
   }
 }
@@ -36,7 +71,7 @@ void KeyframeWidget::updateItem(QListWidgetItem* item) {
 void KeyframeWidget::save() {
   KeyframeSequence ks;
   for(int i = 0; i < keyframeBox->count(); i++) {
-    auto kitem = static_cast<KeyframeItem*>(keyframeBox->item(i));
+    auto kitem = static_cast<KeyframeItem*>(keyframeBox->itemWidget(keyframeBox->item(i)));
     ks.keyframes.push_back(kitem->keyframe());
   }
   ks.save(DEFAULT_FILE);
@@ -46,8 +81,10 @@ void KeyframeWidget::reload() {
   KeyframeSequence ks;
   keyframeBox->clear();
   ks.load(DEFAULT_FILE);
-  for(auto kf : ks.keyframes)
-    keyframeBox->addItem(new KeyframeItem(keyframeBox, kf));
+  for(auto kf : ks.keyframes) {
+    auto item = new QListWidgetItem(keyframeBox);
+    auto kfitem = new KeyframeItem(keyframeBox, item, kf);
+  }
 }
 
 void KeyframeWidget::saveAs() {
@@ -64,12 +101,14 @@ void KeyframeWidget::addKeyframe() {
   auto kf = Keyframe(ssprintf("Keyframe %i", keyframeBox->count()));
   for(int i = 0; i < NUM_JOINTS; i++)
     kf.joints[i] = cache_.joint->values_[i];
-  auto item = new KeyframeItem(keyframeBox, kf);
-  keyframeBox->addItem(item);
+  auto item = new QListWidgetItem(keyframeBox);
+  auto kfitem = new KeyframeItem(keyframeBox, item, kf);
 }
 
 void KeyframeWidget::deleteKeyframe() {
   for(auto item : keyframeBox->selectedItems()) {
+    auto kfitem = static_cast<KeyframeItem*>(keyframeBox->itemWidget(item));
+    if(activated_ == kfitem) activated_ == NULL;
     delete item;
   }
 }
@@ -85,15 +124,27 @@ void KeyframeWidget::play() {
 
 void KeyframeWidget::playNextKeyframe() {
   if(currentKeyframe_ > 0) {
-    auto kfitem = static_cast<KeyframeItem*>(keyframeBox->item(currentKeyframe_ - 1));
-    kfitem->setSelected(false);
+    auto item = keyframeBox->item(currentKeyframe_ - 1);
+    item->setSelected(false);
   }
   if(currentKeyframe_ >= keyframeBox->count()) {
     keyframeTimer_->stop();
     return;
   }
-  auto kfitem = static_cast<KeyframeItem*>(keyframeBox->item(currentKeyframe_));
-  kfitem->setSelected(true);
+  auto item = keyframeBox->item(currentKeyframe_);
+  auto kfitem = static_cast<KeyframeItem*>(keyframeBox->itemWidget(item));
+  item->setSelected(true);
   emit playingKeyframe(kfitem->keyframe());
   currentKeyframe_++;
+}
+
+void KeyframeWidget::activate(QListWidgetItem* item) {
+  if(activated_) activated_->deactivate();
+  activated_ = static_cast<KeyframeItem*>(keyframeBox->itemWidget(item));
+  activated_->activate();
+}
+
+void KeyframeWidget::deactivateCurrent() {
+  if(activated_) activated_->deactivate();
+  activated_ = NULL;
 }

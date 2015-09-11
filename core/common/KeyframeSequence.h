@@ -12,6 +12,7 @@ class Keyframe : public YamlConfig {
 
     float joints[NUM_JOINTS];
     std::string name;
+    int delay;
 };
 
 class KeyframeSequence : public YamlConfig {

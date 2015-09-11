@@ -3,10 +3,12 @@
 Keyframe::Keyframe(std::string name) : name(name) {
   for(int i = 0; i < NUM_JOINTS; i++)
     joints[i] = 0.0f;
+  delay = 100;
 }
 
 void Keyframe::deserialize(const YAML::Node& node) {
   YAML_DESERIALIZE(node, name);
+  YAML_DESERIALIZE(node, delay);
   const auto& jnode = node["joints"];
   for(int i = 0; i < NUM_JOINTS; i++) {
     jnode[JointNames[i]] >> joints[i];
@@ -16,6 +18,7 @@ void Keyframe::deserialize(const YAML::Node& node) {
 
 void Keyframe::serialize(YAML::Emitter& emitter) const {
   YAML_SERIALIZE(emitter, name);
+  YAML_SERIALIZE(emitter, delay);
   emitter << YAML::Key << "joints" << YAML::Value;
   emitter << YAML::BeginMap;
   for(int i = 0; i < NUM_JOINTS; i++)
