@@ -10,9 +10,9 @@ class Keyframe : public YamlConfig {
     void deserialize(const YAML::Node& node);
     void serialize(YAML::Emitter& emitter) const;
 
-    float joints[NUM_JOINTS];
+    std::array<float,NUM_JOINTS> joints;
     std::string name;
-    int delay;
+    int frames;
 };
 
 class KeyframeSequence : public YamlConfig {

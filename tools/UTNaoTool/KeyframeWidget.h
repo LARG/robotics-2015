@@ -20,7 +20,7 @@ class KeyframeItem : public QWidget, public Ui_KeyframeItem {
     void init(QListWidgetItem* item);
   public slots:
     void updateName();
-    void updateDelay(int delay);
+    void updateFrames(int frames);
     void activate();
     void deactivate();
   private:

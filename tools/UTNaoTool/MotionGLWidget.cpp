@@ -340,6 +340,10 @@ BodyModelBlock* MotionGLWidget::getBodyModelFromJoints(vector<float> joints){
   return getBodyModelFromJoints(&joints[0]);
 }
 
+BodyModelBlock* MotionGLWidget::getBodyModelFromJoints(array<float,NUM_JOINTS> joints){
+  return getBodyModelFromJoints(&joints[0]);
+}
+
 BodyModelBlock* MotionGLWidget::getBodyModelFromJoints(float *joints){
   // create a new body model to fill in
   BodyModelBlock* new_body_model_ = new BodyModelBlock();

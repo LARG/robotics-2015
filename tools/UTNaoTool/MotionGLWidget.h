@@ -132,6 +132,7 @@ Q_OBJECT        // must include this if you use Qt signals/slots
   void drawBodyModelFromJointCommands();
   void drawBodyModelFromJointValues();
   void drawBodyModelFromKeyframe(Keyframe keyframe);
+  BodyModelBlock* getBodyModelFromJoints(array<float,NUM_JOINTS> joints);
   BodyModelBlock* getBodyModelFromJoints(vector<float> joints);
   BodyModelBlock* getBodyModelFromJoints(float *joints);
   void drawSteps();

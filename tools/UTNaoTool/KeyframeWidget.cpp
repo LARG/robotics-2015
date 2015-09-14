@@ -9,9 +9,9 @@ void KeyframeItem::updateName() {
   lblName->setText(txtName->toPlainText());
 }
 
-void KeyframeItem::updateDelay(int delay) {
-  keyframe_.delay = delay;
-  lblDelay->setText(QString::number(delay) + " ms");
+void KeyframeItem::updateFrames(int frames) {
+  keyframe_.frames = frames;
+  lblDelay->setText(QString::number(frames) + " ms");
 }
 
 void KeyframeItem::activate() {
@@ -30,11 +30,11 @@ void KeyframeItem::deactivate() {
     
 void KeyframeItem::init(QListWidgetItem* item) {
   connect(txtName, SIGNAL(textChanged()), this, SLOT(updateName()));
-  connect(spnDelay, SIGNAL(valueChanged(int)), this, SLOT(updateDelay(int)));
+  connect(spnDelay, SIGNAL(valueChanged(int)), this, SLOT(updateFrames(int)));
   txtName->setPlainText(QString::fromStdString(keyframe_.name));
   lblName->setText(txtName->toPlainText());
-  spnDelay->setValue(keyframe_.delay);
-  lblDelay->setText(QString::number(keyframe_.delay) + " ms");
+  spnDelay->setValue(keyframe_.frames);
+  lblDelay->setText(QString::number(keyframe_.frames) + " ms");
   
   item->setSizeHint(QSize(100, 45));
   item->setFlags(item->flags() | Qt::ItemIsEditable);
