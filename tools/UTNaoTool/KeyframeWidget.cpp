@@ -11,7 +11,7 @@ void KeyframeItem::updateName() {
 
 void KeyframeItem::updateFrames(int frames) {
   keyframe_.frames = frames;
-  lblFrames->setText(QString::number(frames) + " ms");
+  lblFrames->setText(QString::number(frames) + " fr");
 }
 
 void KeyframeItem::activate() {
@@ -27,21 +27,44 @@ void KeyframeItem::deactivate() {
   txtName->setVisible(false);
   spnFrames->setVisible(false);
 }
+
+void KeyframeItem::moveUp() {
+  int r = list_->row(item_);
+  if(r > 0) {
+    list_->takeItem(r);
+    list_->insertItem(r - 1, item_);
+    list_->setItemWidget(item_, this);
+  }
+}
+
+void KeyframeItem::moveDown() {
+  int r = list_->row(item_);
+  if(r < list_->count() - 1) {
+    list_->takeItem(r);
+    list_->insertItem(r + 1, item_);
+    list_->setItemWidget(item_, this);
+  }
+}
     
 void KeyframeItem::init(QListWidgetItem* item) {
   connect(txtName, SIGNAL(textChanged()), this, SLOT(updateName()));
   connect(spnFrames, SIGNAL(valueChanged(int)), this, SLOT(updateFrames(int)));
+  connect(btnUp, SIGNAL(clicked()), this, SLOT(moveUp()));
+  connect(btnDown, SIGNAL(clicked()), this, SLOT(moveDown()));
   txtName->setPlainText(QString::fromStdString(keyframe_.name));
   lblName->setText(txtName->toPlainText());
   spnFrames->setValue(keyframe_.frames);
-  lblFrames->setText(QString::number(keyframe_.frames) + " ms");
+  lblFrames->setText(QString::number(keyframe_.frames) + " fr");
   
   item->setSizeHint(QSize(100, 45));
   item->setFlags(item->flags() | Qt::ItemIsEditable);
+  item_ = item;
   
   auto keyframeBox = static_cast<QListWidget*>(parent());
   keyframeBox->addItem(item);
   keyframeBox->setItemWidget(item, this);
+  list_ = keyframeBox;
+  
   deactivate();
 }
 
@@ -180,6 +203,7 @@ void KeyframeWidget::playNextFrame() {
 void KeyframeWidget::activate(QListWidgetItem* item) {
   if(activated_) activated_->deactivate();
   activated_ = static_cast<KeyframeItem*>(keyframeBox->itemWidget(item));
+  printf("activating %0x\n", activated_);
   activated_->activate();
 }
 

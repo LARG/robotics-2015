@@ -17,14 +17,19 @@ class KeyframeItem : public QWidget, public Ui_KeyframeItem {
       init(item);
     }
     const Keyframe& keyframe() { return keyframe_; }
+    QListWidgetItem* item() { return item_; }
     void init(QListWidgetItem* item);
   public slots:
     void updateName();
     void updateFrames(int frames);
     void activate();
     void deactivate();
+    void moveUp();
+    void moveDown();
   private:
     Keyframe keyframe_;
+    QListWidgetItem* item_;
+    QListWidget* list_;
 };
 
 class KeyframeWidget : public ConfigWidget, public Ui_KeyframeWidget {

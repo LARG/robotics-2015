@@ -11,5 +11,7 @@
     <file>images/pause.png</file>
     <file>images/play.png</file>
     <file>images/restart.png</file>
+    <file>images/up.png</file>
+    <file>images/down.png</file>
   </qresource>
 </RCC>
