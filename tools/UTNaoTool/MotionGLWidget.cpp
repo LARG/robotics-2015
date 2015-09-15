@@ -39,6 +39,7 @@ MotionGLWidget::MotionGLWidget(QWidget* pa): QGLViewer(pa)  {
   kick_module_ = NULL;
   prev_kick_state_ = KickState::NONE;
   useKeyframes_ = false;
+  base_ = SupportBase::TorsoBase;
 }
 
 void MotionGLWidget::init() {
@@ -353,13 +354,17 @@ BodyModelBlock* MotionGLWidget::getBodyModelFromJoints(float *joints){
 
   // calculate a body model from the joint values
   ForwardKinematics::calculateRelativePose(joints, new_body_model_->rel_parts_, &dimensions_.values_[0]);
-  if(useKeyframes_) {
+  if(base_ == SupportBase::TorsoBase) {
     base = new_body_model_->rel_parts_[BodyPart::torso];
     base.translation.z -= 300;
   }
-  else if(sensors_ == NULL) 
+  else if(base_ == SupportBase::LeftFoot)
     base = ForwardKinematics::calculateVirtualBase(true, new_body_model_->rel_parts_);
-  else
+  else if(base_ == SupportBase::RightFoot)
+    base = ForwardKinematics::calculateVirtualBase(false, new_body_model_->rel_parts_);
+  else if(sensors_ == NULL)
+    base = ForwardKinematics::calculateVirtualBase(true, new_body_model_->rel_parts_);
+  else // SensorBase
     base = ForwardKinematics::calculateVirtualBase(sensors_->values_, new_body_model_->rel_parts_);
   ForwardKinematics::calculateAbsolutePose(base, new_body_model_->rel_parts_, new_body_model_->abs_parts_);
   ForwardKinematics::calculateCoM(new_body_model_->abs_parts_, new_body_model_->center_of_mass_,mass_calibration_);

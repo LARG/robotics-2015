@@ -58,6 +58,10 @@ KeyframeWidget::KeyframeWidget(QWidget* parent) : ConfigWidget(parent) {
   connect(keyframeBox, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(updateItem(QListWidgetItem*)));
   connect(keyframeBox, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(activate(QListWidgetItem*)));
   connect(keyframeBox, SIGNAL(itemSelectionChanged()), this, SLOT(deactivateCurrent()));
+  connect(rdoTorso, SIGNAL(toggled(bool)), this, SLOT(supportBaseUpdated(bool)));
+  connect(rdoLeftFoot, SIGNAL(toggled(bool)), this, SLOT(supportBaseUpdated(bool)));
+  connect(rdoRightFoot, SIGNAL(toggled(bool)), this, SLOT(supportBaseUpdated(bool)));
+  connect(rdoSensor, SIGNAL(toggled(bool)), this, SLOT(supportBaseUpdated(bool)));
   keyframeTimer_ = new QTimer(this);
   connect(keyframeTimer_, SIGNAL(timeout()), this, SLOT(playNextFrame()));
   keyframeTimer_->setSingleShot(true);
@@ -182,4 +186,11 @@ void KeyframeWidget::activate(QListWidgetItem* item) {
 void KeyframeWidget::deactivateCurrent() {
   if(activated_) activated_->deactivate();
   activated_ = NULL;
+}
+
+void KeyframeWidget::supportBaseUpdated(bool) {
+  if(rdoTorso->isChecked()) emit updatedSupportBase(SupportBase::TorsoBase);
+  else if(rdoLeftFoot->isChecked()) emit updatedSupportBase(SupportBase::LeftFoot);
+  else if(rdoRightFoot->isChecked()) emit updatedSupportBase(SupportBase::RightFoot);
+  else if(rdoSensor->isChecked()) emit updatedSupportBase(SupportBase::SensorFoot);
 }

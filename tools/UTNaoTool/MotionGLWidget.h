@@ -191,6 +191,7 @@ Q_OBJECT        // must include this if you use Qt signals/slots
   qglviewer::Vec orig, dir, selectedPoint;
   bool useKeyframes_;
   Keyframe lastKeyframe_;
+  SupportBase base_;
 
  protected:
   void keyPressEvent(QKeyEvent *event);
@@ -204,7 +205,7 @@ Q_OBJECT        // must include this if you use Qt signals/slots
 public slots:
   void drawSequence(const Keyframe& start, const Keyframe& finish, int cframe);
   void drawKeyframe(const Keyframe& keyframe);
-  
+  void setSupportBase(SupportBase base) { base_ = base; update(); }
 };
 
 	

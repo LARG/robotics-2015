@@ -35,6 +35,15 @@
 
 #define NUM_SONAR_VALS 10
 
+#ifndef SWIG
+enum class SupportBase {
+  SensorFoot,
+  LeftFoot,
+  RightFoot,
+  TorsoBase
+};
+#endif
+
 enum Joint {
   HeadYaw,
   HeadPitch,

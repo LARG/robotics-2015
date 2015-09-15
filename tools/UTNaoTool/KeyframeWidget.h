@@ -36,6 +36,7 @@ class KeyframeWidget : public ConfigWidget, public Ui_KeyframeWidget {
   signals:
     void playingSequence(const Keyframe& start, const Keyframe& finish, int cframe);
     void showingKeyframe(const Keyframe& keyframe);
+    void updatedSupportBase(SupportBase base);
 
   protected:
     void loadConfig(const ToolConfig& config) { }
@@ -54,6 +55,7 @@ class KeyframeWidget : public ConfigWidget, public Ui_KeyframeWidget {
     void show();
     void activate(QListWidgetItem *item);
     void deactivateCurrent();
+    void supportBaseUpdated(bool);
 
   private:
     int currentKeyframe_, currentFrame_;
