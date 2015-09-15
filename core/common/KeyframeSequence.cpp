@@ -1,9 +1,15 @@
 #include <common/KeyframeSequence.h>
 
-Keyframe::Keyframe(std::string name) : name(name) {
+using namespace std;
+
+Keyframe::Keyframe(string name) {
   for(int i = 0; i < NUM_JOINTS; i++)
     joints[i] = 0.0f;
   frames = 100;
+}
+
+Keyframe::Keyframe(float joints[NUM_JOINTS], int frames) : frames(frames) { 
+  memcpy(this->joints.data(), joints, sizeof(float) * NUM_JOINTS);
 }
 
 void Keyframe::deserialize(const YAML::Node& node) {

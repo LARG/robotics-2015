@@ -46,13 +46,13 @@ public:
     head_yaw_angle_change_ = false;
   }
 
-  void setPoseRad(float src[NUM_JOINTS]) {
+  void setPoseRad(const float src[NUM_JOINTS]) {
     for (int i=0; i<NUM_JOINTS; i++) {
       angles_[i]=src[i];
     }
   }
 
-  void setPoseDeg(float src[NUM_JOINTS]) {
+  void setPoseDeg(const float src[NUM_JOINTS]) {
     for (int i=0; i<NUM_JOINTS; i++) angles_[i]=DEG_T_RAD*src[i];
   }
 

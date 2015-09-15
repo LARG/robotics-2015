@@ -11,30 +11,30 @@ void KeyframeItem::updateName() {
 
 void KeyframeItem::updateFrames(int frames) {
   keyframe_.frames = frames;
-  lblDelay->setText(QString::number(frames) + " ms");
+  lblFrames->setText(QString::number(frames) + " ms");
 }
 
 void KeyframeItem::activate() {
   lblName->setVisible(false);
-  lblDelay->setVisible(false);
+  lblFrames->setVisible(false);
   txtName->setVisible(true);
-  spnDelay->setVisible(true);
+  spnFrames->setVisible(true);
 }
 
 void KeyframeItem::deactivate() {
   lblName->setVisible(true);
-  lblDelay->setVisible(true);
+  lblFrames->setVisible(true);
   txtName->setVisible(false);
-  spnDelay->setVisible(false);
+  spnFrames->setVisible(false);
 }
     
 void KeyframeItem::init(QListWidgetItem* item) {
   connect(txtName, SIGNAL(textChanged()), this, SLOT(updateName()));
-  connect(spnDelay, SIGNAL(valueChanged(int)), this, SLOT(updateFrames(int)));
+  connect(spnFrames, SIGNAL(valueChanged(int)), this, SLOT(updateFrames(int)));
   txtName->setPlainText(QString::fromStdString(keyframe_.name));
   lblName->setText(txtName->toPlainText());
-  spnDelay->setValue(keyframe_.frames);
-  lblDelay->setText(QString::number(keyframe_.frames) + " ms");
+  spnFrames->setValue(keyframe_.frames);
+  lblFrames->setText(QString::number(keyframe_.frames) + " ms");
   
   item->setSizeHint(QSize(100, 45));
   item->setFlags(item->flags() | Qt::ItemIsEditable);
@@ -54,11 +54,13 @@ KeyframeWidget::KeyframeWidget(QWidget* parent) : ConfigWidget(parent) {
   connect(btnAdd, SIGNAL(clicked()), this, SLOT(addKeyframe()));
   connect(btnDelete, SIGNAL(clicked()), this, SLOT(deleteKeyframe()));
   connect(btnPlay, SIGNAL(clicked()), this, SLOT(play()));
+  connect(btnShow, SIGNAL(clicked()), this, SLOT(show()));
   connect(keyframeBox, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(updateItem(QListWidgetItem*)));
   connect(keyframeBox, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(activate(QListWidgetItem*)));
   connect(keyframeBox, SIGNAL(itemSelectionChanged()), this, SLOT(deactivateCurrent()));
   keyframeTimer_ = new QTimer(this);
-  connect(keyframeTimer_, SIGNAL(timeout()), this, SLOT(playNextKeyframe()));
+  connect(keyframeTimer_, SIGNAL(timeout()), this, SLOT(playNextFrame()));
+  keyframeTimer_->setSingleShot(true);
   activated_ = NULL;
 }
 
@@ -119,23 +121,56 @@ void KeyframeWidget::updateMemory(MemoryCache cache) {
 
 void KeyframeWidget::play() {
   currentKeyframe_ = 0;
-  keyframeTimer_->start(500);
+  currentFrame_ = 0;
+  keyframeTimer_->start(100);
 }
 
-void KeyframeWidget::playNextKeyframe() {
+void KeyframeWidget::show() {
+  for(auto item : keyframeBox->selectedItems()) {
+    auto kfitem = static_cast<KeyframeItem*>(keyframeBox->itemWidget(item));
+    emit showingKeyframe(kfitem->keyframe());
+    break;
+  }
+}
+
+void KeyframeWidget::playNextFrame() {
+  // Clear selections from keyframes that have been played
   if(currentKeyframe_ > 0) {
     auto item = keyframeBox->item(currentKeyframe_ - 1);
     item->setSelected(false);
   }
-  if(currentKeyframe_ >= keyframeBox->count()) {
-    keyframeTimer_->stop();
+
+  // Stop if we've played motions between each pair
+  if(currentKeyframe_ >= keyframeBox->count() - 1) {
+    for(int i = 0; i < keyframeBox->count(); i++)
+      keyframeBox->item(i)->setSelected(false);
     return;
   }
-  auto item = keyframeBox->item(currentKeyframe_);
-  auto kfitem = static_cast<KeyframeItem*>(keyframeBox->itemWidget(item));
-  item->setSelected(true);
-  emit playingKeyframe(kfitem->keyframe());
-  currentKeyframe_++;
+
+  // Pull the first keyframe in the pair
+  auto sitem = keyframeBox->item(currentKeyframe_);
+  sitem->setSelected(true);
+  auto kfstart = static_cast<KeyframeItem*>(keyframeBox->itemWidget(sitem));
+  auto& start = kfstart->keyframe();
+  
+  // If we've played the transition, increment and start on the next pair
+  if(currentFrame_ >= start.frames) {
+    currentKeyframe_++;
+    currentFrame_ = 0;
+    playNextFrame();
+    return;
+  }
+  
+  // If we haven't finished the transition, pull the second keyframe in the pair
+  auto fitem = keyframeBox->item(currentKeyframe_ + 1);
+  fitem->setSelected(true);
+  auto kffinish = static_cast<KeyframeItem*>(keyframeBox->itemWidget(fitem));
+  auto& finish = kffinish->keyframe();
+
+  // Emit the start, end, and # of frames
+  emit playingSequence(start, finish, currentFrame_);
+  currentFrame_++;
+  keyframeTimer_->start(10);
 }
 
 void KeyframeWidget::activate(QListWidgetItem* item) {

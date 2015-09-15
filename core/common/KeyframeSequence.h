@@ -2,11 +2,12 @@
 
 #include <common/RobotInfo.h>
 #include <common/YamlConfig.h>
+#include <cstring>
 
 class Keyframe : public YamlConfig {
   public:
-    Keyframe() = default;
-    Keyframe(std::string name);
+    Keyframe(std::string name="");
+    Keyframe(float joints[NUM_JOINTS], int frames);
     void deserialize(const YAML::Node& node);
     void serialize(YAML::Emitter& emitter) const;
 

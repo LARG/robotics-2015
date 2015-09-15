@@ -16,7 +16,9 @@ class KickModule : public Module {
 
     void processFrame();
     void start();
+    void finish();
     bool finished();
+    void moveBetweenKeyframes(const Keyframe& start, const Keyframe& finish, int cframe);
 
   protected:
     ENUM(KickState,
@@ -24,13 +26,13 @@ class KickModule : public Module {
       Running,
       Finished
     );
-    void moveToInitial(const Keyframe& keyframe);
+    void moveToInitial(const Keyframe& keyframe, int cframe);
     bool reachedKeyframe(const Keyframe& keyframe);
-    void moveBetweenKeyframes(const Keyframe& start, const Keyframe& finish, int cframe);
   private:
     KickState state_;
     MemoryCache cache_;
     KeyframeSequence* sequence_;
+    Keyframe* initial_;
     int frames_;
     int keyframe_;
 };

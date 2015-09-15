@@ -34,7 +34,8 @@ class KeyframeWidget : public ConfigWidget, public Ui_KeyframeWidget {
     void updateMemory(MemoryCache cache);
 
   signals:
-    void playingKeyframe(const Keyframe& keyframe);
+    void playingSequence(const Keyframe& start, const Keyframe& finish, int cframe);
+    void showingKeyframe(const Keyframe& keyframe);
 
   protected:
     void loadConfig(const ToolConfig& config) { }
@@ -49,12 +50,13 @@ class KeyframeWidget : public ConfigWidget, public Ui_KeyframeWidget {
     void deleteKeyframe();
     void updateItem(QListWidgetItem* item);
     void play();
-    void playNextKeyframe();
+    void playNextFrame();
+    void show();
     void activate(QListWidgetItem *item);
     void deactivateCurrent();
 
   private:
-    int currentKeyframe_;
+    int currentKeyframe_, currentFrame_;
     MemoryCache cache_;
     QTimer* keyframeTimer_;
     KeyframeItem* activated_;

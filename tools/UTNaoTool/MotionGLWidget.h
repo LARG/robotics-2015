@@ -202,6 +202,7 @@ Q_OBJECT        // must include this if you use Qt signals/slots
   void pause();
   void modeChanged(QString);
 public slots:
+  void drawSequence(const Keyframe& start, const Keyframe& finish, int cframe);
   void drawKeyframe(const Keyframe& keyframe);
   
 };

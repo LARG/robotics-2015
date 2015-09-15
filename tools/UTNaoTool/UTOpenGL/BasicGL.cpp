@@ -185,9 +185,11 @@ void BasicGL::drawCylinder(float x1, float y1, float z1, float x2,float y2, floa
   float vy = y2-y1;
   float vz = z2-z1;
 
-  //handle the degenerate case of z1 == z2 with an approximation
-  if(vz == 0)
-    vz = .0001;
+  //handle the degenerate cases
+  if(vx == 0) vx = 0.0001f;
+  if(vy == 0) vy = 0.0001f;
+  if(vz == 0) vz = 0.0001f;
+  
 
   float v = sqrt( vx*vx + vy*vy + vz*vz );
   float ax = 57.2957795*acos( vz/v );

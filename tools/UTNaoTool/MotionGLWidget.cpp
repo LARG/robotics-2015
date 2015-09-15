@@ -99,6 +99,7 @@ void MotionGLWidget::updateMemory(Memory* mem) {
     mem->getBlockByName(sensors_,"vision_sensors",false);
 
   memory_ = mem;
+  useKeyframes_ = false;
 }
 
 
@@ -352,7 +353,11 @@ BodyModelBlock* MotionGLWidget::getBodyModelFromJoints(float *joints){
 
   // calculate a body model from the joint values
   ForwardKinematics::calculateRelativePose(joints, new_body_model_->rel_parts_, &dimensions_.values_[0]);
-  if(sensors_ == NULL) 
+  if(useKeyframes_) {
+    base = new_body_model_->rel_parts_[BodyPart::torso];
+    base.translation.z -= 300;
+  }
+  else if(sensors_ == NULL) 
     base = ForwardKinematics::calculateVirtualBase(true, new_body_model_->rel_parts_);
   else
     base = ForwardKinematics::calculateVirtualBase(sensors_->values_, new_body_model_->rel_parts_);
@@ -1627,6 +1632,16 @@ Pose3D MotionGLWidget::globalToDrawingFrame(Vector2<float> a){
   b.translation.x = a.x;
   b.translation.y = a.y;
   return globalToDrawingFrame(b);
+}
+
+void MotionGLWidget::drawSequence(const Keyframe& start, const Keyframe& finish, int cframe) {
+  float progress = (cframe + 1.0f) / start.frames;
+  for(int i = 0; i < NUM_JOINTS; i++) {
+    auto delta = (finish.joints[i] - start.joints[i]) * progress;
+    lastKeyframe_.joints[i] = start.joints[i] + delta;
+  }
+  useKeyframes_ = true;
+  update();
 }
 
 void MotionGLWidget::drawKeyframe(const Keyframe& keyframe) {

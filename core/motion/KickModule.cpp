@@ -18,12 +18,20 @@ void KickModule::initSpecificModule() {
   sequence_ = new KeyframeSequence();
   if(!sequence_->load(file))
     sequence_ = NULL;
+  initial_ = NULL;
 }
 
 void KickModule::start() {
   state_ = Initial;
   keyframe_ = 0;
   frames_ = 0;
+  initial_ = new Keyframe(cache_.joint->values_, 200);
+}
+
+void KickModule::finish() {
+  state_ = Finished;
+  if(initial_) delete initial_;
+  initial_ = NULL;
 }
 
 bool KickModule::finished() {
@@ -56,7 +64,7 @@ void KickModule::processFrame() {
   if(state_ == Finished) return;
   if(sequence_ == NULL) return;
   if(keyframe_ >= sequence_->keyframes.size()) {
-    state_ = Finished;
+    finish();
     return;
   }
   auto& keyframe = sequence_->keyframes[keyframe_];
@@ -64,22 +72,23 @@ void KickModule::processFrame() {
     if(reachedKeyframe(keyframe)) {
       state_ = Running;
     } else {
-      moveToInitial(keyframe);
-      return;
+      moveToInitial(keyframe, frames_);
     }
   }
-  if(frames_ == keyframe.frames) {
-    keyframe_++;
-    frames_ = 0;
-    processFrame();
-    return;
+  if(state_ = Running) {
+    if(frames_ == keyframe.frames) {
+      keyframe_++;
+      frames_ = 0;
+      processFrame();
+      return;
+    }
+    if(keyframe_ == sequence_->keyframes.size() - 1) {
+      state_ = Finished;
+      return;
+    }
+    auto& next = sequence_->keyframes[keyframe_ + 1];
+    moveBetweenKeyframes(keyframe, next, frames_);
   }
-  if(keyframe_ == sequence_->keyframes.size() - 1) {
-    state_ = Finished;
-    return;
-  }
-  auto& next = sequence_->keyframes[keyframe_ + 1];
-  moveBetweenKeyframes(keyframe, next, frames_);
   frames_++;
 }
 
@@ -90,19 +99,14 @@ bool KickModule::reachedKeyframe(const Keyframe& keyframe) {
   }
 }
 
-void KickModule::moveToInitial(const Keyframe& keyframe) {
-  //TODO: fill in
+void KickModule::moveToInitial(const Keyframe& keyframe, int cframe) {
+  if(initial_ == NULL) return;
+  moveBetweenKeyframes(*initial_, keyframe, cframe);
 }
 
 void KickModule::moveBetweenKeyframes(const Keyframe& start, const Keyframe& finish, int cframe) {
   if(cframe == 0) {
-    // send timed joint commands via command block
+    cache_.joint_command->setSendAllAngles(true, cframe * 10);
+    cache_.joint_command->setPoseRad(finish.joints.data());
   }
-#ifdef TOOL
-  float progress = (cframe + 1.0f) / start.frames;
-  for(int i = 0; i < NUM_JOINTS; i++) {
-    auto delta = (finish.joints[i] - start.joints[i]) * progress;
-    cache_.joint->values_[i] += delta;
-  }
-#endif
 }
