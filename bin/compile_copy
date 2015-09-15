@@ -27,6 +27,9 @@ def getIP(args):
       pass
   return ip,args
 
+def filterCompileArgs(args):
+  return [a for a in args if a != 'config_file']
+
 def filterCopyArgs(args):
   newArgs = []
   for arg in args:
@@ -42,7 +45,8 @@ def main():
   args = sys.argv[1:]
   ip,args = getIP(args)
 
-  compileCommand = ['./compile'] + args
+  compileArgs = filterCompileArgs(args)
+  compileCommand = ['./compile'] + compileArgs
   print ' '.join(compileCommand)
   sysCall(compileCommand,'ERROR: Compile failed, not performing copy',shell=False)
 

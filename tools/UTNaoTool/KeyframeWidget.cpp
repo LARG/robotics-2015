@@ -2,7 +2,7 @@
 #include <tool/UTMainWnd.h>
 #include <common/Util.h>
 
-#define DEFAULT_FILE (UTMainWnd::dataDirectory() + "/keyframe.yaml")
+#define DEFAULT_FILE (UTMainWnd::dataDirectory() + "/kicks/keyframe.yaml")
   
 void KeyframeItem::updateName() {
   keyframe_.name = txtName->toPlainText().toStdString();

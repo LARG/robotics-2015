@@ -15,10 +15,6 @@ class KickModule : public Module {
     void specifyMemoryBlocks();
 
     void processFrame();
-    void start();
-    void finish();
-    bool finished();
-    void moveBetweenKeyframes(const Keyframe& start, const Keyframe& finish, int cframe);
 
   protected:
     ENUM(KickState,
@@ -26,6 +22,11 @@ class KickModule : public Module {
       Running,
       Finished
     );
+    void start();
+    void finish();
+    bool finished();
+    void moveBetweenKeyframes(const Keyframe& start, const Keyframe& finish, int cframe);
+    void performKick();
     void moveToInitial(const Keyframe& keyframe, int cframe);
     bool reachedKeyframe(const Keyframe& keyframe);
   private:

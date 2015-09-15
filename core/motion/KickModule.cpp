@@ -14,22 +14,29 @@
 KickModule::KickModule() : state_(Finished), sequence_(NULL) { }
 
 void KickModule::initSpecificModule() {
-  auto file = cache_.memory->data_path_ + "/keyframe.yaml";
+  auto file = cache_.memory->data_path_ + "kicks/keyframe.yaml";
   sequence_ = new KeyframeSequence();
-  if(!sequence_->load(file))
+  if(sequence_->load(file))
+    printf("Successfully loaded kick sequence.\n");
+  else
     sequence_ = NULL;
   initial_ = NULL;
 }
 
 void KickModule::start() {
+  printf("Starting kick sequence\n");
   state_ = Initial;
+  cache_.kick_request->kick_running_ = true;
   keyframe_ = 0;
   frames_ = 0;
   initial_ = new Keyframe(cache_.joint->values_, 200);
 }
 
 void KickModule::finish() {
+  printf("Finishing kick sequence\n");
   state_ = Finished;
+  cache_.kick_request->kick_running_ = false;
+  cache_.kick_request->kick_type_ == Kick::NO_KICK;
   if(initial_) delete initial_;
   initial_ = NULL;
 }
@@ -50,6 +57,7 @@ void KickModule::specifyMemoryDependency() {
 }
 
 void KickModule::specifyMemoryBlocks() {
+  cache_.memory = memory_;
   getMemoryBlock(cache_.frame_info,"frame_info");
   getMemoryBlock(cache_.walk_request,"walk_request");
   getMemoryBlock(cache_.joint,"processed_joint_angles");
@@ -61,6 +69,16 @@ void KickModule::specifyMemoryBlocks() {
 }
 
 void KickModule::processFrame() {
+  if(cache_.kick_request->kick_type_ == Kick::STRAIGHT) {
+    if(state_ == Finished) start();
+  }
+  if(state_ == Initial || state_ == Running) {
+    cache_.kick_request->kick_running_ = true;
+    performKick();
+  }
+}
+
+void KickModule::performKick() {
   if(state_ == Finished) return;
   if(sequence_ == NULL) return;
   if(keyframe_ >= sequence_->keyframes.size()) {
@@ -79,11 +97,12 @@ void KickModule::processFrame() {
     if(frames_ == keyframe.frames) {
       keyframe_++;
       frames_ = 0;
-      processFrame();
+      performKick();
       return;
     }
     if(keyframe_ == sequence_->keyframes.size() - 1) {
       state_ = Finished;
+      finish();
       return;
     }
     auto& next = sequence_->keyframes[keyframe_ + 1];
@@ -106,7 +125,7 @@ void KickModule::moveToInitial(const Keyframe& keyframe, int cframe) {
 
 void KickModule::moveBetweenKeyframes(const Keyframe& start, const Keyframe& finish, int cframe) {
   if(cframe == 0) {
-    cache_.joint_command->setSendAllAngles(true, cframe * 10);
+    cache_.joint_command->setSendAllAngles(true, start.frames * 10);
     cache_.joint_command->setPoseRad(finish.joints.data());
   }
 }

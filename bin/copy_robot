@@ -241,6 +241,8 @@ def main(ip,interfaces,options,robotID):
     elif interface == 'config_file':
       print ' data/config/rswalk2014/*.cfg'
       doFileOperations(ip,'../data/config/rswalk2014/*.pos','data/config/rswalk2014/',options)
+      print ' data/kicks/*.yaml'
+      doFileOperations(ip, '../data/kicks/*.yaml','data/kicks/',options)
       print " data/fft_whistle_model.txt"
       doFileOperations(ip,'../data/fft_whistle_model.txt','data/',options)
       print ' data/*.cal'

@@ -67,6 +67,7 @@ public:
   GetupModule *getup_;
   SpecialMotionModule *specialM_;
   WalkModule *walk_;
+  KickModule *kick_;
 
   TextLogger textlog_;
 
