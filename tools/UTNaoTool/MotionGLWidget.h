@@ -33,7 +33,7 @@
 #include <common/RobotDimensions.h>
 #include <common/RobotInfo.h>
 #include <common/RingQueue.h>
-#include <common/KeyframeSequence.h>
+#include <common/Keyframe.h>
 
 #include <common/MassCalibration.h>
 

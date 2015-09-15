@@ -1,5 +1,5 @@
 #include <motion/KickModule.h>
-#include <common/KeyframeSequence.h>
+#include <common/Keyframe.h>
 #include <memory/FrameInfoBlock.h>
 #include <memory/JointCommandBlock.h>
 #include <memory/WalkRequestBlock.h>

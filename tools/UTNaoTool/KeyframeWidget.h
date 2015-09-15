@@ -5,7 +5,7 @@
 
 #include <tool/ConfigWidget.h>
 #include <memory/MemoryCache.h>
-#include <common/KeyframeSequence.h>
+#include <common/Keyframe.h>
 #include "ui_KeyframeWidget.h"
 #include "ui_KeyframeItem.h"
 

@@ -1,4 +1,4 @@
-#include <common/KeyframeSequence.h>
+#include <common/Keyframe.h>
 
 using namespace std;
 
