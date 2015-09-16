@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Keyframe::Keyframe(string name) {
+Keyframe::Keyframe(string name) : name(name) {
   for(int i = 0; i < NUM_JOINTS; i++)
     joints[i] = 0.0f;
   frames = 100;

@@ -5,13 +5,18 @@
 #define DEFAULT_FILE (UTMainWnd::dataDirectory() + "/kicks/keyframe.yaml")
   
 void KeyframeItem::updateName() {
-  keyframe_.name = txtName->toPlainText().toStdString();
+  auto s = keyframe_.name = txtName->toPlainText().toStdString();
+  sreplace(s, {"\r","\n"}, "");
+  if(s != keyframe_.name) {
+    keyframe_.name = s;
+    txtName->setPlainText(QString::fromStdString(keyframe_.name));
+  }
   lblName->setText(txtName->toPlainText());
 }
 
 void KeyframeItem::updateFrames(int frames) {
   keyframe_.frames = frames;
-  lblFrames->setText(QString::number(frames) + " fr");
+  lblFrames->setText(QString::number(frames) + spnFrames->suffix());
 }
 
 void KeyframeItem::activate() {
@@ -28,42 +33,58 @@ void KeyframeItem::deactivate() {
   spnFrames->setVisible(false);
 }
 
+void KeyframeItem::swap(QListWidgetItem* oitem) {
+  auto kfitem = static_cast<KeyframeItem*>(list_->itemWidget(oitem));
+  auto kf = kfitem->keyframe();
+  kfitem->updateKeyframe(keyframe_);
+  updateKeyframe(kf);
+
+  auto s = oitem->isSelected();
+  oitem->setSelected(item_->isSelected());
+  item_->setSelected(s);
+}
+
 void KeyframeItem::moveUp() {
   int r = list_->row(item_);
   if(r > 0) {
-    list_->takeItem(r);
-    list_->insertItem(r - 1, item_);
-    list_->setItemWidget(item_, this);
+    auto other = list_->item(r - 1);
+    swap(other);
   }
 }
 
 void KeyframeItem::moveDown() {
   int r = list_->row(item_);
   if(r < list_->count() - 1) {
-    list_->takeItem(r);
-    list_->insertItem(r + 1, item_);
-    list_->setItemWidget(item_, this);
+    auto other = list_->item(r + 1);
+    swap(other);
   }
 }
+
+QListWidgetItem* KeyframeItem::createParentItem(int row) {
+  auto item = new QListWidgetItem();
+  item->setSizeHint(QSize(100, 55));
+  //item->setFlags(item->flags() | Qt::ItemIsEditable);
+  if(row < 0) row = list_->count();
+  list_->insertItem(row, item);
+  list_->setItemWidget(item, this);
+  return item;
+}
+
+void KeyframeItem::updateKeyframe(const Keyframe& kf) {
+  keyframe_ = kf;
+  txtName->setPlainText(QString::fromStdString(keyframe_.name));
+  spnFrames->setValue(keyframe_.frames);
+}
     
-void KeyframeItem::init(QListWidgetItem* item) {
+void KeyframeItem::init(int row) {
   connect(txtName, SIGNAL(textChanged()), this, SLOT(updateName()));
   connect(spnFrames, SIGNAL(valueChanged(int)), this, SLOT(updateFrames(int)));
   connect(btnUp, SIGNAL(clicked()), this, SLOT(moveUp()));
   connect(btnDown, SIGNAL(clicked()), this, SLOT(moveDown()));
-  txtName->setPlainText(QString::fromStdString(keyframe_.name));
-  lblName->setText(txtName->toPlainText());
-  spnFrames->setValue(keyframe_.frames);
-  lblFrames->setText(QString::number(keyframe_.frames) + " fr");
+  updateKeyframe(keyframe_);
   
-  item->setSizeHint(QSize(100, 45));
-  item->setFlags(item->flags() | Qt::ItemIsEditable);
-  item_ = item;
-  
-  auto keyframeBox = static_cast<QListWidget*>(parent());
-  keyframeBox->addItem(item);
-  keyframeBox->setItemWidget(item, this);
-  list_ = keyframeBox;
+  list_ = static_cast<QListWidget*>(parent());
+  item_ = createParentItem(row);
   
   deactivate();
 }
@@ -111,8 +132,7 @@ void KeyframeWidget::reload() {
   keyframeBox->clear();
   ks.load(DEFAULT_FILE);
   for(auto kf : ks.keyframes) {
-    auto item = new QListWidgetItem(keyframeBox);
-    auto kfitem = new KeyframeItem(keyframeBox, item, kf);
+    auto kfitem = new KeyframeItem(keyframeBox, kf);
   }
 }
 
@@ -130,8 +150,7 @@ void KeyframeWidget::addKeyframe() {
   auto kf = Keyframe(ssprintf("Keyframe %i", keyframeBox->count()));
   for(int i = 0; i < NUM_JOINTS; i++)
     kf.joints[i] = cache_.joint->values_[i];
-  auto item = new QListWidgetItem(keyframeBox);
-  auto kfitem = new KeyframeItem(keyframeBox, item, kf);
+  auto kfitem = new KeyframeItem(keyframeBox, kf);
 }
 
 void KeyframeWidget::deleteKeyframe() {
@@ -203,7 +222,6 @@ void KeyframeWidget::playNextFrame() {
 void KeyframeWidget::activate(QListWidgetItem* item) {
   if(activated_) activated_->deactivate();
   activated_ = static_cast<KeyframeItem*>(keyframeBox->itemWidget(item));
-  printf("activating %0x\n", activated_);
   activated_->activate();
 }
 

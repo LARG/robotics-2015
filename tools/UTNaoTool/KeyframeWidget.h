@@ -12,13 +12,13 @@
 class KeyframeItem : public QWidget, public Ui_KeyframeItem {
   Q_OBJECT
   public:
-    KeyframeItem(QListWidget* parent, QListWidgetItem* item, Keyframe keyframe) : QWidget(parent), keyframe_(keyframe) {
+    KeyframeItem(QListWidget* parent, Keyframe keyframe, int row = -1) : QWidget(parent), keyframe_(keyframe) {
       setupUi(this);
-      init(item);
+      init(row);
     }
     const Keyframe& keyframe() { return keyframe_; }
     QListWidgetItem* item() { return item_; }
-    void init(QListWidgetItem* item);
+    void init(int row);
   public slots:
     void updateName();
     void updateFrames(int frames);
@@ -26,6 +26,10 @@ class KeyframeItem : public QWidget, public Ui_KeyframeItem {
     void deactivate();
     void moveUp();
     void moveDown();
+  protected:
+    void updateKeyframe(const Keyframe& kf);
+    void swap(QListWidgetItem* oitem);
+    QListWidgetItem* createParentItem(int row);
   private:
     Keyframe keyframe_;
     QListWidgetItem* item_;
