@@ -21,5 +21,6 @@ Q_OBJECT
     virtual void controlsChanged() { }
   protected:
     bool loading_;
+    void saveConfig();
 };
 

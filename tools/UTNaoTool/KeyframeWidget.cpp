@@ -2,8 +2,6 @@
 #include <tool/UTMainWnd.h>
 #include <common/Util.h>
 
-#define DEFAULT_FILE (UTMainWnd::dataDirectory() + "/kicks/keyframe.yaml")
-  
 void KeyframeItem::updateName() {
   auto s = keyframe_.name = txtName->toPlainText().toStdString();
   sreplace(s, {"\r","\n"}, "");
@@ -110,6 +108,24 @@ KeyframeWidget::KeyframeWidget(QWidget* parent) : ConfigWidget(parent) {
   connect(keyframeTimer_, SIGNAL(timeout()), this, SLOT(playNextFrame()));
   keyframeTimer_->setSingleShot(true);
   activated_ = NULL;
+  kfconfig_.sequence_file = UTMainWnd::dataDirectory() + "/kicks/default.yaml";
+  
+}
+
+void KeyframeWidget::loadConfig(const ToolConfig& config) {
+  kfconfig_ = config.kfConfig;
+  switch(kfconfig_.base) {
+    case SupportBase::TorsoBase: rdoTorso->setChecked(true); break;
+    case SupportBase::SensorFoot: rdoSensor->setChecked(true); break;
+    case SupportBase::LeftFoot: rdoLeftFoot->setChecked(true); break;
+    case SupportBase::RightFoot: rdoRightFoot->setChecked(true); break;
+  }
+  emit updatedSupportBase(kfconfig_.base);
+  reload();
+}
+
+void KeyframeWidget::saveConfig(ToolConfig& config) {
+  config.kfConfig = kfconfig_;
 }
 
 void KeyframeWidget::updateItem(QListWidgetItem* item) {
@@ -124,16 +140,21 @@ void KeyframeWidget::save() {
     auto kitem = static_cast<KeyframeItem*>(keyframeBox->itemWidget(keyframeBox->item(i)));
     ks.keyframes.push_back(kitem->keyframe());
   }
-  ks.save(DEFAULT_FILE);
+  ks.save(kfconfig_.sequence_file);
 }
 
 void KeyframeWidget::reload() {
   KeyframeSequence ks;
   keyframeBox->clear();
-  ks.load(DEFAULT_FILE);
+  ks.load(kfconfig_.sequence_file);
   for(auto kf : ks.keyframes) {
     auto kfitem = new KeyframeItem(keyframeBox, kf);
   }
+  if(keyframeBox->count()) {
+    keyframeBox->item(0)->setSelected(true);
+    show();
+  }
+  ConfigWidget::saveConfig();
 }
 
 void KeyframeWidget::saveAs() {
@@ -199,19 +220,19 @@ void KeyframeWidget::playNextFrame() {
   auto kfstart = static_cast<KeyframeItem*>(keyframeBox->itemWidget(sitem));
   auto& start = kfstart->keyframe();
   
+  // Pull the second keyframe in the pair
+  auto fitem = keyframeBox->item(currentKeyframe_ + 1);
+  fitem->setSelected(true);
+  auto kffinish = static_cast<KeyframeItem*>(keyframeBox->itemWidget(fitem));
+  auto& finish = kffinish->keyframe();
+  
   // If we've played the transition, increment and start on the next pair
-  if(currentFrame_ >= start.frames) {
+  if(currentFrame_ >= finish.frames) {
     currentKeyframe_++;
     currentFrame_ = 0;
     playNextFrame();
     return;
   }
-  
-  // If we haven't finished the transition, pull the second keyframe in the pair
-  auto fitem = keyframeBox->item(currentKeyframe_ + 1);
-  fitem->setSelected(true);
-  auto kffinish = static_cast<KeyframeItem*>(keyframeBox->itemWidget(fitem));
-  auto& finish = kffinish->keyframe();
 
   // Emit the start, end, and # of frames
   emit playingSequence(start, finish, currentFrame_);
@@ -231,8 +252,13 @@ void KeyframeWidget::deactivateCurrent() {
 }
 
 void KeyframeWidget::supportBaseUpdated(bool) {
-  if(rdoTorso->isChecked()) emit updatedSupportBase(SupportBase::TorsoBase);
-  else if(rdoLeftFoot->isChecked()) emit updatedSupportBase(SupportBase::LeftFoot);
-  else if(rdoRightFoot->isChecked()) emit updatedSupportBase(SupportBase::RightFoot);
-  else if(rdoSensor->isChecked()) emit updatedSupportBase(SupportBase::SensorFoot);
+  if(loading_) return;
+  auto base = SupportBase::TorsoBase;
+  if(rdoTorso->isChecked()) base = SupportBase::TorsoBase;
+  else if(rdoLeftFoot->isChecked()) base = SupportBase::LeftFoot;
+  else if(rdoRightFoot->isChecked()) base = SupportBase::RightFoot;
+  else if(rdoSensor->isChecked()) base = SupportBase::SensorFoot;
+  emit updatedSupportBase(base);
+  kfconfig_.base = base;
+  ConfigWidget::saveConfig();
 }

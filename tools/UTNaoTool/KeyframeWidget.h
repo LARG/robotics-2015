@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include <tool/ConfigWidget.h>
+#include <tool/KeyframeConfig.h>
 #include <memory/MemoryCache.h>
 #include <common/Keyframe.h>
 #include "ui_KeyframeWidget.h"
@@ -48,8 +49,8 @@ class KeyframeWidget : public ConfigWidget, public Ui_KeyframeWidget {
     void updatedSupportBase(SupportBase base);
 
   protected:
-    void loadConfig(const ToolConfig& config) { }
-    void saveConfig(ToolConfig& config) { }
+    void loadConfig(const ToolConfig& config);
+    void saveConfig(ToolConfig& config);
 
   protected slots:
     void save();
@@ -71,5 +72,6 @@ class KeyframeWidget : public ConfigWidget, public Ui_KeyframeWidget {
     MemoryCache cache_;
     QTimer* keyframeTimer_;
     KeyframeItem* activated_;
+    KeyframeConfig kfconfig_;
 };
 

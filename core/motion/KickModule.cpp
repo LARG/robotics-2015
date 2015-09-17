@@ -14,7 +14,7 @@
 KickModule::KickModule() : state_(Finished), sequence_(NULL) { }
 
 void KickModule::initSpecificModule() {
-  auto file = cache_.memory->data_path_ + "kicks/keyframe.yaml";
+  auto file = cache_.memory->data_path_ + "kicks/default.yaml";
   sequence_ = new KeyframeSequence();
   if(sequence_->load(file))
     printf("Successfully loaded kick sequence.\n");
@@ -125,7 +125,7 @@ void KickModule::moveToInitial(const Keyframe& keyframe, int cframe) {
 
 void KickModule::moveBetweenKeyframes(const Keyframe& start, const Keyframe& finish, int cframe) {
   if(cframe == 0) {
-    cache_.joint_command->setSendAllAngles(true, start.frames * 10);
+    cache_.joint_command->setSendAllAngles(true, finish.frames * 10);
     cache_.joint_command->setPoseRad(finish.joints.data());
   }
 }

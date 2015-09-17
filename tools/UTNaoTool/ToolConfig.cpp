@@ -27,6 +27,7 @@ void ToolConfig::deserialize(const YAML::Node& node) {
   YAML_DESERIALIZE(node, coreBehaviors);
   YAML_DESERIALIZE(node, worldConfig);
   YAML_DESERIALIZE(node, rcConfig);
+  YAML_DESERIALIZE(node, kfConfig);
   YAML_DESERIALIZE(node, loggingModules);
   YAML_DESERIALIZE(node, enableAudio);
 }
@@ -51,6 +52,7 @@ void ToolConfig::serialize(YAML::Emitter& emitter) const {
   YAML_SERIALIZE(emitter, coreBehaviors);
   YAML_SERIALIZE(emitter, worldConfig);
   YAML_SERIALIZE(emitter, rcConfig);
+  YAML_SERIALIZE(emitter, kfConfig);
   YAML_SERIALIZE(emitter, loggingModules);
   YAML_SERIALIZE(emitter, enableAudio);
 }

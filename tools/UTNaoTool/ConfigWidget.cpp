@@ -6,6 +6,10 @@ ConfigWidget::ConfigWidget(QWidget* parent) : QWidget(parent) {
   connect(UTMainWnd::inst(), SIGNAL(savingConfig(ToolConfig&)), this, SLOT(saveConfig(ToolConfig&)));
 }
 
+void ConfigWidget::saveConfig() {
+  UTMainWnd::inst()->saveConfig();
+}
+
 void ConfigWidget::baseLoadConfig(const ToolConfig& config) {
   loading_ = true;
   loadConfig(config);

@@ -46,7 +46,6 @@ WorldWindow::WorldWindow(QMainWindow* pa) : ConfigWindow(pa) {
   connect(autoplayBox, SIGNAL(toggled(bool)), this, SLOT(controlsChanged(bool)));
   connect(teamNumberBox, SIGNAL(valueChanged(int)), this, SLOT(controlsChanged(int)));
   connect(teamColorBox, SIGNAL(currentIndexChanged(int)), this, SLOT(controlsChanged(int)));
-  connect(this, SIGNAL(saveConfig()), UTMainWnd::inst(), SLOT(saveConfig()));
   connect(skipButton, SIGNAL(pressed()), this, SLOT(skip()));
   connect(skipBox, SIGNAL(valueChanged(int)), this, SLOT(controlsChanged(int)));
   connect(UTMainWnd::inst(), SIGNAL(newLogLoaded(Log*)), this, SLOT(restart(Log*)));
@@ -130,7 +129,7 @@ void WorldWindow::controlsChanged() {
   wconfig_.skip = skipBox->value();
   auto mode = modeBox->currentIndex();
   setMode((WorldMode)mode);
-  saveConfig();
+  ConfigWindow::saveConfig();
 }
 
 void WorldWindow::setDisplay(bool value) {

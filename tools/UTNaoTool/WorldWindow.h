@@ -70,7 +70,6 @@ class WorldWindow : public ConfigWindow, public Ui_WorldWindow {
     void modeChanged(WorldMode mode);
     void nextSnapshot();
     void prevSnapshot();
-    void saveConfig();
     void frameLoaded(int frame);
     void annotationsUpdated(AnnotationGroup* annotations);
   private:

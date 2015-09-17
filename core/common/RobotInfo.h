@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <sys/time.h>
-
+#include <common/Enum.h>
 #include <constants/ImageConstants.h>
 
 #define FUNCTION_IS_NOT_USED __attribute__ ((unused))
@@ -35,14 +35,12 @@
 
 #define NUM_SONAR_VALS 10
 
-#ifndef SWIG
-enum class SupportBase {
+ENUM_CLASS(SupportBase,
   SensorFoot,
   LeftFoot,
   RightFoot,
   TorsoBase
-};
-#endif
+);
 
 enum Joint {
   HeadYaw,

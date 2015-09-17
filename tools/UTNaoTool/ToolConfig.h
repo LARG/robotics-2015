@@ -4,6 +4,7 @@
 #include <common/YamlConfig.h>
 #include <tool/WorldConfig.h>
 #include <tool/RobotControllerConfig.h>
+#include <tool/KeyframeConfig.h>
 
 class ToolConfig : public YamlConfig {
   public:
@@ -20,6 +21,7 @@ class ToolConfig : public YamlConfig {
     std::string logFile;
     WorldConfig worldConfig;
     RobotControllerConfig rcConfig;
+    KeyframeConfig kfConfig;
     std::vector<std::string> loggingModules;
     bool enableAudio;
 

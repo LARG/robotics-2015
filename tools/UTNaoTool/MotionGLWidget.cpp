@@ -1640,7 +1640,7 @@ Pose3D MotionGLWidget::globalToDrawingFrame(Vector2<float> a){
 }
 
 void MotionGLWidget::drawSequence(const Keyframe& start, const Keyframe& finish, int cframe) {
-  float progress = (cframe + 1.0f) / start.frames;
+  float progress = (cframe + 1.0f) / finish.frames;
   for(int i = 0; i < NUM_JOINTS; i++) {
     auto delta = (finish.joints[i] - start.joints[i]) * progress;
     lastKeyframe_.joints[i] = start.joints[i] + delta;
