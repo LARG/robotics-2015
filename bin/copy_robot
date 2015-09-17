@@ -7,7 +7,7 @@ baseIP = '192.168.1.%s'
 #baseIP = '10.0.1.%s'
 #baseIP = '11.0.1.%s'
 #baseIP = '139.140.192.%s'
-validInterfaces = ['nao','motion','vision','python', 'memory_test','scripts','color_table','motion_file','config_file','autoload','simple_config','wireless','time']
+validInterfaces = ['nao','motion','vision','python', 'memory_test','scripts','color_table','motion_file','config_file','kicks','autoload','simple_config','wireless','time']
 allInterfaces = list(validInterfaces)
 allInterfaces.remove('memory_test')
 allInterfaces.remove('scripts')
@@ -238,7 +238,7 @@ def main(ip,interfaces,options,robotID):
           print '  **No specific %s table for %s' % (suffix,robotID)
     elif interface == 'motion_file':
       doFileOperations(ip,'../data/mof/test/*.mof','data/mof/test/',options)
-    elif interface == 'config_file':
+    elif interface in ['config_file', 'kicks']:
       print ' data/config/rswalk2014/*.cfg'
       doFileOperations(ip,'../data/config/rswalk2014/*.pos','data/config/rswalk2014/',options)
       print ' data/kicks/*.yaml'
