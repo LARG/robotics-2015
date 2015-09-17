@@ -50,7 +50,8 @@ public:
   * @param index The index of the enum element.
   * @return Its name.
   */
-  const char* getName(size_t e) {return e >= names.size() ? 0 : names[e].c_str();}
+  const char* getName(size_t e) { return valid(e) ? names[e].c_str() : 0; }
+  bool valid(size_t e) { return e < names.size(); } 
   size_t fromName(const char* s) { 
     for(int i = 0; i < names.size(); i++)
       if(names[i] == s)
@@ -92,6 +93,10 @@ class Enum##Methods { \
     } \
     inline static Enum fromName(const std::string& s) { \
       return fromName(s.c_str()); \
+    } \
+    inline static bool valid(Enum e) { \
+      static EnumName en(#__VA_ARGS__, (size_t) Enum::NUM_##Enum##s); \
+      return en.valid((size_t)e); \
     } \
 };
 #else

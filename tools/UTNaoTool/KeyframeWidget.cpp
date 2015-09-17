@@ -154,7 +154,8 @@ void KeyframeWidget::reload() {
     keyframeBox->item(0)->setSelected(true);
     show();
   }
-  ConfigWidget::saveConfig();
+  if(!loading_)
+    ConfigWidget::saveConfig();
 }
 
 void KeyframeWidget::saveAs() {

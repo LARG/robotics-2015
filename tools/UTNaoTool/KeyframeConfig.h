@@ -5,22 +5,13 @@
 
 class KeyframeConfig : public YamlConfig {
   public:
+    KeyframeConfig();
     std::string sequence_file;
     SupportBase base;
     
-    void deserialize(const YAML::Node& node) {
-      YAML_DESERIALIZE(node, sequence_file);
-      YAML_DESERIALIZE(node, base_s);
-      base = SupportBaseMethods::fromName(base_s);
-    }
-
-    void serialize(YAML::Emitter& emitter) const {
-      base_s = SupportBaseMethods::getName(base);
-      YAML_SERIALIZE(emitter, sequence_file);
-      YAML_SERIALIZE(emitter, base_s);
-    }
+    void deserialize(const YAML::Node& node);
+    void serialize(YAML::Emitter& emitter) const;
 
   private:
     mutable std::string base_s;
-
 };
