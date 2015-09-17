@@ -210,6 +210,7 @@ class SignalEvent(Event):
     value = self.source.outSignal() == self.signal
     if value:
       self.target.receiveSignal(self.signal)
+    return value
 
 class CompletionEvent(Event):
   def __init__(self, time=None):
