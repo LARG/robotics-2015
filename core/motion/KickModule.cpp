@@ -9,17 +9,21 @@
 #include <memory/SensorBlock.h>
 #include <memory/KickRequestBlock.h>
 
-#define JOINT_EPSILON (0.1f * DEG_T_RAD)
+#define JOINT_EPSILON (3.f * DEG_T_RAD)
 
 KickModule::KickModule() : state_(Finished), sequence_(NULL) { }
 
 void KickModule::initSpecificModule() {
   auto file = cache_.memory->data_path_ + "kicks/default.yaml";
   sequence_ = new KeyframeSequence();
+  printf("Loading kick sequence from '%s'...", file.c_str());
+  fflush(stdout);
   if(sequence_->load(file))
-    printf("Successfully loaded kick sequence.\n");
-  else
+    printf("success!\n");
+  else {
+    printf("failed!\n");
     sequence_ = NULL;
+  }
   initial_ = NULL;
 }
 
@@ -29,7 +33,7 @@ void KickModule::start() {
   cache_.kick_request->kick_running_ = true;
   keyframe_ = 0;
   frames_ = 0;
-  initial_ = new Keyframe(cache_.joint->values_, 200);
+  initial_ = new Keyframe(cache_.joint->values_, 0);
 }
 
 void KickModule::finish() {
@@ -87,25 +91,24 @@ void KickModule::performKick() {
   }
   auto& keyframe = sequence_->keyframes[keyframe_];
   if(state_ == Initial) {
-    if(reachedKeyframe(keyframe)) {
+    if(frames_ >= keyframe.frames) {
       state_ = Running;
     } else {
       moveToInitial(keyframe, frames_);
     }
   }
   if(state_ = Running) {
-    if(frames_ == keyframe.frames) {
+    if(keyframe_ == sequence_->keyframes.size() - 1) {
+      finish();
+      return;
+    }
+    auto& next = sequence_->keyframes[keyframe_ + 1];
+    if(frames_ >= next.frames) {
       keyframe_++;
       frames_ = 0;
       performKick();
       return;
     }
-    if(keyframe_ == sequence_->keyframes.size() - 1) {
-      state_ = Finished;
-      finish();
-      return;
-    }
-    auto& next = sequence_->keyframes[keyframe_ + 1];
     moveBetweenKeyframes(keyframe, next, frames_);
   }
   frames_++;
@@ -113,9 +116,11 @@ void KickModule::performKick() {
 
 bool KickModule::reachedKeyframe(const Keyframe& keyframe) {
   for(int i = 0; i < NUM_JOINTS; i++) {
-    if(fabs(cache_.joint->values_[i] - keyframe.joints[i]) > JOINT_EPSILON) 
+    if(fabs(cache_.joint->values_[i] - keyframe.joints[i]) > JOINT_EPSILON) {
       return false;
+    }
   }
+  return true;
 }
 
 void KickModule::moveToInitial(const Keyframe& keyframe, int cframe) {
