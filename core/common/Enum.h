@@ -1,5 +1,4 @@
-#ifndef ENUM_H_D82U9SWU
-#define ENUM_H_D82U9SWU
+#pragma once
 
 /*
 * @file Tools/Enum.h
@@ -78,5 +77,23 @@ public:
     return fromName_##Enum(s.c_str()); \
   } \
 
-#endif /* end of include guard: ENUM_H_D82U9SWU */
-
+#ifndef SWIG
+#define ENUM_CLASS(Enum, ...) \
+enum class Enum {__VA_ARGS__, NUM_##Enum##s}; \
+class Enum##Methods { \
+  public:\
+    inline static const char* getName(Enum e) { \
+      static EnumName en(#__VA_ARGS__, (size_t) Enum::NUM_##Enum##s); \
+      return en.getName((size_t)e); \
+    } \
+    inline static Enum fromName(const char* s) { \
+      static EnumName en(#__VA_ARGS__, (size_t) Enum::NUM_##Enum##s); \
+      return (Enum)en.fromName(s); \
+    } \
+    inline static Enum fromName(const std::string& s) { \
+      return fromName(s.c_str()); \
+    } \
+};
+#else
+#define ENUM_CLASS(...)
+#endif
