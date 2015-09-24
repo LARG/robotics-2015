@@ -1,0 +1,142 @@
+#!/sbin/runscript
+##
+## Author(s):
+##  - Cedric GESTES <gestes@aldebaran-robotics.com>
+##  - Samuel MARTIN <smartin@aldebaran-robotics.com>
+##
+## Copyright (C) 2010 - 2012 Aldebaran Robotics
+##
+
+LOCK_FILE="/var/lock/naoqi.lock"
+LOG_DIR="/var/log/naoqi"
+RUN_DIR="/var/run/naoqi"
+REAL_BINARY="/usr/bin/naoqi-bin"
+BINARY="/etc/init.d/naoqi.sh"
+DUMP_DIR="/var/lib/minidump"
+PKG_CACHE_DIR="/var/lib/store"
+NAOQI_USER="nao"
+ARGS="--qi-log-context=30"
+
+
+depend(){
+  need dbus localmount pulseaudio
+  use sysklog hald
+}
+
+start() {
+  echo 5 > /proc/sys/vm/swappiness
+  local bin=$(basename "${BINARY}")
+  local real_bin=$(basename "${REAL_BINARY}")
+  local naoqi_args="--pid '${LOCK_FILE}' ${ARGS}"
+  #still a pid file?
+  if [ -f "${LOCK_FILE}" ] ; then
+    #still the running process?
+    if kill -0 $(cat "${LOCK_FILE}") 2>/dev/null ; then
+      ewarn "!! Warning: naoqi is already running !!"
+      ewarn "if you are sure it is not running, remove ${LOCK_FILE}."
+      return 1
+    fi
+  fi
+  if killall -0 "${bin}" 2>/dev/null || killall -0 "${real_bin}" 2>/dev/null; then
+    ewarn "!! Warning: naoqi is already running !!"
+    ewarn "Please, stop it (by running 'nao stop') before starting it again."
+    return 1
+  fi
+  if [ -d "/sys/fs/cgroup/cpu" ]; then
+    mkdir -p /sys/fs/cgroup/cpu/naoqi
+    chown nao:nao /sys/fs/cgroup/cpu/naoqi/tasks
+    # Root cgroup has 1024, so naoqi has up to 2^13/(2^13+2^10) = 0.88%.
+    echo 8192 > /sys/fs/cgroup/cpu/naoqi/cpu.shares
+    # use default latency values.
+    cat /sys/fs/cgroup/cpu/cpu.rt_runtime_us > /sys/fs/cgroup/cpu/naoqi/cpu.rt_runtime_us
+    cat /sys/fs/cgroup/cpu/cpu.rt_period_us > /sys/fs/cgroup/cpu/naoqi/cpu.rt_period_us
+  else
+    ewarn "!! Warning: cgroup not mounted !!"
+  fi
+  ebegin "Starting naoqi"
+  mkdir -p "${LOG_DIR}" "${RUN_DIR}" "${DUMP_DIR}" "${PKG_CACHE_DIR}"
+  # NAOqi needs write access on few files
+  for item in "${LOG_DIR}" "${RUN_DIR}" "${DUMP_DIR}" "${PKG_CACHE_DIR}" \
+    /etc/babile.conf /etc/babear4.conf \
+    /media/internal/notification/notifications ; do
+    [ -e "${item}" ] || continue
+    chown -R $(id -u "${NAOQI_USER}"):$(id -g "${NAOQI_USER}") "${item}"
+  done
+  if [ $(whoami) = ${NAOQI_USER} ]; then
+    #user nao, already have a dbus session
+    LOG_DIR="${LOG_DIR}" setsid "${BINARY}" "${REAL_BINARY}" ${naoqi_args}
+  else
+    #we want a dbus session
+    su -c ". /etc/profile.d/dbus-session.sh; LOG_DIR='${LOG_DIR}' setsid ${BINARY} ${REAL_BINARY} ${naoqi_args} &" - ${NAOQI_USER}
+  fi
+  eend $? "cannot start naoqi"
+
+  # start addition by Sam Barrett
+  if [ nao = `whoami` ]; then
+    /home/nao/bin/villa-start.sh &
+  else
+    su -c "/home/nao/bin/villa-start.sh &" - nao
+  fi
+  # end   addition by Sam Barrett
+}
+
+stop() {
+  ebegin "Stopping naoqi"
+  local bin=$(basename "${BINARY}")
+  local real_bin=$(basename "${REAL_BINARY}")
+
+  local pid=$(ps -C naoqi.sh --no-headers --format pid)
+
+  # all pids in naoqi.sh's session except session leader
+  local pids=$(ps --format pid --sid $pid --no-headers | grep -v "\<$pid\>")
+
+  if [ -f "${LOCK_FILE}" ] ; then
+    if kill -0 $(cat "${LOCK_FILE}") 2>/dev/null ; then
+      einfo "Sending TERM to $pids and $pid"
+      kill -s TERM $pids $pid &>/dev/null
+
+      #waiting for naoqi to shutdown
+      einfo "waiting for naoqi to shutdown"
+      local timeout=12
+      while [ $timeout -ne 0 ] && kill -0 $pids $pid 2>/dev/null ; do
+        timeout=$(($timeout - 1))
+        sleep 1
+      done
+      if [ $timeout -eq 0 ]; then
+        ewarn "Timeout: killing remaining processes"
+        kill -s KILL $pids &>/dev/null
+        # Let some time to naoqi.sh ($pid) to terminate
+        sleep 1
+        kill -s KILL $pid &>/dev/null
+      fi
+    fi
+  fi
+  if killall -0 "${bin}" &>/dev/null || killall -0 "${real_bin}" &>/dev/null; then
+    ewarn "No lockfile but naoqi is running, killing it"
+    local try=1
+    while killall -0 "${bin}" &>/dev/null && [ ${try} -gt 0 ] ; do
+      killall -s KILL "${bin}"      &>/dev/null
+      killall -s KILL "${real_bin}" &>/dev/null
+      try=$(( ${try} - 1 ))
+      sleep 2
+    done
+  fi
+  rm -f "${LOCK_FILE}"
+  einfo "Naoqi stopped"
+  echo 60 > /proc/sys/vm/swappiness 60
+  eend $?
+  
+  # start addition by Sam Barrett
+  if [ nao = `whoami` ]; then
+    /home/nao/bin/villa-stop.sh &
+  else
+    su -c "/home/nao/bin/villa-stop.sh &" - nao
+  fi
+  # end   addition by Sam Barrett
+}
+
+restart() {
+  stop
+  sleep 2
+  start
+}
