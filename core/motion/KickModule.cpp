@@ -10,6 +10,7 @@
 #include <memory/KickRequestBlock.h>
 
 #define JOINT_EPSILON (3.f * DEG_T_RAD)
+#define DEBUG false
 
 KickModule::KickModule() : state_(Finished), sequence_(NULL) { }
 
@@ -83,6 +84,7 @@ void KickModule::processFrame() {
 }
 
 void KickModule::performKick() {
+  if(DEBUG) printf("performKick, state: %s, keyframe: %i, frames: %i\n", getName(state_), keyframe_, frames_);
   if(state_ == Finished) return;
   if(sequence_ == NULL) return;
   if(keyframe_ >= sequence_->keyframes.size()) {
@@ -93,11 +95,12 @@ void KickModule::performKick() {
   if(state_ == Initial) {
     if(frames_ >= keyframe.frames) {
       state_ = Running;
+      frames_ = 0;
     } else {
       moveToInitial(keyframe, frames_);
     }
   }
-  if(state_ = Running) {
+  if(state_ == Running) {
     if(keyframe_ == sequence_->keyframes.size() - 1) {
       finish();
       return;
@@ -130,6 +133,10 @@ void KickModule::moveToInitial(const Keyframe& keyframe, int cframe) {
 
 void KickModule::moveBetweenKeyframes(const Keyframe& start, const Keyframe& finish, int cframe) {
   if(cframe == 0) {
+    if(DEBUG) printf("moving between keyframes, time: %i, joints:\n", finish.frames * 10);
+    for(int i = 0; i < finish.joints.size(); i++)
+      if(DEBUG) printf("j[%i]:%2.2f,", i, finish.joints[i] * RAD_T_DEG);
+    if(DEBUG) printf("\n");
     cache_.joint_command->setSendAllAngles(true, finish.frames * 10);
     cache_.joint_command->setPoseRad(finish.joints.data());
   }
