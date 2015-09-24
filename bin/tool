@@ -11,7 +11,7 @@ if __name__ == '__main__':
     ldAdditional = ':%s/naoqi/link_libs:%s/build/pythonswig' % (home,home)
     if onLabMachine():
       ldAdditional += ':/u/sbarrett/apps/usr/local/qwt-6.1.0-rc3/lib/'
-    gtkPath = '/usr/lib32/i386-linux-gnu/gtk-2.0'
+    gtkPath = '%s/naoqi/link_libs/gtk-2.0' % home
   else:
     ldAdditional = ''
     gtkPath = ''
