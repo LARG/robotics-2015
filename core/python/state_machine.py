@@ -76,7 +76,9 @@ class StateMachine(Task):
     self._node = None
     self._finishNode = None
     self._tnodes = {}
+    self._presetup()
     self.setup()
+    self._postsetup()
 
   def getNode(self, task):
     if not isinstance(task, BaseTask): raise Exception("Invalid task: %s" % task)
@@ -145,6 +147,9 @@ class StateMachine(Task):
       return self.submachine.__class__.__name__ + "<M>"
     else:
       return self.__class__.__name__ + "<M>"
+  
+  def _presetup(self): pass
+  def _postsetup(self): pass
 
 class Event(object):
   def __init__(self, name=None):
@@ -181,6 +186,10 @@ class Event(object):
 
   def __repr__(self):
     return self._name
+
+class LoopingStateMachine(StateMachine):
+  def _postsetup(self):
+    self.setFinish(None)
 
 class NegationEvent(Event):
   def __init__(self, event, name=None):

@@ -102,8 +102,8 @@ void GLDrawer::drawField() {
   }
 
   objectsGL.drawGreenCarpet();
-  objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OPP_GOAL].loc,1.0);
-  //objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OWN_GOAL].loc,1.0);
+  //objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OPP_GOAL].loc,1.0);
+  objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OWN_GOAL].loc,1.0);
   return;
   for (int i = LINE_OFFSET; i < LINE_OFFSET + NUM_LINES; i++){
     WorldObject* wo = &(gtcache_.world_object->objects_[i]);
@@ -327,72 +327,22 @@ void GLDrawer::drawAlternateRobots(vector<MemoryCache> caches) {
       drawBall();
       return;
     }
+    float alpha = 0.5f;
 
-    for (int i=0; i<MAX_MODELS_IN_MEM; i++) {
-      if (localization_mem->alpha[i] <= 0) continue;
-      Pose2D pose = localization_mem->getPlayerPose(i);
-      Point2D ball = localization_mem->getBallPosition(i);
-      Point2D bvel = localization_mem->getBallVelocity(i);
-      Matrix2f pcov = localization_mem->getPlayerCov(i);
-      Matrix2f bcov = localization_mem->getBallCov(i);
-      if(cache.robot_state->global_index_ > WO_TEAM_LAST) {
-        pose.translation = -pose.translation;
-        pose.rotation += M_PI;
-        ball = -ball;
-      }
-      float ovar = localization_mem->getOrientationVar(i);
-      float alpha = localization_mem->alpha[i];
-      if (alpha < 0.05) alpha = 0.05;
-      basicGL.colorRGBAlpha(color, alpha);
-      // stick figure
-      float tilt = 0;
-      float roll = 0;
-      if (odometry != NULL && (odometry->getting_up_side_ != Getup::NONE || odometry->fall_direction_ != Fall::NONE)) {
-        if (odometry->getting_up_side_ == Getup::BACK){
-          tilt = -M_PI/2.0;
-        }
-        else if (odometry->getting_up_side_ == Getup::FRONT){
-          tilt = M_PI/2.0;
-        }
-        else {
-          if (odometry->fall_direction_ == Fall::LEFT){
-            roll = -M_PI/2.0;
-          }
-          else if (odometry->fall_direction_ == Fall::RIGHT){
-            roll = M_PI/2.0;
-          }
-          else if (odometry->fall_direction_ == Fall::BACKWARD){
-            tilt = -M_PI/2.0;
-          }
-          else {
-            tilt = M_PI/2.0;
-          }
-        }
-      }
+    Point2D ball = localization_mem->getBallPosition();
+    Point2D bvel = localization_mem->getBallVel();
+    Matrix2f bcov = localization_mem->getBallCov();
+    if(cache.robot_state->global_index_ > WO_TEAM_LAST) {
+      ball = -ball;
+    }
 
-      robotGL.drawTiltedRobot(pose, tilt, roll);
-
-      // draw ball
-      objectsGL.drawBallColor(ball, alpha, color);
-      if (display_[SHOWBALLVEL])
-        objectsGL.drawBallVelColor(ball, bvel, alpha, color);
-      if (display_[SHOWBALLUNCERT]) {
-        basicGL.colorRGBAlpha(color,alpha);
-        localizationGL.drawUncertaintyEllipse(ball, bcov);
-      }
-
-      if (display_[SHOWROBOTUNCERT]) {
-        basicGL.colorRGBAlpha(color, alpha);
-        localizationGL.drawUncertaintyEllipse(pose, pcov);
-        localizationGL.drawUncertaintyAngle(pose, ovar);
-      }
-      // possibly draw role over robot
-      if (i == localization_mem->bestModel && display_[SHOWROLES] && robot_state != NULL){
-        QFont serifFont( "Courier", 12);
-        parent_->setFont(serifFont);
-        parent_->renderText(pose.translation.x/FACT, pose.translation.y/FACT, 400/FACT,
-                   QString(roleAbbrevs[robot_state->role_].c_str()));
-      }
+    // draw ball
+    objectsGL.drawBallColor(ball, alpha, color);
+    if (display_[SHOWBALLVEL])
+      objectsGL.drawBallVelColor(ball, bvel, alpha, color);
+    if (display_[SHOWBALLUNCERT]) {
+      basicGL.colorRGBAlpha(color,alpha);
+      localizationGL.drawUncertaintyEllipse(ball, bcov);
     }
   }
 }
@@ -947,34 +897,6 @@ void GLDrawer::overlayOdometry() {
 }
 
 void GLDrawer::overlayAlternLocationText() {
-  QFont serifFont( "Courier", 7);
-  parent_->setFont(serifFont);
-  glColor3f(0.2,0.8,0.8);
-  int x=550;
-  parent_->renderText(x,10,"Models:");
-  glColor3f(1.0,1.0,1.0);
-  int y=20;
-
-  // say that we don't have this in memory rather than printing garbage
-  if (gtcache_.localization_mem == NULL){
-    parent_->renderText(x,y,"KF Mem not saved. No alternate models");
-    return;
-  }
-
-  for (int i=0; i<MAX_MODELS_IN_MEM; i++) {
-    //if (gtcache_.localization_mem->alpha[i]==-1000) continue;
-    //parent_->renderText(x,y,"id: "+QString::number(gtcache_.localization_mem->modelNumber[i])
-               //+ ", " + QString::number(gtcache_.localization_mem->alpha[i],'g',3)
-               //+ ", bot: (" + QString::number((int)gtcache_.localization_mem->X00[i]*10)
-               //+ "," + QString::number((int)gtcache_.localization_mem->X10[i]*10)
-               //+ "," + QString::number((int)(RAD_T_DEG*gtcache_.localization_mem->X20[i]))
-               //+ ", ball: (" + QString::number((int)gtcache_.localization_mem->X30[i]*10)
-               //+ "," + QString::number((int)gtcache_.localization_mem->X40[i]*10)
-               //+ ", bvel: (" + QString::number((int)gtcache_.localization_mem->X50[i]*10)
-               //+ "," + QString::number((int)gtcache_.localization_mem->X60[i]*10)
-               //+ ")");
-    //y+=10;
-  }
 }
 
 

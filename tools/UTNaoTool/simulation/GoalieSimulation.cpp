@@ -35,7 +35,7 @@ GoalieSimulation::GoalieSimulation() : IBSim(true, KEEPER) {
 void GoalieSimulation::simulationStep() {
   physics_.step();
   int frames = ++gtcache_.frame_info->frame_id - sframe_;
-  if(frames > 300) {
+  if(frames > 150) {
     if(align_)
       kickBall();
     else

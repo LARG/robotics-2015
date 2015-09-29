@@ -129,9 +129,6 @@ void IBSim::movePlayer(Point2D position, float orientation, int player) {
   bPlayer.loc = position;
   bPlayer.orientation = orientation;
   if(lmode_) {
-    bcache_.localization_mem->state[0][(int)LocalizationState::SelfX] = position.x;
-    bcache_.localization_mem->state[0][(int)LocalizationState::SelfY] = position.y;
-    bcache_.localization_mem->state[0][(int)LocalizationState::SelfTheta] = orientation;
     sim_.core->localization_->initFromMemory();
   }
 }

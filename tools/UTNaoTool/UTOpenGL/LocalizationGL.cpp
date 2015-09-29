@@ -79,15 +79,15 @@ void LocalizationGL::drawRelativeObjects(WorldObjectBlock* gtObjects, WorldObjec
       obsLocFd += self->loc;
       Vector3<float> start(self->loc.x, self->loc.y, 250);
       Vector3<float> end(obsLocFd.x, obsLocFd.y,250);
-      if (wo->isGoal() && wo->isGoalPost()) {
-        drawObservationLine(start,end,Colors::Yellow);
+      if (wo->isOwnGoal() && wo->isGoalPost()) {
+        drawObservationLine(start,end,Colors::Blue);
         objectsGL.drawPost(obsLocFd,0.25);
-      } else if (wo->isGoal() && !wo->isGoalPost()) {
-        drawObservationLine(start,end,Colors::Yellow);
+      } else if (wo->isOwnGoal() && !wo->isGoalPost()) {
+        drawObservationLine(start,end,Colors::Blue);
         objectsGL.drawGoal(obsLocFd,0.25);
-      } else if (wo->isUnknownIntersection()) {
-        drawObservationLine(start,end,Colors::Pink);
-        objectsGL.drawIntersection(obsLocFd,0.5);
+      } else if (wo->isBall()) {
+        drawObservationLine(start,end,Colors::Orange);
+        objectsGL.drawBall(obsLocFd,0.5);
       } else if (wo->isBeacon()) {
         vector<RGB> colors;
         switch(wo->type) {
@@ -100,6 +100,7 @@ void LocalizationGL::drawRelativeObjects(WorldObjectBlock* gtObjects, WorldObjec
         }
         drawObservationLine(start,end,Colors::White);
         objectsGL.drawBeacon(obsLocFd, colors[0], colors[1],0.25);
+      /*
       } else if (wo->isIntersection() && !wo->isUnknownIntersection()){
         drawObservationLine(start,end,Colors::White);
         objectsGL.drawIntersection(obsLocFd,0.5);
@@ -119,9 +120,9 @@ void LocalizationGL::drawRelativeObjects(WorldObjectBlock* gtObjects, WorldObjec
         sP=sP.relativeToGlobal(self->loc,self->orientation);
         eP=eP.relativeToGlobal(self->loc,self->orientation);
         basicGL.drawLine(sP,eP,2.0);
-      } else if (wo->isBall()) {
-        drawObservationLine(start,end,Colors::Orange);
-        objectsGL.drawBall(obsLocFd,0.5);
+      } else if (wo->isUnknownIntersection()) {
+        drawObservationLine(start,end,Colors::Pink);
+        objectsGL.drawIntersection(obsLocFd,0.5);
       } else if (wo->isCenterCircle()){
         // draw center cirlce
         drawObservationLine(start,end,Colors::White);
@@ -130,6 +131,7 @@ void LocalizationGL::drawRelativeObjects(WorldObjectBlock* gtObjects, WorldObjec
         // draw penalty cross
         drawObservationLine(start,end,Colors::White);
         objectsGL.drawPenaltyCross(obsLocFd,0.5);
+      */
       }
     }
   }
@@ -143,6 +145,7 @@ void LocalizationGL::drawRelativeObjectUncerts(WorldObjectBlock* gtObjects, Worl
     WO_UNKNOWN_FIELD_LINE_1, WO_UNKNOWN_FIELD_LINE_2, WO_UNKNOWN_FIELD_LINE_3, WO_UNKNOWN_FIELD_LINE_4,
     WO_CENTER_LINE, WO_CENTER_CIRCLE, WO_BALL
   };
+  /*
   WorldObject& self = gtObjects->objects_[robotState->WO_SELF];
   for(auto type : validTypes) {
     auto& wobj = beliefObjects->objects_[type];
@@ -155,6 +158,7 @@ void LocalizationGL::drawRelativeObjectUncerts(WorldObjectBlock* gtObjects, Worl
       drawUncertaintyEllipse(loc, uncert);
     }
   }
+  */
 }
 
 void LocalizationGL::drawObservationLine(Vector3<float> origin, Vector3<float> end, RGB color) {

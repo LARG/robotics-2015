@@ -7,10 +7,10 @@ using namespace std;
 void ObjectsGL::drawGreenCarpet() {
   glBegin(GL_POLYGON); 
   basicGL.colorRGB(0,100,0);
-  glVertex3f (-HALF_GRASS_X/FACT,-HALF_GRASS_Y/FACT,0);
-  glVertex3f (-HALF_GRASS_X/FACT,HALF_GRASS_Y/FACT,0);
-  glVertex3f (HALF_GRASS_X/FACT,HALF_GRASS_Y/FACT,0);
-  glVertex3f (HALF_GRASS_X/FACT,-HALF_GRASS_Y/FACT,0); 
+  glVertex3f (-HALF_GRASS_X/FACT,-HALF_GRASS_Y/FACT,-1);
+  glVertex3f (-HALF_GRASS_X/FACT,HALF_GRASS_Y/FACT,-1);
+  glVertex3f (HALF_GRASS_X/FACT,HALF_GRASS_Y/FACT,-1);
+  glVertex3f (HALF_GRASS_X/FACT,-HALF_GRASS_Y/FACT,-1); 
   glEnd();  
 }
 
@@ -82,6 +82,7 @@ void ObjectsGL::drawBallVel(Point2D p, Vector2D vel, float alpha) {
 
 void ObjectsGL::drawBallVelColor(Point2D p, Vector2D vel, float alpha, RGB color) {
   glPushMatrix();
+  basicGL.translate(0,0,25);
   basicGL.colorRGBAlpha(color,alpha);
   basicGL.setLineWidth(50);
   basicGL.drawLine(p, p+vel);

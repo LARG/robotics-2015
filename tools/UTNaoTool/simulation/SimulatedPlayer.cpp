@@ -174,7 +174,6 @@ bool SimulatedPlayer::processFrame(WorldObjectBlock* simulationMem, GameStateBlo
     WorldObject* robot = &(cache_.world_object->objects_[self_]);
     cache_.behavior->keeperRelBallPos = ball->loc.globalToRelative(robot->loc,robot->orientation);
     cache_.behavior->keeperRelBallVel = ball->absVel.globalToRelative(Point2D(0,0),robot->orientation);
-    cache_.localization_mem->bestAlpha = 1.0;
   }
 
   // call cache_.behavior process frame
