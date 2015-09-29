@@ -35,10 +35,12 @@ void LocalizationModule::loadParams(LocalizationParams params) {
 
 // Perform startup initialization such as allocating memory
 void LocalizationModule::initSpecificModule() {
+  reInit();
 }
 
 // Initialize the localization module based on data from the LocalizationBlock
 void LocalizationModule::initFromMemory() {
+  reInit();
 }
 
 // Initialize the localization module based on data from the WorldObjectBlock
@@ -50,7 +52,7 @@ void LocalizationModule::initFromWorld() {
 
 // Reinitialize from scratch
 void LocalizationModule::reInit() {
-  cache_.localization_mem->player = decltype(cache_.localization_mem->player)();
+  cache_.localization_mem->player = Point2D(-750,0);
   cache_.localization_mem->state = decltype(cache_.localization_mem->state)::Zero();
   cache_.localization_mem->covariance = decltype(cache_.localization_mem->covariance)::Identity();
 }
