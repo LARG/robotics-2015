@@ -68,11 +68,14 @@ void LocalizationModule::processFrame() {
     
   //TODO: modify this block to use your Kalman filter implementation
   if(ball.seen) {
-    // Compute the global position of the ball based on the relative location and our own location
+    // Compute the relative position of the ball from vision readings
     auto relBall = Point2D::getPointFromPolar(ball.visionDistance, ball.visionBearing);
 
+    // Compute the global position of the ball based on our assumed position and orientation
+    auto globalBall = relBall.relativeToGlobal(self.loc, self.orientation);
+
     // Update the ball in the WorldObject block so that it can be accessed in python
-    ball.loc = relBall.relativeToGlobal(self.loc, self.orientation);
+    ball.loc = globalBall;
     ball.distance = ball.visionDistance;
     ball.bearing = ball.visionBearing;
     //ball.absVel = fill this in
