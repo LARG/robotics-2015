@@ -72,6 +72,10 @@ void printtime(const char* name, int id) {
 }
 
 Timer::Timer() : id_(0), pauseId_(0), elapsed_(0), paused_(0), interval_(1), iterations_(0) { }
+Timer::Timer(std::string message, int interval) : Timer() { 
+  message_ = message;
+  interval_ = interval; 
+}
 
 void Timer::start() {
   if(!id_) id_ = tic();

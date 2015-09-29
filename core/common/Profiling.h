@@ -24,6 +24,7 @@ double tocavg(int id);
 class Timer {
   public:
     Timer();
+    Timer(std::string message, int interval);
     void start();
     void stop();
     void pause();
