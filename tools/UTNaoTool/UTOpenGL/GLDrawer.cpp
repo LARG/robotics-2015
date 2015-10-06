@@ -102,8 +102,10 @@ void GLDrawer::drawField() {
   }
 
   objectsGL.drawGreenCarpet();
-  //objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OPP_GOAL].loc,1.0);
-  objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OWN_GOAL].loc,1.0);
+  if(display_[SHOWGOALS]) {
+    objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OPP_GOAL].loc,1.0);
+    objectsGL.drawGoal(gtcache_.world_object->objects_[WO_OWN_GOAL].loc,1.0);
+  }
   return;
   for (int i = LINE_OFFSET; i < LINE_OFFSET + NUM_LINES; i++){
     WorldObject* wo = &(gtcache_.world_object->objects_[i]);

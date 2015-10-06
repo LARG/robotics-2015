@@ -1,5 +1,6 @@
 #include <localization/ParticleFilter.h>
 #include <memory/FrameInfoBlock.h>
+#include <memory/OdometryBlock.h>
 
 #define NUM_PARTICLES 10
 
@@ -15,6 +16,7 @@ void ParticleFilter::processFrame() {
   particles().resize(NUM_PARTICLES);
   auto frame = cache_.frame_info->frame_id;
   dirty_ = true;
+  const auto& disp = cache_.odometry->displacement;
   for(auto& p : particles()) {
     p.x = rand_.sampleN(frame * 5, 250);
     p.y = rand_.sampleN(0, 250);

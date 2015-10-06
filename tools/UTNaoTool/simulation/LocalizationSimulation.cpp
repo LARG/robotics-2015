@@ -42,22 +42,7 @@ LocalizationSimulation::~LocalizationSimulation() {
 }
 
 void LocalizationSimulation::init(vector<LocSimAgent::Type> types) {
-  path_ = {
-    Point2D(1000,0), Point2D(750,250), Point2D(1000,250), Point2D(750,500),
-    Point2D(-942,2694), Point2D(-648,883), Point2D(-3425,454), Point2D(1842,-1098), 
-    Point2D(1138,-1450), Point2D(-908,-812), Point2D(3991,-418), Point2D(-3538,-962), 
-    Point2D(-2186,754), Point2D(-913,-1256), Point2D(1364,232), Point2D(-3367,1123), 
-    Point2D(656,-1662), Point2D(3869,2745), Point2D(2321,1214), Point2D(110,-21), 
-    Point2D(-2790,-222), Point2D(1666,-881), Point2D(-924,-1340), Point2D(-521,1924), 
-    Point2D(-957,-1317), Point2D(-2618,-2459), Point2D(-1264,1962), Point2D(3976,-1511), 
-    Point2D(3539,888), Point2D(154,-2639), Point2D(-1792,-2242), Point2D(2501,2697), 
-    Point2D(2860,377), Point2D(-2057,-329), Point2D(-153,-2146), Point2D(715,-887), 
-    Point2D(-2423,-2432), Point2D(890,878), Point2D(7,2269), Point2D(972,-2861), 
-    Point2D(418,2496), Point2D(926,2751), Point2D(1799,-2774), Point2D(1010,2499), 
-    Point2D(-3747,-2302), Point2D(-3568,-1454), Point2D(-3236,382), Point2D(-528,-1168), 
-    Point2D(2341,2012), Point2D(1776,-2942), Point2D(-3068,1162), Point2D(3527,-2149), 
-    Point2D(2353,-2226), Point2D(116,-1058)
-  };
+  path_ = SimulationPath::generate(10);
   gtcache_ = MemoryCache::create(team_, player_);
   og_.setInfoBlocks(gtcache_.frame_info, gtcache_.joint);
   og_.setPlayer(player_, team_);

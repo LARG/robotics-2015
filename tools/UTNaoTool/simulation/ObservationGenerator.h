@@ -27,6 +27,7 @@ class ObservationGenerator {
     void generateCenterCircleObservations();
     void generateGoalObservations();
     void generatePenaltyCrossObservations();
+    void generateBeaconObservations();
     void fillObservationObjects();
     ImageParams iparams_;
     Random rand_;

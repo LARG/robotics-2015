@@ -218,6 +218,40 @@ void ObservationGenerator::generateCenterCircleObservations() {
   }
 }
 
+void ObservationGenerator::generateBeaconObservations() {
+  getSelf(gtSelf,obsSelf,player_);
+  std::vector<WorldObjectType> types = {
+    WO_BEACON_BLUE_YELLOW,
+    WO_BEACON_YELLOW_BLUE,
+    WO_BEACON_BLUE_PINK,
+    WO_BEACON_PINK_BLUE,
+    WO_BEACON_PINK_YELLOW,
+    WO_BEACON_YELLOW_PINK
+  };
+  for(auto t : types) {
+    getObject(gtBeacon, obsBeacon, t);
+    float bearing = gtSelf.loc.getBearingTo(gtBeacon.loc,gtSelf.orientation);
+    float distance = gtSelf.loc.getDistanceTo(gtBeacon.loc);
+    if (isVisible(t)) {
+      // Rate of expected misses
+      float missedObsRate = 1.0/5.0;
+      float randPct = rand_.sampleU();
+      // If only allow beacons to be seen up to 3 meters away
+      if (randPct > (missedObsRate * MISSED_OBS_FACTOR) && distance < 3000){
+        obsBeacon.seen = true;
+        float diff = joint_->values_[HeadPan] - bearing;
+        obsBeacon.imageCenterX = iparams_.width/2.0 + (diff / (FOVx/2.0) * iparams_.width/2.0);
+        obsBeacon.imageCenterY = iparams_.height/2.0;
+        // Add distance and bearing noise
+        float randNoise = rand_.sampleU()-0.5;
+        obsBeacon.visionDistance = distance + randNoise * VISION_ERROR_FACTOR * 0.2*distance;// up to 15% distance error
+        obsBeacon.visionBearing = bearing + randNoise * VISION_ERROR_FACTOR * 10.0*DEG_T_RAD;// up to 5 deg bearing error
+        obsBeacon.visionConfidence = 1.0;
+      }
+    }
+  }
+}
+
 void ObservationGenerator::generateGoalObservations() {
   getSelf(gtSelf, obsSelf, player_);
   int seenPostCount = 0;
@@ -307,6 +341,7 @@ void ObservationGenerator::generateAllObservations() {
   generateLineObservations();
   generateOpponentObservations();
   generateCenterCircleObservations();
+  generateBeaconObservations();
   generateGoalObservations();
   generatePenaltyCrossObservations();
   fillObservationObjects();

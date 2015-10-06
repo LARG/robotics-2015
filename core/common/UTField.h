@@ -14,9 +14,9 @@
 const float BALL_RADIUS = 31;
 
 const float FIELD_Y = 1500;
-const float FIELD_X = 2000;
-const float GRASS_Y = 2000;
-const float GRASS_X = 3000;
+const float FIELD_X = 3000;
+const float GRASS_Y = 2500;
+const float GRASS_X = 5000;
 
 const float HALF_FIELD_Y = FIELD_Y/2.0;
 const float HALF_FIELD_X = FIELD_X/2.0;
