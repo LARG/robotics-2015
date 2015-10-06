@@ -23,11 +23,10 @@ class SimulationPath : public YamlConfig {
     std::list<Point2D>::iterator end() { return points_.end(); }
     void pop();
     void flip();
-    static SimulationPath generate(int length = 25);
+    static SimulationPath generate(int length = 25, int seed = Random::SEED);
     virtual void deserialize(const YAML::Node& node);
     void serialize(YAML::Emitter& emitter) const;
   private:
-    static Random rand_;
     std::list<Point2D> points_;
     Point2D last_;
 };

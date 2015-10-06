@@ -197,6 +197,23 @@
               <item row="6" column="1">
                <widget class="QComboBox" name="teamColorBox"/>
               </item>
+              <item row="7" column="1">
+               <widget class="QSpinBox" name="seedBox">
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+                <property name="maximum">
+                 <number>1000000</number>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Seed</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
             <item row="1" column="0">

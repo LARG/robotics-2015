@@ -13,6 +13,7 @@ class WorldConfig : public YamlConfig {
     int teamColor;
     std::string locSimPathfile;
     int skip;
+    int seed;
 
     WorldConfig() : 
       simPlayers(1),
@@ -34,6 +35,7 @@ class WorldConfig : public YamlConfig {
       YAML_DESERIALIZE(node, teamColor);
       YAML_DESERIALIZE(node, locSimPathfile);
       YAML_DESERIALIZE(node, skip);
+      YAML_DESERIALIZE(node, seed);
     }
 
     void serialize(YAML::Emitter& emitter) const {
@@ -45,6 +47,7 @@ class WorldConfig : public YamlConfig {
       YAML_SERIALIZE(emitter, teamColor);
       YAML_SERIALIZE(emitter, locSimPathfile);
       YAML_SERIALIZE(emitter, skip);
+      YAML_SERIALIZE(emitter, seed);
     }
 
 };

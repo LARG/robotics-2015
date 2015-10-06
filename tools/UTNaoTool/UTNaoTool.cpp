@@ -144,7 +144,8 @@ void runLocSim() {
   std::vector<AgentError> errors;
   for(int i = 0; i < 100; i++) {
     tic();
-    auto path = SimulationPath::generate(10);
+    auto seed = rand();
+    auto path = SimulationPath::generate(10, seed);
     auto psim = new LocalizationSimulation(LocSimAgent::Default);
     psim->setPath(path);
     psim->outputBadPaths(500.0,20.0);
@@ -158,10 +159,11 @@ void runLocSim() {
     psim->printError();
     errors.push_back(psim->getError(LocSimAgent::Default));
     auto avg = AgentError::average(errors);
-    fprintf(stderr, "Avg dist: %2.2f, Avg rot: %2.2f, Avg steps: %2.2f\n",
-      avg.dist, avg.rot, avg.steps
+    fprintf(stderr, "Seed: %i, Avg dist: %2.2f, Avg rot: %2.2f, Avg steps: %2.2f\n",
+      seed, avg.dist, avg.rot, avg.steps
     );
     fprintf(stderr, "Sim time: %2.2f seconds\n", toc());
+    fprintf(stderr, "----------------------------------------------------------\n");
   }
 }
 

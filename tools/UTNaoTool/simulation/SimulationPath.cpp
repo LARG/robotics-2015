@@ -1,7 +1,5 @@
 #include "SimulationPath.h"
 
-Random SimulationPath::rand_ = Random();
-
 void SimulationPath::flip() {
   for(auto& p : points_)
     p = -p;
@@ -13,11 +11,12 @@ void SimulationPath::pop() {
   points_.pop_front();
 }
 
-SimulationPath SimulationPath::generate(int length) {
+SimulationPath SimulationPath::generate(int length, int seed) {
+  auto rand = Random(seed);
   SimulationPath path;
   for(int i = 0; i < length; i++) {
-    int x = rand_.sampleU(-FIELD_X / 2, FIELD_X / 2);
-    int y = rand_.sampleU(-FIELD_Y / 2, FIELD_Y / 2);
+    int x = rand.sampleU(-FIELD_X / 2, FIELD_X / 2);
+    int y = rand.sampleU(-FIELD_Y / 2, FIELD_Y / 2);
     path.points_.push_back(Point2D(x,y));
   }
   return path;

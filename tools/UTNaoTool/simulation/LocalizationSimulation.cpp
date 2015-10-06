@@ -24,7 +24,7 @@ LocalizationSimulation::LocalizationSimulation(string pathfile) : iparams_(Camer
   setPath(path);
 }
 
-LocalizationSimulation::LocalizationSimulation() : iparams_(Camera::TOP), cg_(team_, player_) {
+LocalizationSimulation::LocalizationSimulation(int seed) : iparams_(Camera::TOP), cg_(team_, player_), seed_(seed)  {
   vector<LocSimAgent::Type> types = { LocSimAgent::Default };
   init(types);
 }
@@ -42,7 +42,7 @@ LocalizationSimulation::~LocalizationSimulation() {
 }
 
 void LocalizationSimulation::init(vector<LocSimAgent::Type> types) {
-  path_ = SimulationPath::generate(10);
+  path_ = SimulationPath::generate(10, seed_);
   gtcache_ = MemoryCache::create(team_, player_);
   og_.setInfoBlocks(gtcache_.frame_info, gtcache_.joint);
   og_.setPlayer(player_, team_);

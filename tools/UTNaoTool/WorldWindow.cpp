@@ -48,6 +48,7 @@ WorldWindow::WorldWindow(QMainWindow* pa) : ConfigWindow(pa) {
   connect(teamColorBox, SIGNAL(currentIndexChanged(int)), this, SLOT(controlsChanged(int)));
   connect(skipButton, SIGNAL(pressed()), this, SLOT(skip()));
   connect(skipBox, SIGNAL(valueChanged(int)), this, SLOT(controlsChanged(int)));
+  connect(seedBox, SIGNAL(valueChanged(int)), this, SLOT(controlsChanged(int)));
   connect(UTMainWnd::inst(), SIGNAL(newLogLoaded(Log*)), this, SLOT(restart(Log*)));
   connect(world, SIGNAL(clicked(Point2D,Qt::MouseButton)), this, SLOT(fieldClicked(Point2D,Qt::MouseButton)));
   
@@ -88,6 +89,7 @@ void WorldWindow::updateDisplay(bool) {
   playersBox->setValue(wconfig_.simPlayers);
   teamColorBox->setCurrentIndex(wconfig_.teamColor);
   skipBox->setValue(wconfig_.skip);
+  seedBox->setValue(wconfig_.seed);
   world->updateDisplay(simconfig_.options);
   updating_ = false;
 }
@@ -127,6 +129,7 @@ void WorldWindow::controlsChanged() {
   wconfig_.teamNumber = teamNumberBox->value();
   wconfig_.teamColor = teamColorBox->currentIndex();
   wconfig_.skip = skipBox->value();
+  wconfig_.seed = seedBox->value();
   auto mode = modeBox->currentIndex();
   setMode((WorldMode)mode);
   ConfigWindow::saveConfig();
@@ -159,7 +162,7 @@ void WorldWindow::startSimulation() {
       case BehaviorSimLoc: simulation_ = new BehaviorSimulation(wconfig_.simPlayers, false, true); break;
       case LocalizationSim: {
           if(wconfig_.locSimPathfile == "")
-            simulation_ = new LocalizationSimulation();
+            simulation_ = new LocalizationSimulation(wconfig_.seed);
           else
             simulation_ = new LocalizationSimulation(wconfig_.locSimPathfile); 
         }
