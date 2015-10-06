@@ -42,4 +42,5 @@ bool LocalizationBlock::deserialize(const StreamBuffer& buffer, std::string) {
   parts[2].write(covariance);
   parts[3].write(particles);
   StreamBuffer::clear(parts);
+  return true;
 }

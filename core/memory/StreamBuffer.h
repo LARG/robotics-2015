@@ -39,7 +39,7 @@ struct StreamBuffer {
   }
   template<typename T>
   void read(const std::vector<T>& v) {
-    read(v.data());
+    read((unsigned char*)v.data(), sizeof(T) * v.size());
   }
   template<typename T>
   void write(T& dest) {

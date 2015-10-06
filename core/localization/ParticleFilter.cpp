@@ -2,7 +2,7 @@
 #include <memory/FrameInfoBlock.h>
 #include <memory/OdometryBlock.h>
 
-#define NUM_PARTICLES 10
+#define NUM_PARTICLES 100
 
 ParticleFilter::ParticleFilter(MemoryCache& cache, TextLogger*& tlogger) 
   : cache_(cache), tlogger_(tlogger), dirty_(true) {
