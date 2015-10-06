@@ -4,9 +4,10 @@
 #include <memory/GameStateBlock.h>
 #include <memory/RobotStateBlock.h>
 #include <localization/ParticleFilter.h>
+#include <localization/Logging.h>
 
 // Boilerplate
-LocalizationModule::LocalizationModule() : tlogger_(textlogger), pfilter_(new ParticleFilter(cache_)) {
+LocalizationModule::LocalizationModule() : tlogger_(textlogger), pfilter_(new ParticleFilter(cache_, tlogger_)) {
 }
 
 LocalizationModule::~LocalizationModule() {
@@ -73,6 +74,7 @@ void LocalizationModule::processFrame() {
   pfilter_->processFrame();
   self.loc = pfilter_->pose().translation;
   self.orientation = pfilter_->pose().rotation;
+  log(40, "Localization Update: x=%2.f, y=%2.f, theta=%2.2f", self.loc.x, self.loc.y, self.orientation * RAD_T_DEG);
     
   //TODO: modify this block to use your Kalman filter implementation
   if(ball.seen) {

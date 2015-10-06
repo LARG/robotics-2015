@@ -330,7 +330,7 @@ void GLDrawer::drawAlternateRobots(vector<MemoryCache> caches) {
       drawBall();
       return;
     }
-    float alpha = 0.5f;
+    float alpha = 1.0f;
 
     Point2D ball = localization_mem->getBallPosition();
     Point2D bvel = localization_mem->getBallVel();

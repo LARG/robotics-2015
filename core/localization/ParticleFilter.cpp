@@ -4,7 +4,8 @@
 
 #define NUM_PARTICLES 10
 
-ParticleFilter::ParticleFilter(MemoryCache& cache) : cache_(cache), dirty_(true) {
+ParticleFilter::ParticleFilter(MemoryCache& cache, TextLogger*& tlogger) 
+  : cache_(cache), tlogger_(tlogger), dirty_(true) {
 }
 
 void ParticleFilter::init(Point2D loc, float orientation) {
@@ -17,6 +18,7 @@ void ParticleFilter::processFrame() {
   auto frame = cache_.frame_info->frame_id;
   dirty_ = true;
   const auto& disp = cache_.odometry->displacement;
+  log(41, "Updating particles from odometry: %2.f,%2.f @ %2.2f", disp.translation.x, disp.translation.y, disp.rotation * RAD_T_DEG);
   for(auto& p : particles()) {
     p.x = rand_.sampleN(frame * 5, 250);
     p.y = rand_.sampleN(0, 250);

@@ -4,10 +4,11 @@
 #include <common/Random.h>
 #include <memory/MemoryCache.h>
 #include <memory/LocalizationBlock.h>
+#include <localization/Logging.h>
 
 class ParticleFilter {
   public:
-    ParticleFilter(MemoryCache& cache);
+    ParticleFilter(MemoryCache& cache, TextLogger*& tlogger);
     void init(Point2D loc, float orientation);
     void processFrame();
     const Pose2D& pose() const;
@@ -23,4 +24,5 @@ class ParticleFilter {
     Random rand_;
     mutable Pose2D mean_;
     mutable bool dirty_;
+    TextLogger*& tlogger_;
 };

@@ -23,7 +23,7 @@ LogWindow::LogWindow(QMainWindow* p) : ConfigWindow(p) {
   // must be in order from TextLogger.h
   moduleBox->addItem("Vision");
   moduleBox->addItem("Behavior");
-  moduleBox->addItem("Unscented Kalman Filter");
+  moduleBox->addItem("Localization");
   moduleBox->addItem("Opponent Tracking");
   moduleBox->addItem("Kinematics");
   moduleBox->addItem("Sensors");
