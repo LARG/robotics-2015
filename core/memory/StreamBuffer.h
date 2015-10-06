@@ -30,14 +30,20 @@ struct StreamBuffer {
   void read(std::istream& is, unsigned int n);
   void read(std::istream& is);
   template<typename T>
+  void read(const T& data) {
+    read((unsigned char*)&data, sizeof(T));
+  }
+  template<typename T>
+  void read(const T* data) {
+    read((unsigned char*)data, sizeof(T));
+  }
+  template<typename T>
+  void read(const std::vector<T>& v) {
+    read(v.data());
+  }
+  template<typename T>
   void write(T& dest) {
-    if(children.size()) {
-      auto sb = children.front();
-      children.pop_front();
-      sb.write(dest);
-    } else {
-      memcpy((unsigned char*)&dest, this->buffer, this->size);
-    }
+    write(&dest);
   }
   template<typename T>
   void write(T* dest) {
@@ -48,6 +54,12 @@ struct StreamBuffer {
     } else {
       memcpy((unsigned char*)dest, this->buffer, this->size);
     }
+  }
+  template<typename T>
+  void write(std::vector<T>& dest) {
+    int n = this->size / sizeof(T);
+    dest.resize(n);
+    memcpy((unsigned char*)dest.data(), this->buffer, this->size);
   }
   void write(std::ostream& os);
   void write(std::ostream& os, unsigned int n);

@@ -3,6 +3,7 @@
 #include <common/File.h>
 #include <memory/ImageBlock.h>
 #include <memory/RobotVisionBlock.h>
+#include <memory/LocalizationBlock.h>
 
 Logger::Logger(bool useBuffers, const char* directory, bool appendUniqueId, bool useAllBlocks):
   using_buffers_(useBuffers), use_all_blocks_(useAllBlocks)
@@ -63,6 +64,8 @@ void Logger::writeMemory(Memory &memory) {
         ((ImageBlock*)block)->serialize(sb, directory_);
       else if(id == "robot_vision")
         ((RobotVisionBlock*)block)->serialize(sb, directory_);
+      else if (id == "localization")
+        ((LocalizationBlock*)block)->serialize(sb, directory_);
       else
         block->serialize(sb);
       buffers.push_back(sb);

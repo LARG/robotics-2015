@@ -89,6 +89,8 @@ bool LogReader::readMemory(Memory &memory, bool /*suppress_errors*/) {
       valid = ((ImageBlock*)block)->deserialize(buffers[i], directory_);
     else if (id == "robot_vision")
       valid = ((RobotVisionBlock*)block)->deserialize(buffers[i], directory_);
+    else if (id == "localization")
+      valid = ((LocalizationBlock*)block)->deserialize(buffers[i], directory_);
     else
       valid = MEMORY_BLOCK_TEMPLATE_FUNCTION_CALL(id,block->deserialize,false,buffers[i]);
     if(!valid)
