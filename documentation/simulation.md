@@ -40,9 +40,9 @@ If you notice your robot getting lost, you may want to follow these steps to deb
 
 You may want to run simulations without the UI loaded so that you can get a better sense of your algorithm's performance on a large number of random paths. You can do this by running the tool with the `-x` option and redirecting standard output to `/dev/null`:
 
-    ```bash
+```bash
     $NAO_HOME/build/tool/UTNaoTool -x 1>/dev/null
-    ```
+```
     
 This will produce output similar to the following:
 
