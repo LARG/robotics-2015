@@ -3,7 +3,7 @@
 using namespace Eigen;
 
 LocalizationBlock::LocalizationBlock() {
-  header.version = 9;
+  header.version = 10;
   header.size = sizeof(LocalizationBlock);
   state = decltype(state)::Zero();
   covariance = decltype(covariance)::Identity();

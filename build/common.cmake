@@ -58,7 +58,7 @@ endif($ENV{USER} STREQUAL "sbarrett") # for lab machines
 # set C++ compiler flags
 # TODO: Why do we need cache string force?
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmax-errors=1" CACHE STRING "" FORCE)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11" CACHE STRING "" FORCE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1y" CACHE STRING "" FORCE)
 if(TOOL_BUILD)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--dynamic-linker=${NAO_HOME}/naoqi/link_libs/ld-linux.so" CACHE STRING "" FORCE)
 endif(TOOL_BUILD)

@@ -11,6 +11,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <math/Geometry.h>
 
 /** This class represents a 2-vector */
 template <class V> class Vector2
@@ -35,6 +36,12 @@ public:
   Vector2<V>& operator=(const Vector2<V>& other)
   {
     x=other.x;y=other.y;
+    return *this;
+  }
+
+  Vector2<V>& operator=(const Point2D& p)
+  {
+    x=p.x;y=p.y;
     return *this;
   }
 
@@ -277,6 +284,8 @@ public:
 		out << "(" << vec.x << "," << vec.y << ")";
 		return out;
 	}
+
+  operator Point2D() const { return Point2D(x,y); }
 };
 
 #endif // __Vector2_h__

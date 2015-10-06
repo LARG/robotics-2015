@@ -4,9 +4,12 @@
 #include <memory/MemoryCache.h>
 #include <localization/LocalizationParams.h>
 
+class ParticleFilter;
+
 class LocalizationModule : public Module {
   public:
     LocalizationModule();
+    ~LocalizationModule();
     void specifyMemoryDependency();
     void specifyMemoryBlocks();
     void initSpecificModule();
@@ -20,4 +23,5 @@ class LocalizationModule : public Module {
     MemoryCache cache_;
     TextLogger*& tlogger_;
     LocalizationParams params_;
+    ParticleFilter* pfilter_;
 };

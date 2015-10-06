@@ -11,7 +11,6 @@ class Particle;
 struct LocalizationBlock : public MemoryBlock {
   public:
     LocalizationBlock();
-    Point2D player;
     Eigen::Matrix<float, STATE_SIZE, 1, Eigen::DontAlign> state;
     Eigen::Matrix<float, STATE_SIZE, STATE_SIZE, Eigen::DontAlign> covariance;
     Point2D getBallPosition();

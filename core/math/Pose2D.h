@@ -128,12 +128,24 @@ class Pose2D
     res.rotation *= scalar;
     return res;
   }
+  
+  Pose2D& operator*=(float scalar) {
+    translation *= scalar;
+    rotation *= scalar;
+    return *this;
+  }
 
   Pose2D operator/(float scalar) {
     Pose2D res(*this);
     res.translation /= scalar;
     res.rotation /= scalar;
     return res;
+  }
+  
+  Pose2D operator/=(float scalar) {
+    translation /= scalar;
+    rotation /= scalar;
+    return *this;
   }
 
   /** Comparison of another pose with this one.

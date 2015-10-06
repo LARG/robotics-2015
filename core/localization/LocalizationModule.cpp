@@ -3,9 +3,14 @@
 #include <memory/LocalizationBlock.h>
 #include <memory/GameStateBlock.h>
 #include <memory/RobotStateBlock.h>
+#include <localization/ParticleFilter.h>
 
 // Boilerplate
-LocalizationModule::LocalizationModule() : tlogger_(textlogger) {
+LocalizationModule::LocalizationModule() : tlogger_(textlogger), pfilter_(new ParticleFilter(cache_)) {
+}
+
+LocalizationModule::~LocalizationModule() {
+  delete pfilter_;
 }
 
 // Boilerplate
@@ -47,12 +52,12 @@ void LocalizationModule::initFromMemory() {
 void LocalizationModule::initFromWorld() {
   reInit();
   auto& self = cache_.world_object->objects_[cache_.robot_state->WO_SELF];
-  cache_.localization_mem->player = self.loc;
+  pfilter_->init(self.loc, self.orientation);
 }
 
 // Reinitialize from scratch
 void LocalizationModule::reInit() {
-  cache_.localization_mem->player = Point2D(-750,0);
+  pfilter_->init(Point2D(-750,0), 0.0f);
   cache_.localization_mem->state = decltype(cache_.localization_mem->state)::Zero();
   cache_.localization_mem->covariance = decltype(cache_.localization_mem->covariance)::Identity();
 }
@@ -61,10 +66,11 @@ void LocalizationModule::processFrame() {
   auto& ball = cache_.world_object->objects_[WO_BALL];
   auto& self = cache_.world_object->objects_[cache_.robot_state->WO_SELF];
 
-  // Retrieve the robot's current location from localization memory
-  // and store it back into world objects
-  auto sloc = cache_.localization_mem->player;
-  self.loc = sloc;
+  // Process the current frame and retrieve our location/orientation estimate
+  // from the particle filter
+  pfilter_->processFrame();
+  self.loc = pfilter_->pose().translation;
+  self.orientation = pfilter_->pose().rotation;
     
   //TODO: modify this block to use your Kalman filter implementation
   if(ball.seen) {
