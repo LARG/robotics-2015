@@ -23,8 +23,8 @@ public:
   void drawFootCommand(Vector3<float> command);
 
   void drawSimpleRobot();
-  void drawSimpleRobot(Point2D loc, double angle, bool fallen);
-  void drawSimpleRobot(WorldObject* self, bool fallen);
+  void drawSimpleRobot(Point2D loc, double angle, bool fallen = false);
+  void drawSimpleRobot(WorldObject* self, bool fallen = false);
   void drawTiltedRobot(Pose2D pose, double tilt, double roll);
   void drawTiltedRobot(Point2D loc, double orient, double tilt, double roll);
   void drawTiltedRobot(Point2D loc, double height, double orient, double tilt, double roll);

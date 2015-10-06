@@ -16,7 +16,7 @@ void BasicGL::drawArrow(Point2D start, Point2D end) {
 
 void BasicGL::drawArrow(Point2D start, Point2D end, RGB lineColor, RGB headColor, float alpha, float width) {
   float lineZ = 10;
-  float headBase = 75, headHeight = 100;
+  float headBase = 3 * width, headHeight = 5 * width;
   setLineWidth(width);
   colorRGBAlpha(lineColor, alpha);
   drawLine(start,end,lineZ*FACT);

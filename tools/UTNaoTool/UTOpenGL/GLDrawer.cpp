@@ -321,6 +321,7 @@ void GLDrawer::drawAlternateRobots(vector<MemoryCache> caches) {
     auto& localization_mem = cache.localization_mem;
     auto& odometry = cache.odometry;
     auto& robot_state = cache.robot_state;
+    auto& self = cache.world_object->objects_[robot_state->WO_SELF];
     if (localization_mem == NULL){
       // draw normal one since we can't draw multiple from kf mem
       drawRobot();
@@ -344,6 +345,13 @@ void GLDrawer::drawAlternateRobots(vector<MemoryCache> caches) {
       basicGL.colorRGBAlpha(color,alpha);
       localizationGL.drawUncertaintyEllipse(ball, bcov);
     }
+
+    // draw particles
+    localizationGL.drawParticles(localization_mem->particles);
+
+    // draw position
+    basicGL.colorRGBAlpha(color,alpha);
+    robotGL.drawSimpleRobot(&self);
   }
 }
 

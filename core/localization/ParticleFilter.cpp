@@ -1,7 +1,7 @@
 #include <localization/ParticleFilter.h>
 #include <memory/FrameInfoBlock.h>
 
-#define NUM_PARTICLES 100
+#define NUM_PARTICLES 10
 
 ParticleFilter::ParticleFilter(MemoryCache& cache) : cache_(cache), dirty_(true) {
 }
@@ -16,7 +16,7 @@ void ParticleFilter::processFrame() {
   auto frame = cache_.frame_info->frame_id;
   dirty_ = true;
   for(auto& p : particles()) {
-    p.x = rand_.sampleN(frame, 250);
+    p.x = rand_.sampleN(frame * 5, 250);
     p.y = rand_.sampleN(0, 250);
     p.t = rand_.sampleN(0, M_PI / 4);
     p.w = rand_.sampleU();
@@ -25,8 +25,12 @@ void ParticleFilter::processFrame() {
 
 const Pose2D& ParticleFilter::pose() const {
   if(dirty_) {
-    for(const auto& p : particles())
-      mean_ += Pose2D(p.t, p.x, p.y) * p.w;
+    mean_ = Pose2D();
+    using T = decltype(mean_.translation);
+    for(const auto& p : particles()) {
+      mean_.translation += T(p.x,p.y);
+      mean_.rotation += p.t;
+    }
     if(particles().size() > 0)
       mean_ /= particles().size();
     dirty_ = false;
