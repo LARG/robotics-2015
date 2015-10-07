@@ -30,14 +30,6 @@ struct StreamBuffer {
   void read(std::istream& is, unsigned int n);
   void read(std::istream& is);
   template<typename T>
-  void read(const T& data) {
-    read((unsigned char*)&data, sizeof(T));
-  }
-  template<typename T>
-  void read(const T* data) {
-    read((unsigned char*)data, sizeof(T));
-  }
-  template<typename T>
   void read(const std::vector<T>& v) {
     read((unsigned char*)v.data(), sizeof(T) * v.size());
   }

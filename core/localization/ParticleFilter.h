@@ -12,12 +12,12 @@ class ParticleFilter {
     void init(Point2D loc, float orientation);
     void processFrame();
     const Pose2D& pose() const;
-    inline const auto& particles() const {
+    inline const std::vector<Particle>& particles() const {
       return cache_.localization_mem->particles;
     }
 
   private:
-    inline auto& particles() {
+    inline std::vector<Particle>& particles() {
       return cache_.localization_mem->particles;
     }
     MemoryCache& cache_;

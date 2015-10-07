@@ -23,9 +23,9 @@ Matrix2f LocalizationBlock::getBallCov() {
 
 void LocalizationBlock::serialize(StreamBuffer& buffer, std::string) {
   std::vector<StreamBuffer> parts(4);
-  parts[0].read(header);
-  parts[1].read(state);
-  parts[2].read(covariance);
+  parts[0].read((unsigned char*)&header, sizeof(header));
+  parts[1].read((unsigned char*)&state, sizeof(state));
+  parts[2].read((unsigned char*)&covariance, sizeof(covariance));
   parts[3].read(particles);
   StreamBuffer::combine(parts, buffer);
   StreamBuffer::clear(parts);
