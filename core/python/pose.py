@@ -14,17 +14,23 @@ class ToPose(Task):
     self.pose = pose
     self.time = time
     self.reverse = reverse
+  
+  def reset(self):
+    super(ToPose, self).reset()
+    self.first = True
 
   def run(self):
-    for i in range(2, core.NUM_JOINTS):
-      val = util.getPoseJoint(i, self.pose, self.reverse)
-      if val != None:
-        joint_commands.setJointCommand(i, val * core.DEG_T_RAD)
+    if self.first:
+      for i in range(2, core.NUM_JOINTS):
+        val = util.getPoseJoint(i, self.pose, self.reverse)
+        if val != None:
+          joint_commands.setJointCommand(i, val * core.DEG_T_RAD)
 
-    joint_commands.send_body_angles_ = True
-    joint_commands.body_angle_time = self.time * 1000.0
-    walk_request.noWalk()
-    kick_request.setNoKick()
+      joint_commands.send_body_angles_ = True
+      joint_commands.body_angle_time_ = self.time * 1000.0
+      walk_request.noWalk()
+      kick_request.setNoKick()
+      self.first = False
 
     if self.getTime() > self.time:
       self.finish()
@@ -111,7 +117,7 @@ class Sit(Task):
     elif st.inState(st.sit):
       self.skippedState = False
       st.transition(st.relaxknee)
-      return ToPoseMoveHead(pose = cfgpose.sittingPoseV3, time = 1.0)
+      return ToPoseMoveHead(pose = cfgpose.sittingPoseV3)
     elif st.inState(st.relaxknee):
       self.lower_time = self.getTime()
       commands.setStiffness(cfgstiff.ZeroKneeAnklePitch, 0.3)
