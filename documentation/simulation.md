@@ -35,3 +35,37 @@ If you notice your robot getting lost, you may want to follow these steps to deb
 
   Then you can select the start and end log level numbers "43" and "45"
 4. With the simulator still paused, continue advancing the simulation one frame at a time until you identify the frame that caused the localization error to occur. You can now make changes, recompile, and restart the simulation with this seed at this frame repeatedly until you solve the issue.
+
+### Simulating without UI
+
+You may want to run simulations without the UI loaded so that you can get a better sense of your algorithm's performance on a large number of random paths. You can do this by running the tool with the `-x` option and redirecting standard output to `/dev/null`:
+
+```bash
+    $NAO_HOME/build/tool/UTNaoTool -x 1>/dev/null
+```
+    
+This will produce output similar to the following:
+
+    ----------------------------------------------------------
+    Default RMSE dist error: 7694.68, rot error: 115.33, steps: 2671
+    Seed: 596516649, Avg dist: 9624.26, Avg rot: 106.95, Avg steps: 3322.44
+    Sim time: 0.18 seconds
+    ----------------------------------------------------------
+    Default RMSE dist error: 10103.61, rot error: 114.34, steps: 3369
+    Seed: 1189641421, Avg dist: 9672.19, Avg rot: 107.69, Avg steps: 3327.10
+    Sim time: 0.18 seconds
+    ----------------------------------------------------------
+    Default RMSE dist error: 8891.12, rot error: 105.51, steps: 3143
+    Seed: 1025202362, Avg dist: 9601.19, Avg rot: 107.49, Avg steps: 3310.36
+    Sim time: 0.15 seconds
+    ----------------------------------------------------------
+    Default RMSE dist error: 9940.03, rot error: 111.29, steps: 3391
+    Seed: 1350490027, Avg dist: 9629.42, Avg rot: 107.81, Avg steps: 3317.08
+    Sim time: 0.16 seconds
+    ----------------------------------------------------------
+    Default RMSE dist error: 12170.36, rot error: 121.17, steps: 4168
+    Seed: 783368690, Avg dist: 9824.88, Avg rot: 108.83, Avg steps: 3382.54
+    Sim time: 0.19 seconds
+    ----------------------------------------------------------
+
+This will help you gauge the general effectiveness of your filter. If a particular path yields a large amount of error, you can inspect it by copying the seed into the Simulator window and running the localization simulator manually on the generated path.
