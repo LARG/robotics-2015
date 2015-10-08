@@ -16,13 +16,16 @@ class ParticleFilter {
       return cache_.localization_mem->particles;
     }
 
-  private:
+  protected:
     inline std::vector<Particle>& particles() {
       return cache_.localization_mem->particles;
     }
+
+  private:
     MemoryCache& cache_;
+    TextLogger*& tlogger_;
     Random rand_;
+
     mutable Pose2D mean_;
     mutable bool dirty_;
-    TextLogger*& tlogger_;
 };

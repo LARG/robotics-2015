@@ -2,8 +2,6 @@
 #include <memory/FrameInfoBlock.h>
 #include <memory/OdometryBlock.h>
 
-#define NUM_PARTICLES 100
-
 ParticleFilter::ParticleFilter(MemoryCache& cache, TextLogger*& tlogger) 
   : cache_(cache), tlogger_(tlogger), dirty_(true) {
 }
@@ -14,11 +12,16 @@ void ParticleFilter::init(Point2D loc, float orientation) {
 }
 
 void ParticleFilter::processFrame() {
-  particles().resize(NUM_PARTICLES);
-  auto frame = cache_.frame_info->frame_id;
+  // Indicate that the cached mean needs to be updated
   dirty_ = true;
+
+  // Retrieve odometry update - how do we integrate this into the filter?
   const auto& disp = cache_.odometry->displacement;
   log(41, "Updating particles from odometry: %2.f,%2.f @ %2.2f", disp.translation.x, disp.translation.y, disp.rotation * RAD_T_DEG);
+  
+  // Generate random particles for demonstration
+  particles().resize(100);
+  auto frame = cache_.frame_info->frame_id;
   for(auto& p : particles()) {
     p.x = rand_.sampleN(frame * 5, 250);
     p.y = rand_.sampleN(0, 250);
@@ -29,6 +32,7 @@ void ParticleFilter::processFrame() {
 
 const Pose2D& ParticleFilter::pose() const {
   if(dirty_) {
+    // Compute the mean pose estimate
     mean_ = Pose2D();
     using T = decltype(mean_.translation);
     for(const auto& p : particles()) {
