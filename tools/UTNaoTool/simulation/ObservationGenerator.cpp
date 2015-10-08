@@ -236,7 +236,7 @@ void ObservationGenerator::generateBeaconObservations() {
       // Rate of expected misses
       float missedObsRate = 1.0/5.0;
       float randPct = rand_.sampleU();
-      // If only allow beacons to be seen up to 3 meters away
+      // Only allow beacons to be seen up to 3 meters away
       if (randPct > (missedObsRate * MISSED_OBS_FACTOR) && distance < 3000){
         obsBeacon.seen = true;
         float diff = joint_->values_[HeadPan] - bearing;
