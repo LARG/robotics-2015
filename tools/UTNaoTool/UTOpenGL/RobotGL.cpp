@@ -13,7 +13,7 @@ void RobotGL::drawStickFigure(Vector3<float> *pos,RGB body_color, RGB left_color
 
   //Draw links
   basicGL.colorRGB(body_color);
-  basicGL.setLineWidth(60);
+  basicGL.setLineWidth(6);
   basicGL.drawSolidLine(pos[BodyFrame::left_shoulder],pos[BodyFrame::right_shoulder]);
   Vector3<float> mid_shoulder = (pos[BodyFrame::left_shoulder]+pos[BodyFrame::right_shoulder])/2.0;
   basicGL.drawSolidLine(pos[BodyFrame::head],mid_shoulder);
@@ -95,14 +95,14 @@ void RobotGL::drawSimpleRobot() {
   Vector3<float> l2(forward,outside,0);
   Vector3<float> l3(backward,outside,0);
   Vector3<float> l4(backward,offset,0);
-  basicGL.drawRectangle(l1, l2, l3, l4);
+  basicGL.drawSurface(l1, l2, l3, l4);
 
   // right foot
-  Vector3<float> r1(forward,-offset,0);
-  Vector3<float> r2(forward,-outside,0);
-  Vector3<float> r3(backward,-outside,0);
-  Vector3<float> r4(backward,-offset,0);
-  basicGL.drawRectangle(r1, r2, r3, r4);
+  Vector3<float> r1(forward,-outside,0);
+  Vector3<float> r2(forward,-offset,0);
+  Vector3<float> r3(backward,-offset,0);
+  Vector3<float> r4(backward,-outside,0);
+  basicGL.drawSurface(r1, r2, r3, r4);
 
 
   // body cylinder

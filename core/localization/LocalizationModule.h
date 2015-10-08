@@ -5,6 +5,7 @@
 #include <localization/LocalizationParams.h>
 
 class ParticleFilter;
+class Point2D;
 
 class LocalizationModule : public Module {
   public:
@@ -19,6 +20,9 @@ class LocalizationModule : public Module {
     void processFrame();
 
     void loadParams(LocalizationParams params);
+    
+    void moveBall(const Point2D& position);
+    void movePlayer(const Point2D& position, float orientation);
   protected:
     MemoryCache cache_;
     TextLogger*& tlogger_;

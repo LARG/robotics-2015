@@ -24,7 +24,7 @@ void WorldGLWidget::updateMemory(MemoryCache cache){
 }
 
 void WorldGLWidget::init() {
-  glDisable(GL_LIGHTING);
+  glEnable(GL_LIGHTING);
   glEnable (GL_BLEND);
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   setSceneRadius(250.0);

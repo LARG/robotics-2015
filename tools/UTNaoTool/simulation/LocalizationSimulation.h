@@ -99,4 +99,8 @@ class LocalizationSimulation : public Simulation {
     void processLocalizationFrame();
     void placeObjects(LocSimAgent& agent);
     void moveBall();
+    void moveBall(Point2D position);
+    void teleportBall(Point2D position);
+    void movePlayer(Point2D position, float orientation, int = 0);
+    void teleportPlayer(Point2D position, float orientation, int = 0);
 };

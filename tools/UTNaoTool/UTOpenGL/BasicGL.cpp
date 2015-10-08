@@ -15,18 +15,25 @@ void BasicGL::drawArrow(Point2D start, Point2D end) {
 }
 
 void BasicGL::drawArrow(Point2D start, Point2D end, RGB lineColor, RGB headColor, float alpha, float width) {
-  float lineZ = 10;
-  float headBase = 3 * width, headHeight = 5 * width;
+  // Arrow height and ratio of head to line
+  float height = 100;
+  float headRatio = .35;
+
+  // Draw line
+  auto lstart = start, lend = end - (end - start) * headRatio;
   setLineWidth(width);
   colorRGBAlpha(lineColor, alpha);
-  drawLine(start,end,lineZ*FACT);
-  glPushMatrix();
-  translate(end.x,end.y,lineZ*FACT);
-  rotateZ((end - start).getDirection());
-  rotateYDeg(90);
+  drawSolidLine(lstart,lend,height);
+
+  // Draw head
+  float radius = 4 * width;
+  auto hstart = lend, hend = end;
   colorRGBAlpha(headColor, alpha);
-  gluCylinder(quadric, headBase/FACT, 0, headHeight/FACT,32,32);
-  glPopMatrix();
+  drawCone(hstart,hend,height,radius);
+}
+
+void BasicGL::drawCone(Point2D start, Point2D end, float z, float radius) {
+  drawCylinder(start.x, start.y, z, end.x, end.y, z, radius, 0);
 }
 
 void BasicGL::drawLine(Point2D p1, Point2D p2) {
@@ -61,13 +68,11 @@ void BasicGL::drawSolidLine(Vector2<float> p1, Vector2<float> p2) {
 }
 
 void BasicGL::drawSolidLine(Point2D p1, Point2D p2, double z) {
-  drawSolidLine(Vector3<float>(p1.x,p1.y,z),Vector3<float>(p1.x,p1.y,z));
+  drawSolidLine(Vector3<float>(p1.x,p1.y,z),Vector3<float>(p2.x,p2.y,z));
 }
 
 void BasicGL::drawSolidLine(Vector3<float> x1, Vector3<float> x2) {
-  x1 /= FACT;
-  x2 /= FACT;
-  drawCylinder(x1.x,x1.y,x1.z,x2.x,x2.y,x2.z,lineWidth_/10);
+  drawCylinder(x1.x, x1.y, x1.z, x2.x, x2.y, x2.z, lineWidth_);
 }
 
 void BasicGL::drawSolidLine(Pose3D x1, Pose3D x2) {
@@ -95,6 +100,7 @@ void BasicGL::drawEllipse(float xradius, float yradius) {
 }
 
 void BasicGL::drawEllipse(Matrix2f covariance) {
+  glDisable(GL_LIGHTING);
   glPushMatrix();
   SelfAdjointEigenSolver<Matrix2f> solver(covariance);
   if(solver.info() != Success) return;
@@ -109,9 +115,11 @@ void BasicGL::drawEllipse(Matrix2f covariance) {
   glMultMatrixf(mat);
   drawEllipse(sqrtf(values[0]),sqrtf(values[1]));
   glPopMatrix();
+  glEnable(GL_LIGHTING);
 }
 
 void BasicGL::drawArc(float startAngle, float endAngle, float radius) {
+  glDisable(GL_LIGHTING);
   radius/=FACT;
   float delta = .25 * DEG_T_RAD;
   glBegin(GL_LINE_LOOP);
@@ -144,6 +152,7 @@ void BasicGL::drawArc(float startAngle, float endAngle, float radius) {
     angle -= delta;
   }
   glEnd();
+  glEnable(GL_LIGHTING);
 }
 
 
@@ -179,8 +188,13 @@ void BasicGL::drawCylinder(float radius, float height) {
   gluCylinder(quadric,radius/FACT,radius/FACT,height/FACT,32,32); 
 }
 
-void BasicGL::drawCylinder(float x1, float y1, float z1, float x2,float y2, float z2, float radius,int subdivisions)
+void BasicGL::drawCylinder(float x1, float y1, float z1, float x2,float y2, float z2, float startRadius, float endRadius,int subdivisions)
 {
+  if(std::isnan(endRadius))
+    endRadius = startRadius;
+  x1 /= FACT; y1 /= FACT; z1 /= FACT;
+  x2 /= FACT; y2 /= FACT; z2 /= FACT;
+  startRadius /= FACT; endRadius /= FACT;
   float vx = x2-x1;
   float vy = y2-y1;
   float vz = z2-z1;
@@ -203,16 +217,16 @@ void BasicGL::drawCylinder(float x1, float y1, float z1, float x2,float y2, floa
   glTranslatef( x1,y1,z1 );
   glRotatef(ax, rx, ry, 0.0);
   gluQuadricOrientation(quadric,GLU_OUTSIDE);
-  gluCylinder(quadric, radius, radius, v, subdivisions, 1);
+  gluCylinder(quadric, startRadius, endRadius, v, subdivisions, 1);
 
   //draw the first cap
   gluQuadricOrientation(quadric,GLU_INSIDE);
-  gluDisk( quadric, 0.0, radius, subdivisions, 1);
+  gluDisk( quadric, 0.0, startRadius, subdivisions, 1);
   glTranslatef( 0,0,v );
 
   //draw the second cap
   gluQuadricOrientation(quadric,GLU_OUTSIDE);
-  gluDisk( quadric, 0.0, radius, subdivisions, 1);
+  gluDisk( quadric, 0.0, endRadius, subdivisions, 1);
   glPopMatrix();
 }
 

@@ -15,6 +15,8 @@
 #include <GL/glu.h>
 #include "Colors.h"
 
+#include <limits>
+
 #define FACT 10
 
 class BasicGL {
@@ -48,12 +50,13 @@ public:
   void drawRectangleAtHeight(Vector3<float> x1, Vector3<float> x2, Vector3<float> x3, Vector3<float> x4, float height);
 
   void drawCylinder(float radius, float height);
-  void drawCylinder(float x1, float y1, float z1, float x2, float y2, float z2, float radius, int subdivisions=32);
+  void drawCylinder(float x1, float y1, float z1, float x2, float y2, float z2, float startRadius, float endRadius=std::numeric_limits<float>::quiet_NaN(), int subdivisions=32);
   void drawSphere(float radius);
   void drawSphere(Vector3<float> x, float radius);
   void drawSphere(float x, float y, float z, float radius);
   void drawArrow(Point2D start, Point2D end);
   void drawArrow(Point2D start, Point2D end, RGB lineColor, RGB headColor, float alpha = 1.0, float width = 20);
+  void drawCone(Point2D start, Point2D end, float z, float radius);
 
   void drawSurface(Vector3<float> v0, Vector3<float> v1, Vector3<float> v2, Vector3<float> v3);
   void drawSurface(Eigen::Vector3f v0, Eigen::Vector3f v1, Eigen::Vector3f v2, Eigen::Vector3f v3);
@@ -82,7 +85,7 @@ public:
   void colorRGBAlpha(int r, int g, int b, float alpha) { glColor4f(r/255.0,g/255.0,b/255.0,alpha); };
   void colorRGBAlpha(RGB col, float alpha) { glColor4f(col.r/255.0,col.g/255.0,col.b/255.0,alpha); };  
 
-  void setLineWidth(float width) { glLineWidth(width/FACT); lineWidth_ = width/FACT;};
+  void setLineWidth(float width) { glLineWidth(width/FACT); lineWidth_ = width;};
   void useFieldLineWidth() { glLineWidth(LINE_WIDTH/FACT); };
 
   

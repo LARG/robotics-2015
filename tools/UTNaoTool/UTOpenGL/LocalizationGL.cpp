@@ -3,6 +3,7 @@
 using namespace Eigen;
 
 void LocalizationGL::drawUncertaintyEllipse(Point2D loc, Point2D sd) {
+  glDisable(GL_LIGHTING);
   glPushMatrix();
 
   basicGL.setLineWidth(3.0);
@@ -11,6 +12,7 @@ void LocalizationGL::drawUncertaintyEllipse(Point2D loc, Point2D sd) {
   basicGL.drawEllipse(sd);
 
   glPopMatrix();
+  glEnable(GL_LIGHTING);
 }
 
 void LocalizationGL::drawUncertaintyEllipse(Point2D loc, Matrix2f cov) {
@@ -31,10 +33,7 @@ void LocalizationGL::drawUncertaintyAngle(Pose2D pose, double var) {
 }
 
 void LocalizationGL::drawUncertaintyAngle(Point2D loc, double orientation, double sdOri) {
-  // kill warnings
-  orientation = orientation;
-  sdOri = sdOri;
-
+  glDisable(GL_LIGHTING);
   glPushMatrix();
 
   basicGL.translate(loc,15);
@@ -56,6 +55,7 @@ void LocalizationGL::drawUncertaintyAngle(Point2D loc, double orientation, doubl
   basicGL.drawLine(start,end);
 
   glPopMatrix();
+  glEnable(GL_LIGHTING);
 }
 
 
@@ -162,23 +162,25 @@ void LocalizationGL::drawRelativeObjectUncerts(WorldObjectBlock* gtObjects, Worl
 }
 
 void LocalizationGL::drawObservationLine(Vector3<float> origin, Vector3<float> end, RGB color) {
+  glDisable(GL_LIGHTING);
   glPushMatrix();
   basicGL.setLineWidth(50);
   basicGL.colorRGBAlpha(color,0.25);
   basicGL.drawLine(origin,end);
   glPopMatrix();
+  glEnable(GL_LIGHTING);
 }
 
 void LocalizationGL::drawParticles(const std::vector<Particle>& particles) {
   for(const auto& p : particles) {
     auto start = Point2D(p.x,p.y);
     auto end = start + Point2D::getPointFromPolar(100, p.t);
-    basicGL.drawArrow(start, end, Colors::Indigo, Colors::Red, p.w, 10);
+    basicGL.drawArrow(start, end, Colors::Indigo, Colors::Red, p.w, 5);
   }
 }
 
 void LocalizationGL::drawOdometry(Point2D loc, AngRad ori, OdometryBlock* odometry){
-
+  glDisable(GL_LIGHTING);
   glPushMatrix();
   basicGL.translate(loc,15);
   basicGL.rotateZ(ori);
@@ -198,5 +200,5 @@ void LocalizationGL::drawOdometry(Point2D loc, AngRad ori, OdometryBlock* odomet
     basicGL.drawArc(heading, heading + disp * 25, 200);
 
   glPopMatrix();
-
+  glEnable(GL_LIGHTING);
 }

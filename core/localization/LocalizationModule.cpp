@@ -65,6 +65,16 @@ void LocalizationModule::reInit() {
   cache_.localization_mem->covariance = decltype(cache_.localization_mem->covariance)::Identity();
 }
 
+void LocalizationModule::moveBall(const Point2D& position) {
+  // Optional: This method is called when the player is moved within the localization
+  // simulator window.
+}
+
+void LocalizationModule::movePlayer(const Point2D& position, float orientation) {
+  // Optional: This method is called when the player is moved within the localization
+  // simulator window.
+}
+
 void LocalizationModule::processFrame() {
   auto& ball = cache_.world_object->objects_[WO_BALL];
   auto& self = cache_.world_object->objects_[cache_.robot_state->WO_SELF];

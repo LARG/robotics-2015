@@ -97,6 +97,33 @@ void LocalizationSimulation::moveBall() {
   ballmove_ = frame;
 }
 
+void LocalizationSimulation::moveBall(Point2D position) {
+  teleportBall(position);
+  for(auto& kvp : agents_) {
+    auto& agent = kvp.second;
+    agent.core->localization_->moveBall(position);
+  }
+}
+
+void LocalizationSimulation::teleportBall(Point2D position) {
+  getObject(ball, WO_BALL, gtcache_);
+  ball.loc = position;
+}
+
+void LocalizationSimulation::movePlayer(Point2D position, float orientation, int) {
+  teleportPlayer(position, orientation);
+  for(auto& kvp : agents_) {
+    auto& agent = kvp.second;
+    agent.core->localization_->movePlayer(position, orientation);
+  }
+}
+
+void LocalizationSimulation::teleportPlayer(Point2D position, float orientation, int) {
+  getObject(self, player_, gtcache_);
+  self.loc = position;
+  self.orientation = orientation;
+}
+
 void LocalizationSimulation::simulationStep() {
   gtcache_.frame_info->frame_id++;
   for(auto& kvp : agents_)  {

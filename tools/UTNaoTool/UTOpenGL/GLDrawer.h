@@ -60,7 +60,8 @@ class GLDrawer {
       SHOWALLPACKETSOVERLAY,
       SHOWTRUESIMLOCATION,
       SHOWBEACONS,
-      SHOWGOALS
+      SHOWGOALS,
+      SHOWLINES
     );
 
     GLDrawer(QGLWidget* parent);
