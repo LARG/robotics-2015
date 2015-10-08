@@ -25,7 +25,7 @@ If you notice your robot getting lost, you may want to follow these steps to deb
 
 1. Restart the simulator with the same seed, and skip to a frame just before your robot starts getting lost. You can do this by entering the frame number into the "Skip To" box in the World window, and then clicking the "Skip To" button. Note that if you restart the simulator it will automatically advance to the "Skip To" frame.
 2. Pause the simulator and open the Log window. 
-3. Select "Localization" from the dropdown in the Log window, advance the simulation a single frame, and then make sure you can see the log output from your robot for the current frame. Be sure you use logs of logging statements to help diagnose issues. You can narrow these down by using the log level ranges at the bottom right of the Log window. For example, if your logging statements look like this:
+3. Select "Localization" from the dropdown in the Log window, advance the simulation a single frame, and then make sure you can see the log output from your robot for the current frame. Be sure you use logs of logging statements to help diagnose issues. You can narrow these down by using the log level ranges at the bottom left of the Log window. For example, if your logging statements look like this:
 
     ```cpp
     log(43, "Started processing at frame %i", frame_id);
@@ -33,8 +33,9 @@ If you notice your robot getting lost, you may want to follow these steps to deb
     log(45, "Position estimated at %2.2f,%2.2f", x, y);
     ```
 
-  Then you can select the start and end log level numbers "43" and "45"
+  Then you can show only the first message by selecting start/end levels of 43. You can show both by setting the start/end to 43 and 45, respectively. Generally it is advisable to use lower numbers for coarser information and increase the log level along with the level of detail in your log messages.
 4. With the simulator still paused, continue advancing the simulation one frame at a time until you identify the frame that caused the localization error to occur. You can now make changes, recompile, and restart the simulation with this seed at this frame repeatedly until you solve the issue.
+5. To speed up the process of recompiling and restarting, you can start the tool with the `-w` option to load the World window immediately.
 
 ### Simulating without UI
 
@@ -47,25 +48,48 @@ You may want to run simulations without the UI loaded so that you can get a bett
 This will produce output similar to the following:
 
     ----------------------------------------------------------
-    Default RMSE dist error: 7694.68, rot error: 115.33, steps: 2671
-    Seed: 596516649, Avg dist: 9624.26, Avg rot: 106.95, Avg steps: 3322.44
-    Sim time: 0.18 seconds
+    Running simulation with seed 1714636915
+    Sim time: 0.13 seconds
+    Default RMSE dist error: 8265.13, rot error: 104.18, steps: 2648
+    Avg dist: 9861.02, Avg rot: 105.28, Avg steps: 3350.75
     ----------------------------------------------------------
-    Default RMSE dist error: 10103.61, rot error: 114.34, steps: 3369
-    Seed: 1189641421, Avg dist: 9672.19, Avg rot: 107.69, Avg steps: 3327.10
-    Sim time: 0.18 seconds
-    ----------------------------------------------------------
-    Default RMSE dist error: 8891.12, rot error: 105.51, steps: 3143
-    Seed: 1025202362, Avg dist: 9601.19, Avg rot: 107.49, Avg steps: 3310.36
-    Sim time: 0.15 seconds
-    ----------------------------------------------------------
-    Default RMSE dist error: 9940.03, rot error: 111.29, steps: 3391
-    Seed: 1350490027, Avg dist: 9629.42, Avg rot: 107.81, Avg steps: 3317.08
+    Running simulation with seed 1957747793
     Sim time: 0.16 seconds
+    Default RMSE dist error: 9818.65, rot error: 104.53, steps: 3394
+    Avg dist: 9852.54, Avg rot: 105.13, Avg steps: 3359.40
     ----------------------------------------------------------
-    Default RMSE dist error: 12170.36, rot error: 121.17, steps: 4168
-    Seed: 783368690, Avg dist: 9824.88, Avg rot: 108.83, Avg steps: 3382.54
-    Sim time: 0.19 seconds
+    Running simulation with seed 424238335
+    Sim time: 0.14 seconds
+    Default RMSE dist error: 8930.99, rot error: 115.88, steps: 3098
+    Avg dist: 9698.95, Avg rot: 106.92, Avg steps: 3315.83
+    ----------------------------------------------------------
+    Running simulation with seed 719885386
+    Sim time: 0.22 seconds
+    Default RMSE dist error: 14554.33, rot error: 112.75, steps: 4946
+    Avg dist: 10392.58, Avg rot: 107.76, Avg steps: 3548.71
+    ----------------------------------------------------------
+    Running simulation with seed 1649760492
+    Sim time: 0.12 seconds
+    Default RMSE dist error: 6175.59, rot error: 92.92, steps: 2390
+    Avg dist: 9865.45, Avg rot: 105.90, Avg steps: 3403.88
+    ----------------------------------------------------------
+    Running simulation with seed 596516649
+    Sim time: 0.13 seconds
+    Default RMSE dist error: 7694.68, rot error: 115.33, steps: 2671
+    Avg dist: 9624.26, Avg rot: 106.95, Avg steps: 3322.44
     ----------------------------------------------------------
 
-This will help you gauge the general effectiveness of your filter. If a particular path yields a large amount of error, you can inspect it by copying the seed into the Simulator window and running the localization simulator manually on the generated path.
+Each simulation yields three lines: 
+
+1. The seed value used to randomly generate the robot's path.
+2. The RMSE distance and rotational error for this particular simulation.
+3. The running time for this simulation.
+4. The average RMSE distance and rotational error over all simulations so far.
+
+If a particular path yields a large amount of error, you can inspect it by copying the seed into the World window and running the localization simulator manually on the generated path.
+
+### Simulation vs Reality
+
+Keep in mind that the simulator is not a perfect representation of reality. It generates observations without any knowledge of the effectiveness of your vision, and cannot accurately represent the kind of noise that you'll observe in the real environment. While simulation can be a great tool for initial debugging and sanity checking, there is no substitute for testing with real data.
+
+If you want to tweak the observations generated by the simulator to more accurately represent your robot's observation noise, see the [`ObservationGenerator`](https://github.com/utaustinvilla/robotics/blob/master/tools/UTNaoTool/simulation/ObservationGenerator.cpp#L221-L253) class.
