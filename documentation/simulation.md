@@ -79,7 +79,7 @@ This will produce output similar to the following:
     Avg dist: 9624.26, Avg rot: 106.95, Avg steps: 3322.44
     ----------------------------------------------------------
 
-Each simulation yields three lines: 
+Each simulation yields four lines: 
 
 1. The seed value used to randomly generate the robot's path.
 2. The RMSE distance and rotational error for this particular simulation.
