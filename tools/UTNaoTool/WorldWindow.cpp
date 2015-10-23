@@ -5,6 +5,7 @@
 #include <tool/simulation/IsolatedBehaviorSimulation.h>
 #include <tool/simulation/CoachSimulation.h>
 #include <tool/simulation/GoalieSimulation.h>
+#include <tool/simulation/AttackerSimulation.h>
 #include <communications/CommunicationModule.cpp>
 
 #define CONFIG_PATH(mode) (UTMainWnd::dataDirectory() + "/simulators/" + getName((WorldMode)(mode)) + ".yaml")
@@ -171,6 +172,7 @@ void WorldWindow::startSimulation() {
       case IsolatedBehaviorSimLoc: simulation_ = new IsolatedBehaviorSimulation(true); break;
       case CoachSim: simulation_ = new CoachSimulation(); break;
       case GoalieSim: simulation_ = new GoalieSimulation(); break;
+      case AttackerSim: simulation_ = new AttackerSimulation(); break;
     }
     player_ = simulation_->defaultPlayer();
     if(wconfig_.autoplay) play_ = true;

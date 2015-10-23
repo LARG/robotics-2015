@@ -23,13 +23,13 @@ const float HALF_FIELD_X = FIELD_X/2.0;
 const float HALF_GRASS_Y = GRASS_Y/2.0;
 const float HALF_GRASS_X = GRASS_X/2.0;
 
-const float GOAL_Y = 500;
+const float GOAL_Y = 900;
 const float GOAL_POST_WIDTH = 70;
 const float GOAL_WIDTH = GOAL_Y + GOAL_POST_WIDTH;
 const float GOAL_X = 500;
 const float HALF_GOAL_Y = GOAL_Y / 2.0;
-const float PENALTY_Y = 2200;
-const float PENALTY_X =  600;
+const float PENALTY_Y = 1400;
+const float PENALTY_X =  650;
 const float CIRCLE_DIAMETER = 1500;
 const float CIRCLE_RADIUS = CIRCLE_DIAMETER / 2.0;
 const float LINE_WIDTH = 50;
