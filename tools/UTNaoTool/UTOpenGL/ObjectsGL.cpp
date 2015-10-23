@@ -20,12 +20,19 @@ void ObjectsGL::drawGreenCarpet() {
 void ObjectsGL::drawFieldLine(Point2D start, Point2D end) {
   glDisable(GL_LIGHTING);
   basicGL.colorRGB(Colors::White);
-  float height = 2;
-  auto 
-    v0 = Vector3<float>(start.x-LINE_WIDTH/2,start.y-LINE_WIDTH/2,height),
-    v1 = Vector3<float>(end.x+LINE_WIDTH/2,end.y-LINE_WIDTH/2,height),
-    v2 = Vector3<float>(end.x+LINE_WIDTH/2,end.y+LINE_WIDTH/2,height),
-    v3 = Vector3<float>(start.x-LINE_WIDTH/2,start.y+LINE_WIDTH/2,height)
+  auto dir = end - start; dir /= dir.getMagnitude();
+  auto pdir = Point2D(-dir.y, dir.x);
+  auto w = LINE_WIDTH / 2;
+  auto c1 = start + pdir * w - dir * w;
+  auto c2 = end + pdir * w + dir * w;
+  auto c3 = end - pdir * w + dir * w;
+  auto c4 = start - pdir * w - dir * w;
+  float z = 2;
+  Vector3<float>
+    v0(c1.x, c1.y, z),
+    v1(c2.x, c2.y, z),
+    v2(c3.x, c3.y, z),
+    v3(c4.x, c4.y, z)
   ;
   basicGL.drawSurface(v0, v1, v2, v3);
   glEnable(GL_LIGHTING);
@@ -143,10 +150,10 @@ void ObjectsGL::drawGoal(Point2D goalCenter) {
 
 void ObjectsGL::drawBeacon(Point2D p, RGB topColor, RGB bottomColor, float alpha) {
   basicGL.colorRGBAlpha(topColor, alpha);
-  basicGL.drawCylinder(p.x, p.y, 300, p.x, p.y, 400, 110);
+  basicGL.drawCylinder(p.x, p.y, 300, p.x, p.y, 400, 110/2);
   basicGL.colorRGBAlpha(bottomColor, alpha);
-  basicGL.drawCylinder(p.x, p.y, 200, p.x, p.y, 300, 110);
+  basicGL.drawCylinder(p.x, p.y, 200, p.x, p.y, 300, 110/2);
   basicGL.colorRGBAlpha(Colors::White, alpha);
-  basicGL.drawCylinder(p.x, p.y, 0, p.x, p.y, 200, 110);
+  basicGL.drawCylinder(p.x, p.y, 0, p.x, p.y, 200, 110/2);
 }
 

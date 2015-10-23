@@ -108,7 +108,7 @@ void ObservationGenerator::generateLineObservations() {
   getSelf(gtSelf,obsSelf,player_);
   int seenLines = 0;
 
-  for (int i = WO_OPP_GOAL_LINE; i <= WO_BOTTOM_SIDE_LINE; i++){
+  for (int i = LINE_OFFSET; i < LINE_OFFSET + NUM_LINES; i++) {
     if (seenLines >= 4) break;
     WorldObject& truthWO = gt_object_->objects_[i];
    

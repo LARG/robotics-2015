@@ -135,20 +135,8 @@ bool WorldObject::isUnique() const {
   return isCenterCircle() || isKnownLine() || isKnownPenaltyCross();  // Center circle and known lines
 }
 
-bool WorldObject::isPenaltySideline() const {
-  return (type >= WO_PENALTY_TOP_OPP && type <= WO_PENALTY_BOTTOM_OWN);
-}
-
 bool WorldObject::isAmbiguous() const {
   return (isUnknownGoal() || isUnknownIntersection() || isUnknownLine() || isUnknownPenaltyCross());
-}
-
-bool WorldObject::isHorizontalLine() const {
-  return type >= WO_OPP_GOAL_LINE && type <= WO_OWN_BOTTOM_GOALBAR;
-}
-
-bool WorldObject::isVerticalLine() const {
-  return type >= WO_TOP_SIDE_LINE && type <= WO_OWN_RIGHT_GOALBAR;
 }
 
 bool WorldObject::isBeacon() const {

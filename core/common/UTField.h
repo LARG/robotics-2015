@@ -3,6 +3,7 @@
 
 #include "WorldObject.h"
 #include <stdio.h>
+#include <array>
 
 //#ifdef interface_H
 //cout << "Field_h";
@@ -13,9 +14,9 @@
 
 const float BALL_RADIUS = 31;
 
-const float FIELD_Y = 2000;
-const float FIELD_X = 3000;
-const float GRASS_Y = 2500;
+const float FIELD_Y = 3000;
+const float FIELD_X = 1900 * 2;
+const float GRASS_Y = 4000;
 const float GRASS_X = 5000;
 
 const float HALF_FIELD_Y = FIELD_Y/2.0;
@@ -80,95 +81,39 @@ const Point2D landmarkLocation[] = {
   Point2D( -FIELD_X / 2, GOAL_Y / 2),        // WO_OWN_RIGHT_GOALPOST
   Point2D( FIELD_X / 2, -GOAL_Y / 2)         // WO_OPP_RIGHT_GOALPOST
 };
-
-
-// Line intersection locations
-const Point2D intersectionLocation[] = {
-  // L
-  Point2D( FIELD_X / 2, FIELD_Y / 2),                 // 0 WO_OPP_FIELD_LEFT_L
-  Point2D( FIELD_X / 2, -FIELD_Y / 2),                //   WO_OPP_FIELD_RIGHT_L
-  Point2D( FIELD_X / 2 - PENALTY_X, PENALTY_Y / 2),   // 2 WO_OPP_PEN_LEFT_L
-  Point2D( FIELD_X / 2 - PENALTY_X, -PENALTY_Y / 2),  //   WO_OPP_PEN_RIGHT_L
-  Point2D( -FIELD_X / 2 + PENALTY_X, PENALTY_Y / 2),  // 4 WO_OWN_PEN_RIGHT_L
-  Point2D( -FIELD_X / 2 + PENALTY_X, -PENALTY_Y / 2), //   WO_OWN_PEN_LEFT_L
-  Point2D( -FIELD_X / 2, FIELD_Y / 2),                // 6 WO_OWN_FIELD_RIGHT_L
-  Point2D( -FIELD_X / 2, -FIELD_Y / 2),               // 7 WO_OWN_FIELD_LEFT_L
   
-  Point2D(  HALF_FIELD_X + GOAL_X, -HALF_GOAL_Y),      // Back right of opp goal post
-  Point2D(  HALF_FIELD_X + GOAL_X,  HALF_GOAL_Y),      // Back left of opp goal post
 
-  Point2D( -HALF_FIELD_X - GOAL_X, -HALF_GOAL_Y),      // Back right of own goal post
-  Point2D( -HALF_FIELD_X - GOAL_X,  HALF_GOAL_Y),      // Back left of own goal post
+#ifndef SWIG
+template<typename T, typename... Args>
+auto make_array(T arg, Args... args) -> std::array<T, 1 + sizeof...(Args)>
+{
+     std::array<T, 1 + sizeof...(Args)> a = { arg, args ... };
+     return a;
+}
+#endif
 
-  // T
-  Point2D( FIELD_X / 2, PENALTY_Y / 2),               // 8  WO_OPP_PEN_LEFT_T
-  Point2D( FIELD_X / 2, -PENALTY_Y / 2),              //    WO_OPP_PEN_RIGHT_T
-  Point2D( 0, FIELD_Y / 2),                           // 10 WO_CENTER_TOP_T
-  Point2D( 0, -FIELD_Y / 2),                          //    WO_CENTER_BOTTOM_T,
-  Point2D( -FIELD_X / 2, PENALTY_Y / 2),              // 12 WO_OWN_PEN_RIGHT_T
-  Point2D( -FIELD_X / 2, -PENALTY_Y / 2),             // 13 WO_OWN_PEN_LEFT_T
-  
-  Point2D(  HALF_FIELD_X, -HALF_GOAL_Y),              // front right of opp goal
-  Point2D(  HALF_FIELD_X,  HALF_GOAL_Y),              // front left of opp goal
+const auto lineLocationStarts = make_array(
+  Point2D(-HALF_FIELD_X, PENALTY_Y/2),
+  Point2D(-HALF_FIELD_X + PENALTY_X, PENALTY_Y/2),
+  Point2D(-HALF_FIELD_X, PENALTY_Y/2),
+  Point2D(-HALF_FIELD_X, -PENALTY_Y/2),
+  Point2D(HALF_FIELD_X, PENALTY_Y/2),
+  Point2D(HALF_FIELD_X - PENALTY_X, PENALTY_Y/2),
+  Point2D(HALF_FIELD_X, PENALTY_Y/2),
+  Point2D(HALF_FIELD_X, -PENALTY_Y/2),
+  Point2D(0, HALF_FIELD_Y)
+);
 
-  Point2D( -HALF_FIELD_X, -HALF_GOAL_Y),              // front right of own goal
-  Point2D( -HALF_FIELD_X,  HALF_GOAL_Y)               // front left of own goal
-};
-
-
-// Line location
-const Point2D lineLocationStarts[] = {
-
-  // HORIZONTAL LINES
-  intersectionLocation[WO_OPP_FIELD_LEFT_L  - INTERSECTION_OFFSET],    // WO_OPP_GOAL_LINE
-  intersectionLocation[WO_OPP_PEN_LEFT_L    - INTERSECTION_OFFSET],    // WO_OPP_PENALTY
-  intersectionLocation[WO_CENTER_TOP_T      - INTERSECTION_OFFSET],    // WO_CENTER_LINE
-  intersectionLocation[WO_OWN_PEN_RIGHT_L   - INTERSECTION_OFFSET],    // WO_OWN_PENALTY
-  intersectionLocation[WO_OWN_FIELD_RIGHT_L - INTERSECTION_OFFSET],    // WO_OWN_GOAL_LINE
-
-  intersectionLocation[WO_OPP_BACK_RIGHT_GOAL_L - INTERSECTION_OFFSET],
-  intersectionLocation[WO_OWN_BACK_RIGHT_GOAL_L - INTERSECTION_OFFSET],
-
-  // VERTICAL LINES
-  intersectionLocation[WO_OPP_FIELD_LEFT_L  - INTERSECTION_OFFSET],    // WO_TOP_SIDE_LINE
-  intersectionLocation[WO_OPP_PEN_LEFT_L    - INTERSECTION_OFFSET],    // WO_PENALTY_TOP_OPP
-  intersectionLocation[WO_OWN_PEN_RIGHT_L   - INTERSECTION_OFFSET],    // WO_PENALTY_TOP_OWN
-  intersectionLocation[WO_OPP_PEN_RIGHT_L   - INTERSECTION_OFFSET],    // WO_PENALTY_BOTTOM_OPP
-  intersectionLocation[WO_OWN_PEN_LEFT_L    - INTERSECTION_OFFSET],    // WO_PENALTY_BOTTOM_OWN
-  intersectionLocation[WO_OPP_FIELD_RIGHT_L - INTERSECTION_OFFSET],    // WO_BOTTOM_SIDE_LINE
-
-  intersectionLocation[WO_OPP_BACK_LEFT_GOAL_L  - INTERSECTION_OFFSET], // WO_OPP_LEFT_GOALBAR
-  intersectionLocation[WO_OPP_BACK_RIGHT_GOAL_L - INTERSECTION_OFFSET], // WO_OPP_RIGHT_GOALBAR
-  intersectionLocation[WO_OWN_BACK_LEFT_GOAL_L  - INTERSECTION_OFFSET], // WO_OWN_LEFT_GOALBAR
-  intersectionLocation[WO_OWN_BACK_RIGHT_GOAL_L - INTERSECTION_OFFSET]  // WO_OWN_RIGHT_GOALBAR
-};
-
-// Line location
-const Point2D lineLocationEnds[] = {
-
-  // HORIZONTAL LINES
-  intersectionLocation[WO_OPP_FIELD_RIGHT_L - INTERSECTION_OFFSET],    // WO_OPP_GOAL_LINE
-  intersectionLocation[WO_OPP_PEN_RIGHT_L   - INTERSECTION_OFFSET],    // WO_OPP_PENALTY
-  intersectionLocation[WO_CENTER_BOTTOM_T   - INTERSECTION_OFFSET],    // WO_CENTER_LINE
-  intersectionLocation[WO_OWN_PEN_LEFT_L    - INTERSECTION_OFFSET],    // WO_OWN_PENALTY
-  intersectionLocation[WO_OWN_FIELD_LEFT_L  - INTERSECTION_OFFSET],    // WO_OWN_GOAL_LINE
-  
-  intersectionLocation[WO_OPP_BACK_LEFT_GOAL_L - INTERSECTION_OFFSET], // opp back goalbar
-  intersectionLocation[WO_OWN_BACK_LEFT_GOAL_L - INTERSECTION_OFFSET], // own back goalbar
-
-  // VERTICAL LINES
-  intersectionLocation[WO_OWN_FIELD_RIGHT_L - INTERSECTION_OFFSET],    // WO_TOP_SIDE_LINE
-  intersectionLocation[WO_OPP_PEN_LEFT_T    - INTERSECTION_OFFSET],    // WO_PENALTY_TOP_OPP
-  intersectionLocation[WO_OWN_PEN_RIGHT_T   - INTERSECTION_OFFSET],    // WO_PENALTY_TOP_OWN
-  intersectionLocation[WO_OPP_PEN_RIGHT_T   - INTERSECTION_OFFSET],    // WO_PENALTY_BOTTOM_OPP
-  intersectionLocation[WO_OWN_PEN_LEFT_T    - INTERSECTION_OFFSET],    // WO_PENALTY_BOTTOM_OWN
-  intersectionLocation[WO_OWN_FIELD_LEFT_L  - INTERSECTION_OFFSET],    // WO_BOTTOM_SIDE_LINE
-
-  intersectionLocation[WO_OPP_FRONT_LEFT_GOAL_T  - INTERSECTION_OFFSET], // WO_OPP_LEFT_GOALBAR
-  intersectionLocation[WO_OPP_FRONT_RIGHT_GOAL_T - INTERSECTION_OFFSET], // WO_OPP_RIGHT_GOALBAR
-  intersectionLocation[WO_OWN_FRONT_LEFT_GOAL_T  - INTERSECTION_OFFSET], // WO_OWN_LEFT_GOALBAR
-  intersectionLocation[WO_OWN_FRONT_RIGHT_GOAL_T - INTERSECTION_OFFSET]  // WO_OWN_RIGHT_GOALBAR
-};
-
+const auto lineLocationEnds = make_array(
+  Point2D(-HALF_FIELD_X, -PENALTY_Y/2),
+  Point2D(-HALF_FIELD_X + PENALTY_X, -PENALTY_Y/2),
+  Point2D(-HALF_FIELD_X + PENALTY_X, PENALTY_Y/2),
+  Point2D(-HALF_FIELD_X + PENALTY_X, -PENALTY_Y/2),
+  Point2D(HALF_FIELD_X, -PENALTY_Y/2),
+  Point2D(HALF_FIELD_X - PENALTY_X, -PENALTY_Y/2),
+  Point2D(HALF_FIELD_X - PENALTY_X, PENALTY_Y/2),
+  Point2D(HALF_FIELD_X - PENALTY_X, -PENALTY_Y/2),
+  Point2D(0, -HALF_FIELD_Y)
+);
 
 #endif

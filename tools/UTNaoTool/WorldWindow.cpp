@@ -221,7 +221,8 @@ bool WorldWindow::inSimMode() {
     wconfig_.mode == BehaviorSimLoc ||
     wconfig_.mode == LocalizationSim ||
     wconfig_.mode == CoachSim ||
-    wconfig_.mode == GoalieSim;
+    wconfig_.mode == GoalieSim ||
+    wconfig_.mode == AttackerSim;
 }
 
 void WorldWindow::handleStreaming(bool streaming) {

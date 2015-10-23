@@ -2,4 +2,8 @@
 options:
   - SHOWFIELD
   - SHOWROBOT
+  - SHOWBALL
+  - SHOWBEACONS
+  - SHOWGOALS
+  - SHOWLINES
 ...

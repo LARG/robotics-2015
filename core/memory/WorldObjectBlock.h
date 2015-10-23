@@ -41,7 +41,7 @@ struct WorldObjectBlock : public MemoryBlock {
     // set intersection locations
     for (int i = 0; i < NUM_INTERSECTIONS; i++){
       WorldObject *wo = &(objects_[i + INTERSECTION_OFFSET]);
-      wo->loc = intersectionLocation[i];
+      /*wo->loc = intersectionLocation[i];*/
 
       // set heights
       wo->upperHeight = 0;

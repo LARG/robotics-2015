@@ -8,4 +8,5 @@ class AttackerSimulation : public IsolatedBehaviorSimulation {
     AttackerSimulation();
     void simulationStep() override;
     void resetPlayer();
+    void resetField();
 };

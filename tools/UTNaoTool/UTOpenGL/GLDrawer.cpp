@@ -111,29 +111,6 @@ void GLDrawer::drawField() {
       WorldObject* wo = &(gtcache_.world_object->objects_[i]);
       objectsGL.drawFieldLine(wo->loc, wo->endLoc);
     }
-    WorldObject* wo = &(gtcache_.world_object->objects_[WO_OPP_GOAL]);
-    glColor3f(1,1,0);
-    if (gtcache_.robot_state == NULL){
-      parent_->renderText(wo->loc.x/FACT,wo->loc.y/FACT,1000/FACT,"OPP");
-    } else if (gtcache_.robot_state->team_ == TEAM_RED) {
-      parent_->renderText(wo->loc.x/FACT,wo->loc.y/FACT,1000/FACT,"OPP - BLUE");
-    } else {
-      parent_->renderText(wo->loc.x/FACT,wo->loc.y/FACT,1000/FACT,"OPP - RED");
-    }
-
-    wo = &(gtcache_.world_object->objects_[WO_OWN_GOAL]);
-    glColor3f(1,1,0);
-    if (gtcache_.robot_state == NULL){
-      parent_->renderText(wo->loc.x/FACT,wo->loc.y/FACT,1000/FACT,"OWN");
-    } else if (gtcache_.robot_state->team_ == TEAM_RED) {
-      parent_->renderText(wo->loc.x/FACT,wo->loc.y/FACT,1000/FACT,"OWN - RED");
-    } else {
-      parent_->renderText(wo->loc.x/FACT,wo->loc.y/FACT,1000/FACT,"OWN - BLUE");
-    }
-
-    objectsGL.drawPenaltyCross(gtcache_.world_object->objects_[WO_OPP_PENALTY_CROSS].loc,1.0);
-    objectsGL.drawPenaltyCross(gtcache_.world_object->objects_[WO_OWN_PENALTY_CROSS].loc,1.0);
-    objectsGL.drawCenterCircle(gtcache_.world_object->objects_[WO_CENTER_CIRCLE].loc, 1.0);
   }
 }
 
@@ -1097,6 +1074,7 @@ void GLDrawer::drawBeacons() {
   };
   for(auto beacon : beacons) {
     const auto& object = gtcache_.world_object->objects_[beacon.first];
+    if(object.loc.getMagnitude() > 10000) continue;
     objectsGL.drawBeacon(object.loc, beacon.second[0], beacon.second[1]);
   }
 }

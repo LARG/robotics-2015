@@ -98,29 +98,17 @@ ENUM(WorldObjectType,   // Types of objects
   WO_UNKNOWN_FIELD_LINE_3,
   WO_UNKNOWN_FIELD_LINE_4,
 
-
-  // Horizontal Lines (right to left)
-  WO_OPP_GOAL_LINE,          
-  WO_OPP_PENALTY,
-  WO_CENTER_LINE,
-  WO_OWN_PENALTY,
-  WO_OWN_GOAL_LINE,
-
-  WO_OPP_BOTTOM_GOALBAR,
-  WO_OWN_BOTTOM_GOALBAR,
-
-  // Vertical Lines (top to bottom)
-  WO_TOP_SIDE_LINE,    
-  WO_PENALTY_TOP_OPP,   
-  WO_PENALTY_TOP_OWN,
-  WO_PENALTY_BOTTOM_OPP, 
-  WO_PENALTY_BOTTOM_OWN,       
-  WO_BOTTOM_SIDE_LINE,   
+  WO_OWN_END_LINE,
+  WO_OWN_PENALTY_LINE,
+  WO_OWN_LEFT_PENALTY_BOX,
+  WO_OWN_RIGHT_PENALTY_BOX,
   
-  WO_OPP_LEFT_GOALBAR,
-  WO_OPP_RIGHT_GOALBAR,
-  WO_OWN_LEFT_GOALBAR,
-  WO_OWN_RIGHT_GOALBAR,
+  WO_OPP_END_LINE,
+  WO_OPP_PENALTY_LINE,
+  WO_OPP_LEFT_PENALTY_BOX,
+  WO_OPP_RIGHT_PENALTY_BOX,
+
+  WO_CENTER_LINE,
 
   // penalty crosses
   WO_UNKNOWN_PENALTY_CROSS,
@@ -155,8 +143,8 @@ const int LANDMARK_OFFSET = WO_CENTER_CIRCLE;
 const int NUM_LANDMARKS = WO_OPP_RIGHT_GOALPOST - LANDMARK_OFFSET + 1;
 const int INTERSECTION_OFFSET =  WO_OPP_FIELD_LEFT_L;
 const int NUM_INTERSECTIONS = WO_OWN_FRONT_LEFT_GOAL_T - INTERSECTION_OFFSET + 1;
-const int LINE_OFFSET =  WO_OPP_GOAL_LINE;
-const int NUM_LINES = WO_OWN_RIGHT_GOALBAR - LINE_OFFSET + 1;
+const int LINE_OFFSET = WO_OWN_END_LINE;
+const int NUM_LINES = WO_CENTER_LINE - LINE_OFFSET + 1;
 
 const int L_INT_OFFSET = WO_OPP_FIELD_LEFT_L;
 const int T_INT_OFFSET = WO_OPP_PEN_LEFT_T;
@@ -207,14 +195,11 @@ public:
   bool isKnownPenaltyCross() const;
   bool isUnique() const;
   bool isAmbiguous() const;
-  bool isPenaltySideline() const;
   bool isOwnGoal() const;
   bool isOppGoal() const;
   bool isKnownLine() const;
   bool isUnknownT() const;
   bool isUnknownL() const;
-  bool isHorizontalLine() const;
-  bool isVerticalLine() const;
   bool isBeacon() const;
 
   void reset();
