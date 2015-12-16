@@ -58,7 +58,7 @@ SensorWindow::SensorWindow() : QWidget() {
   visionLeftSonarLabels = new QLabel[numSonarValues];
   visionRightSonarLabels = new QLabel[numSonarValues];
 
-  float maxWidth = 40.0f;
+  float maxWidth = 50.0f;
   for(int i = 0; i < NUM_SENSORS; i++) {
     rawLabels[i].setMaximumWidth(maxWidth);
     processedLabels[i].setMaximumWidth(maxWidth);
@@ -67,6 +67,14 @@ SensorWindow::SensorWindow() : QWidget() {
     rawDeltaLabels[i].setMaximumWidth(maxWidth);
     processedDeltaLabels[i].setMaximumWidth(maxWidth);
     visionDeltaLabels[i].setMaximumWidth(maxWidth);
+    
+    rawLabels[i].setMinimumWidth(maxWidth);
+    processedLabels[i].setMinimumWidth(maxWidth);
+    visionLabels[i].setMinimumWidth(maxWidth);
+
+    rawDeltaLabels[i].setMinimumWidth(maxWidth);
+    processedDeltaLabels[i].setMinimumWidth(maxWidth);
+    visionDeltaLabels[i].setMinimumWidth(maxWidth);
   }
 
   for(int i = 0; i < numSonarValues; i++) {
